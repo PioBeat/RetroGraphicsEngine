@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 /**
  * Sprite class which represents a animated sprite and implements some basic functionalities which
- * influences the visuals and properties of it. <br/>
- * Subclass from {@link AbstractSprite}.<br/>
+ * influences the visuals and properties of it.
+ * Subclass from {@link AbstractSprite}.
  * A sprite can be animated or a static one.
  * The position, angle (Ausrichtung), size, alpha value can be changed.
  * This includes the bounding box for collision as well.
@@ -141,7 +141,7 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
 
     /**
      * Overrides the action method by calling the action method of the {@code actionEventCallback} class member
-     * instance. <br/>
+     * instance.
      * Switching actions at runtime is therefore possible
      *
      * @param parameter

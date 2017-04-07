@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply from: "./bintray.data.gradle"
 
 android {
     compileSdkVersion 25
@@ -7,6 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 25
+        versionCode libraryVersionCode
+        versionName libraryVersion
 //        compileOptions {
 //            sourceCompatibility JavaVersion.VERSION_1_8
 //            targetCompatibility JavaVersion.VERSION_1_8
@@ -25,6 +28,8 @@ android {
 }
 
 dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
     //3rd party
     compile 'jp.wasabeef:recyclerview-animators:2.2.5'
     compile 'com.esri.geometry:esri-geometry-api:1.2.1'
@@ -48,3 +53,6 @@ task copyToLib(type: Copy) {
 }
 
 build.dependsOn copyToLib
+
+apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'

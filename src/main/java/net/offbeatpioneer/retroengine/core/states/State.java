@@ -16,8 +16,6 @@ import net.offbeatpioneer.retroengine.core.sprites.AbstractSprite;
 import net.offbeatpioneer.retroengine.core.sprites.SpriteGroup;
 import net.offbeatpioneer.retroengine.view.DrawView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 /**
@@ -141,7 +139,6 @@ public abstract class State {
      *
      * @return viewport origin coordinate
      */
-    @NotNull
     public PointF getViewportOrigin() {
         if (backgroundNode == null) {
             return new PointF(0, 0);
@@ -173,7 +170,7 @@ public abstract class State {
 
     /**
      * Initialisierung des Spieltzustandes. Es empfiehlt sich hier nur Initialisierungen vorzunehmen, die
-     * nach jedem erneuten Start des gleichen Spielzustandes wieder auf die Ausgangsposition gebracht werden m�ssen.<br/>
+     * nach jedem erneuten Start des gleichen Spielzustandes wieder auf die Ausgangsposition gebracht werden müssen.
      * Nicht empfehlenswert sind daher das Laden von Bild- und Soundressourcen.
      */
     public abstract void init();

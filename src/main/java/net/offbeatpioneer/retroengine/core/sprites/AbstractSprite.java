@@ -248,7 +248,7 @@ public abstract class AbstractSprite implements ISprite {
 
     /**
      * Get the origin of the viewport (absolute center point of the canvas). This is important if the
-     * canvas itself is translated on which the sprites are drawn. <br/>
+     * canvas itself is translated on which the sprites are drawn.
      * Technically the difference of the actor ("player") sprite position and the actual middle point of the canvas itself represents the viewport.
      * This point is only important if the canvas is translated to simulate player movement and simultaneously
      * have the player at the same position.
@@ -264,7 +264,7 @@ public abstract class AbstractSprite implements ISprite {
 
     /**
      * Set the viewport origin. This is the reference point to the whole system where all sprites
-     * are drawn. There has to be an absolute "null" point.<br/>
+     * are drawn. There has to be an absolute "null" point.
      * This method is automatically called within a state by the rootNode sprite group which gets
      * this information from the background node.
      *

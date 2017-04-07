@@ -24,8 +24,8 @@ import net.offbeatpioneer.retroengine.core.RetroEngine;
 /**
  * DrawView ist eine abgeleitet View-Komponente (erbt von {@link SurfaceView}),
  * die in der XXXXX verwendet wird. Diese stellt über eine
- * Handler das Canvas bereit, welches zum Zeichnen von Grafiken verwendet wird. <br/>
- * <br/>
+ * Handler das Canvas bereit, welches zum Zeichnen von Grafiken verwendet wird.
+ * <p>
  * Ist die Oberfläche der View erstellt worden, so werden die in der
  * XXXXXX definierten Threads (GameThread und TouchThread)
  * instantiiert. Dabei wird der Canvas-Handler übergeben, damit diese Zugriff
@@ -171,7 +171,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
         if (GamestateManager.getInstance().getGamestates().size() == 1) {
             net.offbeatpioneer.retroengine.core.states.State state = GamestateManager.getInstance().getGamestates().get(0);
             currentStateTemp = state.getClass();
-        } else if(currentStateTemp == null && GamestateManager.getInstance().getGamestates().size() > 1 && GamestateManager.getInstance().getActiveGameState() != null) {
+        } else if (currentStateTemp == null && GamestateManager.getInstance().getGamestates().size() > 1 && GamestateManager.getInstance().getActiveGameState() != null) {
             currentStateTemp = GamestateManager.getInstance().getActiveGameState().getClass();
         }
 

@@ -103,7 +103,7 @@ public abstract class AnimationSuite {
     /**
      * Startet die Animation, d.h. konkret, ruft die dahinterliegende Logik auf, die für die Animation
      * erforderlich ist. Solll die Animation nach einer bestimmten Zeit automatisch beendet werden, so wird
-     * in diesem Fall ein {@link TimerTask} angelegt. <br/> Wenn die Animation nach Beendigung wieder neu ausgeführt
+     * in diesem Fall ein {@link TimerTask} angelegt. <br> Wenn die Animation nach Beendigung wieder neu ausgeführt
      * werden soll ({@code doReset}), so werden die Einstellungen mit {@code reset()} zurückgesetzt.
      */
     public void startAnimation() {

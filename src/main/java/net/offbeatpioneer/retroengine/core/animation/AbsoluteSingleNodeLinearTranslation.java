@@ -10,7 +10,7 @@ import net.offbeatpioneer.retroengine.core.util.InterpolationHelper;
 /**
  * Absolute translation for one sprite for which this animation is introduced.
  * It operates on the screen coordinates. So even if the canvas / background is scrolled (translated)
- * translation will be the same. <br/>
+ * translation will be the same. <br>
  * It supports the 4 directions defined in the enum  {@link Direction}, where the start point is defined
  * in the constructor by the first argument {@code start}
  *

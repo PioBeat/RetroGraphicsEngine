@@ -30,8 +30,8 @@ public class RotationAnimation extends AnimationSuite {
     }
 
     /**
-     * Constructor which initialises the rotation animation with default values <br/>
-     * Three cycles in three seconds are realised. <br/>
+     * Constructor which initialises the rotation animation with default values <br>
+     * Three cycles in three seconds are realised. <br>
      * Loop is set to {@code false}. The animation will not be repeated.
      */
     public RotationAnimation() {

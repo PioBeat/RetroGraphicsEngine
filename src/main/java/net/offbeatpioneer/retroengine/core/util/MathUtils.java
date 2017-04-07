@@ -5,7 +5,6 @@ import android.graphics.RectF;
 
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 
-import org.jetbrains.annotations.Contract;
 
 /**
  * Helper class for mathematical and statistical calculations
@@ -25,7 +24,6 @@ public class MathUtils {
         return min + (int) (Math.random() * ((max - min) + 1));
     }
 
-    @Contract(pure = true)
     public static int calcPixelsPerFrameUpdate(int fps, int way, int time) {
         float v = way / time;
         int amountOfUpdatesPerSecond = 1000 / fps;
@@ -60,7 +58,6 @@ public class MathUtils {
      * @param grad angle in degree
      * @return angle in radian
      */
-    @Contract(pure = true)
     public static double getRad(float grad) {
         return (Math.PI / 180.0) * grad;
     }
