@@ -13,9 +13,19 @@ API 16+
 To add the library to your
 application include it as a library project along with the *.aar file.
 
-### Maven
+### Gradle
 
-ToDo
+```
+repositories {
+    maven {
+        url 'https://dl.bintray.com/piobeat/offbeat-pioneer-maven'
+    }
+}
+
+dependencies {
+    compile 'net.offbeat-pioneer.android:retroengine:0.9'
+}
+```
 
 ## Quick look
 

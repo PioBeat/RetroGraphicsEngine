@@ -6,7 +6,7 @@ ext {
     libraryName = 'RetroGraphicsEngine'
     artifact = 'retroengine' // equal to the name of the Android Studio library module
 
-    libraryDescription = ''
+    libraryDescription = 'RetroGraphicsEngine is a pure canvas‑based graphics engine for Android'
     libraryVersion = '0.9'
     libraryVersionCode = 1
 

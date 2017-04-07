@@ -13,17 +13,14 @@ import net.offbeatpioneer.retroengine.core.sprites.IFrameUpdate;
 
 import static net.offbeatpioneer.retroengine.core.util.BitmapHelper.scaleToFit;
 
-//TODO color coding for coll detection, muss die Klasse hier nicht machen, wird außerhalb aufgerufen
-//kann aber den Farbpunkt zurückgeben nach außen
-
 /**
  * Scrollable background layer with the possibility to load a second background for
  * color coded collision detection
  *
  * @author Dominik Grzelak
- * @since 13.01.2017.
+ * @since 13.01.2017
  */
-public class FixedScrollabaleLayer implements BackgroundLayer {
+public class FixedScrollableLayer implements BackgroundLayer {
     private Bitmap background;
     private Bitmap backgroundBackUp;
     private Paint paint = new Paint();
@@ -53,7 +50,7 @@ public class FixedScrollabaleLayer implements BackgroundLayer {
     float diffX = 0;
     IFrameUpdate frameUpdate;
 
-    public FixedScrollabaleLayer(Bitmap br, int sectionWidth, float factor) {
+    public FixedScrollableLayer(Bitmap br, int sectionWidth, float factor) {
         background = br;
         backgroundBackUp = br;
         frameCnt = 2;
