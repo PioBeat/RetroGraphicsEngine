@@ -11,22 +11,22 @@ import net.offbeatpioneer.retroengine.core.GamestateManager;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 
 /**
- * {@link GameThread} implements the main ("game") loop to render all the graphics specified
+ * {@link RenderThread} implements the main ("game") loop to render all the graphics specified
  * by a {@link net.offbeatpioneer.retroengine.core.states.State}.
  * <p>
  * The class will get the active state from the {@link GamestateManager} to render all its graphics.
  * All available states should be defined beforehand but can be added afterwards as well. If no states
- * are set when the {@link GameThread} is started, a {@link IllegalStateException} will be thrown.
+ * are set when the {@link RenderThread} is started, a {@link IllegalStateException} will be thrown.
  * <p>
- * The {@link GameThread} will obtain the drawing surface of the {@link DrawView} component which
+ * The {@link RenderThread} will obtain the drawing surface of the {@link DrawView} component which
  * is in this a {@link Canvas} object. The active state will get this {@link Canvas} as argument
  * in its render method.
  *
  * @author Dominik Grzelak
  */
-public class GameThread extends Thread {
+public class RenderThread extends Thread {
 
-    private final String TAG_LOG = "GameThread";
+    private final String TAG_LOG = "RenderThread";
 //    public static Resources res;
     private GamestateManager manager = GamestateManager.getInstance();
     private Class<?> currentState = null;
@@ -36,19 +36,19 @@ public class GameThread extends Thread {
     private Handler handler;
     final private SurfaceHolder mSurfaceHolder;
 
-    public GameThread(SurfaceView view) {
+    public RenderThread(SurfaceView view) {
         ParentView = view;
         this.mSurfaceHolder = ParentView.getHolder();
-        ((DrawView) view).setGameThread(this);
+        ((DrawView) view).setRenderThread(this);
     }
 
 
 //    //TODO remove this constructor
 //    @Deprecated
-//    public GameThread(SurfaceView view, Resources r) {
+//    public RenderThread(SurfaceView view, Resources r) {
 //        ParentView = view;
 //        this.mSurfaceHolder = ParentView.getHolder();
-//        ((DrawView) view).setGameThread(this);
+//        ((DrawView) view).setRenderThread(this);
 //        res = r;
 //    }
 
@@ -86,7 +86,7 @@ public class GameThread extends Thread {
     }
 
     /**
-     * Main method of the game thread
+     * Main method of the render thread
      */
     @Override
     public void run() {
@@ -152,7 +152,7 @@ public class GameThread extends Thread {
 
         }
         cleanUp();
-        Log.v(TAG_LOG, "End of GameThread");
+        Log.v(TAG_LOG, "End of RenderThread");
     }
 
     /**

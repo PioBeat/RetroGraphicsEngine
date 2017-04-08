@@ -9,9 +9,13 @@ import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 import net.offbeatpioneer.retroengine.core.sprites.AbstractSprite;
 
 /**
- * Created by Dome on 13.01.2017.
+ * Parallax background layer to use within a state.
+ * <p>
+ * A factor can be defined to change the velocity of the translation in relation
+ * to a reference sprite.
+ *
+ * @author Dominik Grzelak
  */
-
 public class ParallaxLayer implements BackgroundLayer {
     private Bitmap background;
     private Paint paint = new Paint();
@@ -28,10 +32,10 @@ public class ParallaxLayer implements BackgroundLayer {
     private float oldPx;
     private float oldPy;
 
-    PointF referencePoint;
-    float factor;
+    private PointF referencePoint;
+    private float factor;
 
-    PointF viewportOrigin;
+    private PointF viewportOrigin;
 
     public ParallaxLayer(Bitmap br, float factor) {
         background = br;

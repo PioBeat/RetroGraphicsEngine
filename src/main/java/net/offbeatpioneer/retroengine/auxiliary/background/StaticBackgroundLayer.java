@@ -11,30 +11,34 @@ import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 import net.offbeatpioneer.retroengine.core.sprites.AbstractSprite;
 
 /**
- * Created by Dome on 13.01.2017.
+ * A static background layer to use within a state.
+ * It will fill the whole drawing surface with a bitmap.
+ *
+ * @author Domini Grzelak
  */
-
 public class StaticBackgroundLayer implements BackgroundLayer {
-    Bitmap background;
-    Bitmap backgroundResized;
-    Paint paint = new Paint();
+    private Bitmap background;
+    private Bitmap backgroundResized;
+    private Paint paint = new Paint();
 
     // Abmessungen einer Kachel für das Layer
-    int layerW;
-    int layerH;
+    private int layerW;
+    private int layerH;
 
-    PointF referencePoint;
-    float factor;
+    private PointF referencePoint;
 
-    PointF viewportOrigin;
+    private PointF viewportOrigin;
 
+    /**
+     * Default constructor
+     *
+     * @param br Bitmap for the bitmap
+     */
     public StaticBackgroundLayer(Bitmap br) {
         background = br;
 
         layerW = background.getWidth();
         layerH = background.getHeight();
-
-        this.factor = 1;
 
         scaleToFit();
     }
@@ -49,7 +53,7 @@ public class StaticBackgroundLayer implements BackgroundLayer {
 
 
     private void scaleToFit() {
-        if(background == null) {
+        if (background == null) {
             return;
         }
         float scaleWidth = ((float) RetroEngine.W) / layerW;

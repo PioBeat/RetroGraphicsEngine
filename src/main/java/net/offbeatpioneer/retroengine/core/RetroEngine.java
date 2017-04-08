@@ -3,13 +3,15 @@ package net.offbeatpioneer.retroengine.core;
 import android.content.Context;
 import android.content.res.Resources;
 
+import net.offbeatpioneer.retroengine.view.RenderThread;
+
 /**
  * Core class to get access to common resources like canvas size or an application's resources at
  * any state or in every class.
  * <p>
  * All sprite class are using this class and is important.
  * <p>
- * The {@link net.offbeatpioneer.retroengine.view.GameThread} is using the properties to control
+ * The {@link RenderThread} is using the properties to control
  * the main game loop. Values like the framerate can be set here.
  * <p>
  * This class is automatically initialized by the {@link net.offbeatpioneer.retroengine.view.DrawView} class.

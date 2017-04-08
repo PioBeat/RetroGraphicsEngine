@@ -6,9 +6,10 @@ import net.offbeatpioneer.retroengine.core.sprites.ISprite;
 import net.offbeatpioneer.retroengine.core.sprites.ISpriteAnimateable;
 
 /**
- * Created by Dome on 13.01.2017.
+ * Interface to implement a concrete background type
+ *
+ * @author Dominik Grzelak
  */
-
 public interface BackgroundLayer extends ISprite, ISpriteAnimateable {
     PointF getViewportOrigin();
 
