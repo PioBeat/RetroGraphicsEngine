@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compile 'net.offbeat-pioneer.android:retroengine:0.9'
+    compile 'net.offbeat-pioneer.android:retroengine:0.9.1'
 }
 ```
 
@@ -41,7 +41,7 @@ features
 ## <a name="documentation"></a> Documentation
 
 * The detailed documentation for the engine with step-by-step tutorials
- can be found **[here](rge.offbeat-pioneer.net)**
+ can be found at **[rge.offbeat-pioneer.net](http://rge.offbeat-pioneer.net)**
 
-* Javadoc can be found **[here]()**
+<!--* Javadoc can be found **[here]()**-->
 

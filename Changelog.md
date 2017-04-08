@@ -16,6 +16,10 @@
     * color coding for coll detection
     * FixedScrollableLayer getter for backgroundcolor at specific point (x,y)
 
+##Changed
+- Fixed spelling of class name ScrollableBackgroundLayer
+- Renamed GameThread to RenderThread
+
 # [0.9] - 2017-04-01
 
 ## Changed
