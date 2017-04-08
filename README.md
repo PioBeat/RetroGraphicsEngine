@@ -34,7 +34,7 @@ Using this library is simple. You have three options to get started:
 * Go to the [play store]() to download the demo app which shows some of the
 features
 
-* Look into the source code of examples which is available in this [repository]()
+* Look into the source code of examples which is available in this [repository](https://github.com/PioBeat/Demo-RetroGraphicsEngine)
 
 * Have a look into the [documentation](#documentation)
 
