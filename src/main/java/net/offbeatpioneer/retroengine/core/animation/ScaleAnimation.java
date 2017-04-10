@@ -46,7 +46,11 @@ public class ScaleAnimation extends AnimationSuite {
             if (!isLoop()) {
                 finished = true;
                 getListener().onAnimationEnd(this);
-                getAnimatedSprite().setScale(this.endScale);
+                if(isDoReset()) {
+                    reset();
+                } else {
+                    getAnimatedSprite().setScale(this.endScale);
+                }
                 if (getTimer() != null)
                     getTimer().cancel();
                 return;

@@ -43,11 +43,16 @@ public class RotationAnimation extends AnimationSuite {
 
         if (cnt >= anglePoints.length) {
             currentAngle = anglePoints[anglePoints.length - 1];
-            getAnimatedSprite().setAngle(0);
             cnt = 0;
+            getAnimatedSprite().setAngle(0);
             if (!isLoop()) {
                 finished = true;
                 getListener().onAnimationEnd(this);
+                if (isDoReset()) {
+                    reset();
+                } else {
+                    getAnimatedSprite().setAngle(anglePoints[anglePoints.length - 1]);
+                }
                 return;
             }
             getListener().onAnimationRepeat(this);

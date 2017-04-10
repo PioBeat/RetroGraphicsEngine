@@ -4,10 +4,12 @@ import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.util.InterpolationHelper;
 
 /**
- * Alpha value animation for sprites
+ * Alpha value animation for sprites.
+ * <p>
+ * The alpha value ranges from 0 to 255, where 255 means the sprite is fully opaque.
  *
  * @author Dominik Grzelak
- * @since 15.09.2014
+ * @since 2014-09-15
  */
 public class AlphaValueTransition extends AnimationSuite {
 
@@ -24,6 +26,14 @@ public class AlphaValueTransition extends AnimationSuite {
         super();
     }
 
+    /**
+     * Constructor to initialise the animation. Set the start- and end value of the animation.
+     * Alpha value range is between 0 and 255, where 255 means fully opaque for the sprite.
+     *
+     * @param startAlpha   Starting value for the alpha animation. Value between 0 and 255
+     * @param endAlpha     Ending value for the alpha animation. Value between 0 and 255
+     * @param milliseconds Duration of the animation
+     */
     public AlphaValueTransition(int startAlpha, int endAlpha, int milliseconds) {
         this.counter = 0;
         this.startAlpha = startAlpha; //zum Zurücksetzen
@@ -42,7 +52,11 @@ public class AlphaValueTransition extends AnimationSuite {
             if (!isLoop()) {
                 finished = true;
                 getListener().onAnimationEnd(this);
-                getAnimatedSprite().setAlphaValue(this.endAlpha);
+                if (isDoReset()) {
+                    reset();
+                } else {
+                    getAnimatedSprite().setAlphaValue(this.endAlpha);
+                }
                 if (getTimer() != null)
                     getTimer().cancel();
                 return;
@@ -62,6 +76,9 @@ public class AlphaValueTransition extends AnimationSuite {
         this.endAlpha = endAlpha;
     }
 
+    /**
+     * Reset the alpha value for the sprite while using the start value of this animation.
+     */
     @Override
     public void reset() {
         super.reset();

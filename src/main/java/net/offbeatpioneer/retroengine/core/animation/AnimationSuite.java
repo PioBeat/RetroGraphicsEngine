@@ -15,6 +15,9 @@ import java.util.TimerTask;
  * <p>
  * Subclasses define the concrete animation and overriding the {@code animationLogicTemplate()} method
  * for implementation.
+ * <p>
+ * Resetting the the animated values is off by default. Call {@code isDoReset(true)} to reset the
+ * animated properties to the initial value when the animation was started.
  *
  * @author Dominim Grzelak
  * @since 14.09.2014
@@ -74,8 +77,10 @@ public abstract class AnimationSuite {
     protected abstract void animationLogicTemplate();
 
     /**
-     * Zurücksetzen der Einstellungen, wenn {@code doReset = true} ist. Alles wird auf Ausgangszustand gesetzt,
-     * sodass die Animation nach Beendigung wieder ausgeführt werden kann.
+     * Resets the settings for the animation if {@code doReset} is {@code true}. Everthing
+     * will be reset to the initial state so that the animation can be started again.
+     * <p>
+     * The member variables {@code finished} and {@code started} will be set to {@code false}.
      */
     public void reset() {
         this.finished = false;
@@ -181,6 +186,11 @@ public abstract class AnimationSuite {
         return doReset;
     }
 
+    /**
+     * Should the animated values be reset after animation finishes?
+     *
+     * @param doReset true if animated values should be reset, otherwise false
+     */
     public void setDoReset(boolean doReset) {
         this.doReset = doReset;
     }

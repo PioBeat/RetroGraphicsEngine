@@ -58,12 +58,19 @@ public class RelativeLinearTranslation extends AnimationSuite {
     @Override
     protected void animationLogicTemplate() {
         if (counter >= N) {
-            animateResetPosition(getAnimatedSprite().getChildren());
-            getAnimatedSprite().resetPosition();
+
             counter = 0;
             if (!isLoop()) {
                 finished = true;
                 getListener().onAnimationEnd(this);
+                if (isDoReset()) {
+                    animateResetPosition(getAnimatedSprite().getChildren());
+                    getAnimatedSprite().resetPosition();
+                } else {
+                    //Do nothing because sprite will end in the last position set
+                }
+                if (getTimer() != null)
+                    getTimer().cancel();
                 return;
             }
             getListener().onAnimationRepeat(this);
@@ -79,7 +86,7 @@ public class RelativeLinearTranslation extends AnimationSuite {
         getAnimatedSprite().setPosition(currentPosition);
     }
 
-    public void animateSetPosition(List<AbstractSprite> childs, PointF position) {
+    private void animateSetPosition(List<AbstractSprite> childs, PointF position) {
         for (AbstractSprite child : childs) {
             if (child.hasChildren()) {
                 animateSetPosition(child.getChildren(), position);
@@ -90,7 +97,7 @@ public class RelativeLinearTranslation extends AnimationSuite {
         }
     }
 
-    public void animateResetPosition(List<AbstractSprite> childs) {
+    private void animateResetPosition(List<AbstractSprite> childs) {
         for (AbstractSprite child : childs) {
             if (child.hasChildren()) {
                 animateResetPosition(child.getChildren());
