@@ -25,6 +25,7 @@ public class ScaleAnimation extends AnimationSuite {
     }
 
     public ScaleAnimation(float startScale, float endScale, int milliseconds) {
+        this();
         this.startScale = startScale;
         this.endScale = endScale;
         this.milliseconds = milliseconds;

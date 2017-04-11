@@ -120,6 +120,15 @@ public abstract class State {
     }
 
     /**
+     * Get the number of sprites inserted as direct child in the {@code rootGroup}.
+     *
+     * @return Number of sprites in {@code rootGroup}
+     */
+    public int getSpriteCount() {
+        return rootGroup.getChildren().size();
+    }
+
+    /**
      * Get the background layer at index position {@code i}
      *
      * @param i Index of the background layer

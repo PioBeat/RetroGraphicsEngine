@@ -4,26 +4,22 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
 import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
-import net.offbeatpioneer.retroengine.core.eventhandling.EmptyAction;
-import net.offbeatpioneer.retroengine.core.eventhandling.IActionEventCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * AbstractSprite base class.
+ * {@link AbstractSprite} is the base class for sprites
  *
  * @author Dominik Grzelak
- * @since 14.01.2017.
+ * @since 2017-01-14
  */
-
 public abstract class AbstractSprite implements ISprite {
     AbstractSprite parentSprite;
     final double bufferZoneFactor = 0.2;
@@ -238,9 +234,9 @@ public abstract class AbstractSprite implements ISprite {
     }
 
     /**
-     * Ausmaße des Sprites zurückgeben als Rechteck.
+     * Return the extent of this sprite as rectangle
      *
-     * @return Ausmaße des Sprites von Typ {@link Rect}
+     * @return Extent of the sprite
      */
     public RectF getRect() {
         return new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
@@ -275,73 +271,59 @@ public abstract class AbstractSprite implements ISprite {
     }
 
     /**
-     * Kollisionsabfrage des Sprites mit einem Punkt.
+     * Check for collision with a point.
      *
-     * @param p Punkt vom Typ {@link Point} der auf Kollision innerhalb des
-     *          Sprites geprüft werden soll.
-     * @return Wahrheitswert, <b>true</b> wenn sich der Punkt innerhalb des
-     * Sprites befindet, andernfalls <b>false</b>
+     * @param p Point of type {@link PointF} to check if it's inside the sprites extent
+     * @return true if point is inside the sprite, otherwise false
      */
     public boolean checkColWithPoint(PointF p) {
         RectF rect = this.getRect();
-        if (rect.contains(p.x, p.y)) {
-            return true;
-        }
-        return false;
+        return rect.contains(p.x, p.y);
     }
 
     /**
-     * Kollisionsabfrage des Sprites mit einem anderem Sprite, ob diese sich
-     * schneiden.
+     * Check for collision.
+     * <p>
+     * Check if this sprites intersects with another sprite.
      *
-     * @param r Ausmaße des Sprite muss als {@link Rect} übergeben werden.
-     * @return Wahrheitswert: <b>true</b> wenn sich beide Sprites
-     * schneiden/berühren, andernfalls <b>false</b>
+     * @param r Extent of another sprite a {@link RectF}
+     * @return true if this sprites intersects with a rectangle, otherwise false
      */
     public boolean intersectWithRect(RectF r) {
         RectF rect = this.getRect();
-        if (rect.intersect(r)) {
-            return true;
-        }
-        return false;
+        return rect.intersect(r);
     }
 
     /**
-     * Kollisionsabfrage des Sprites mit einem anderem Sprite, ob sich dieser
-     * vollst�ndig in einem anderen befindet.
+     * Check for collision.
+     * <p>
+     * Determine if a rectangle is fully contained in the sprites extent.
      *
-     * @param r Ausma�e des Sprite muss als {@link Rect} �bergeben weden.
-     * @return Wahrheitswert: <b>true</b> wenn sich der �bergebene Sprite
-     * innerhalb des anderen befindet, andernfalls <b>false</b>
+     * @param r Extent of another sprite as {@link RectF}
+     * @return true if rectangle is contained in the sprites extent, otherwise false
      */
     public boolean ContainsRect(RectF r) {
         RectF rect = this.getRect();
-        if (r.contains(rect)) {
-            return true;
-        }
-        return false;
+        return r.contains(rect);
     }
 
     /**
-     * Position des Sprite setzen.
+     * Set position of the sprite. You have to add the viewport origin by yourself
+     * if the canvas is translated to set the correct position.
      *
-     * @param p Positionsangabe vom Typ {@link Point}
+     * @param p position vector
      */
     public void setPosition(PointF p) {
         if (oldPosition == null) {
             oldPosition = p;
         }
-        //TODO crashed bei sidescroller background (FixedBackground) evtl. unnötig
-//        if (getViewportOrigin() != null) {
-//            p = new PointF(getViewportOrigin().x + p.x, getViewportOrigin().y + p.y);
-//        }
         this.position = p;
     }
 
     /**
-     * Positionsabfrage
+     * Position of the sprite
      *
-     * @return Position vom Typ {@link Point}
+     * @return position of type {@link PointF}
      */
     public PointF getPosition() {
 //        if(getViewportOrigin() != null) {
@@ -351,37 +333,41 @@ public abstract class AbstractSprite implements ISprite {
     }
 
     /**
-     * �berpr�ft, ob das Sprite noch "aktiv" ist, d.h. ob es entfernt werden
-     * kann.
+     * Check if sprite is <i>active</i>, that means that the sprite will be drawn by the
+     * {@link net.offbeatpioneer.retroengine.core.states.State} class.
+     * <p>
+     * This property is evaluated in the {@link net.offbeatpioneer.retroengine.core.states.State} class
+     * when sprites are checked to be removed from the render cycle.
      *
-     * @return
+     * @return true, if sprite is active, otherwise false.
      */
     public boolean isActive() {
         return active;
     }
 
     /**
-     * Setze den Aktiv-Status des Sprites.
+     * Set the status of a sprite whether it should be removed from the {@link net.offbeatpioneer.retroengine.core.states.State}
+     * class or not.
      *
-     * @param active Wahrheitswert, <b>true</b> f�r aktiv.
+     * @param active true, if sprite should be drawn, otherwise false if it should be removed
      */
     public void setActive(boolean active) {
         this.active = active;
     }
 
     /**
-     * Setze die Geschwindigkeit des Sprites, mit der es sich in x,y-Richtung bewegen soll.
+     * Set the velocity of a sprite in the (x,y)-direction.
      *
-     * @param sxy Geschwindigkeit als Vektor f�r x,y-Richtung vom Typ {@link Point}
+     * @param sxy velocity as vector
      */
     public void setSpeed(PointF sxy) {
         speed = sxy;
     }
 
     /**
-     * Gibt den aktuellen Geschwindigkeitsvektor des Sprites zur�ck.
+     * Get the current velocity vecotor of the sprite in (x,y)-direction
      *
-     * @return Geschwindigkeit als Vektor f�r x,y-Richtung vom Typ {@link Point}
+     * @return velocity vector in the (x,y)-direction
      */
     public PointF getSpeed() {
         return speed;
@@ -396,18 +382,18 @@ public abstract class AbstractSprite implements ISprite {
     }
 
     /**
-     * Gib aktuelle Rotation des Sprite zur�ck.
+     * Get the current rotation angle of the sprite in degrees
      *
-     * @return Rotationswinkel des Sprites.
+     * @return rotation angle of sprite in degrees
      */
     public float getAngle() {
         return angle;
     }
 
     /**
-     * Setze den Rotationswinkel des Sprites.
+     * Set the rotation angle of the sprite in degrees
      *
-     * @param angle Rotationswinkel von 0 bis 360.
+     * @param angle rotation angle from 0° to n
      */
     public void setAngle(float angle) {
         this.angle = angle;

@@ -35,6 +35,7 @@ public class AlphaValueTransition extends AnimationSuite {
      * @param milliseconds Duration of the animation
      */
     public AlphaValueTransition(int startAlpha, int endAlpha, int milliseconds) {
+        this();
         this.counter = 0;
         this.startAlpha = startAlpha; //zum Zurücksetzen
         this.endAlpha = endAlpha;

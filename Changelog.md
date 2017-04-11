@@ -11,10 +11,24 @@
 - Position of TextElement along sprite: TOPRIGHT, CENTER, TOP, CENTERBOTTOM, etc.
 
 - Quadtree to hold sprite elements in a State
-- AnimationSuite: add delay for animation
+- AnimationSuite: handle delay for animation internally
+- AnimationSuite: set interpolation method (currently only linear interpolation is used)
 - Background color map for ScrollableBackgrounds
     * color coding for coll detection
     * FixedScrollableLayer getter for backgroundcolor at specific point (x,y)
+
+## Added
+- more comments
+
+## Changed
+- RotationAnimation with new argument angleStart in constructor. The initial
+angle value is now taken into account for the rotation so that sudden rotational changes disappear
+
+
+## Bugfix
+- Animation reset logic is now working correctly. If doReset is set to true the animated
+values will be reset to the initial value when the animation was started. Default
+is correctly set to false now
 
 # [0.9.1] - 2017-04-08
 

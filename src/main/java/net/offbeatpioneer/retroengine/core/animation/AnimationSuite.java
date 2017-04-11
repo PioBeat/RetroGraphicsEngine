@@ -53,7 +53,7 @@ public abstract class AnimationSuite {
         loop = false;
         started = false;
         finished = false;
-        doReset = true;
+        doReset = false;
         setStopAfterMilliseconds(-1);
     }
 
