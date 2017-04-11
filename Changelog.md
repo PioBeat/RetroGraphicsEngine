@@ -18,7 +18,10 @@
     * FixedScrollableLayer getter for backgroundcolor at specific point (x,y)
 
 ## Added
-- more comments
+- More comments
+- New conversion functions in MathUtils
+    * convertDpToPixel
+    * convertPixelToDp
 
 ## Changed
 - RotationAnimation with new argument angleStart in constructor. The initial

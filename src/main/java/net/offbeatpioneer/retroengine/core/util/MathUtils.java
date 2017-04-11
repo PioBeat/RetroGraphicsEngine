@@ -1,13 +1,18 @@
 package net.offbeatpioneer.retroengine.core.util;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 
 
 /**
- * Helper class for mathematical and statistical calculations
+ * Helper class for mathematical and statistical calculations as well as conversion
+ * functions.
  *
  * @author Dominik Grzelak
  */
@@ -61,4 +66,40 @@ public class MathUtils {
     public static double getRad(float grad) {
         return (Math.PI / 180.0) * grad;
     }
+
+    /**
+     * Conversion of pixels to density independent pixels.
+     * <p>
+     * Uses the density value in {@link RetroEngine} for the conversion. If not initialised (density equals zero)
+     * then the system resource is acquired with {@code Resources.getSystem().getDisplayMetrics().densityDpi}
+     * to get the density dpi value.
+     *
+     * @param pixel a pixel value
+     * @return value in dp
+     */
+    public static float convertPixelToDp(float pixel) {
+        float density = RetroEngine.DENSITY == 0f ?
+                Resources.getSystem().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT :
+                RetroEngine.DENSITY;
+        float dp = pixel / density;
+        return Math.round(dp);
+    }
+
+    /**
+     * Conversion of pixels to density independent pixels.
+     * <p>
+     * Uses the density value in {@link RetroEngine} for the conversion. If not initialised (density equals zero)
+     * then the system resource is acquired with {@code Resources.getSystem().getDisplayMetrics().densityDpi}
+     * to get the density dpi value.
+     *
+     * @param dp a dp value
+     * @return value in pixels
+     */
+    public static float convertDpToPixel(float dp) {
+        float density = RetroEngine.DENSITY == 0f ?
+                Resources.getSystem().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT :
+                RetroEngine.DENSITY;
+        return Math.round(dp * density);
+    }
+
 }
