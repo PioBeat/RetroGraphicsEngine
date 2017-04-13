@@ -60,20 +60,53 @@ public class GamestateManager {
 
     }
 
+    /**
+     * Adds a new state to the managed list of {@link GamestateManager}. If State
+     * is from the same class then it will not be added.
+     *
+     * @param state state to add
+     */
     public void addGamestate(State state) {
         synchronized (gamestateList) {
-            gamestateList.add(state);
+            State tmp = getStateByClass(state.getClass());
+            if (tmp == null)
+                gamestateList.add(state);
+            else {
+                gamestateList.remove(tmp);
+                gamestateList.add(state);
+            }
         }
     }
 
+    /**
+     * Adds a new state to the managed list of {@link GamestateManager}. If State
+     * is from the same class then it will not be added.
+     * <p>
+     * If the active status is set to true all other states active status will be set
+     * to false. Otherwise use {@code addGamestate()}.
+     *
+     * @param state  state to add
+     * @param active active status for the state, preferably true
+     */
     public void addGameState(State state, boolean active) {
         synchronized (gamestateList) {
-            gamestateList.add(state);
-
+            this.addGamestate(state);
 
             if (active) {
+                setDeactivateAllStates();
                 state.setActive(true);
                 state.init();
+            }
+        }
+    }
+
+    /**
+     * Sets the active status to false for all added states in {@code gamestateList}.
+     */
+    private void setDeactivateAllStates() {
+        synchronized (gamestateList) {
+            for (State state : gamestateList) {
+                state.setActive(false);
             }
         }
     }
