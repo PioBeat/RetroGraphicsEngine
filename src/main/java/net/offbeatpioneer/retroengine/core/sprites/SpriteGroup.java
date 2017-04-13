@@ -1,6 +1,9 @@
 package net.offbeatpioneer.retroengine.core.sprites;
 
 import android.graphics.Canvas;
+import android.graphics.PointF;
+
+import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,8 @@ public class SpriteGroup extends AbstractSprite {
 
     public SpriteGroup() {
         active = true;
+        position = new PointF(0, 0);
+        speed = new PointF(0, 0);
     }
 
     @Override
@@ -72,13 +77,19 @@ public class SpriteGroup extends AbstractSprite {
     public void updateLogic() {
         List<AbstractSprite> childs = getChildren();
         synchronized (childs) {
+//            super.updateLogic();
             update(childs);
         }
     }
 
+    /**
+     * A group calls the base method {@code updateLogic} to update the animation logic if any.
+     */
     @Override
     public void updateLogicTemplate() {
-
+        for (AnimationSuite animation : getAnimations()) {
+            animation.animationLogic();
+        }
     }
 
     /**
@@ -88,16 +99,18 @@ public class SpriteGroup extends AbstractSprite {
      */
     @Override
     public void onAction(Object parameter) {
-        for(AbstractSprite each: getChildren()) {
+        for (AbstractSprite each : getChildren()) {
             each.onAction(parameter);
         }
     }
 
-    public synchronized void update(List<AbstractSprite> childs) {
+    protected synchronized void update(List<AbstractSprite> childs) {
         for (int i = childs.size() - 1; i >= 0; i--) {
             AbstractSprite each = childs.get(i);
-            if (each.hasChildren()) {
+            if (each.hasChildren() && each.isActive()) {
+                each.updateLogicTemplate();
                 update(each.getChildren());
+//                this.updateLogic();
             } else {
                 if (each.isActive()) {
                     each.updateLogic();

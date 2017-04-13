@@ -1,6 +1,6 @@
 # [UNRELEASED]
 ## ToDo
-- function to load states from json
+- Function to load states from json
 - Width/Height in RetroGraphicsEngine should represent canvas width/heigth and not screen metricss
 - Generic Value Animator
     - like android valueAnimator
@@ -18,14 +18,17 @@
     * FixedScrollableLayer getter for backgroundcolor at specific point (x,y)
 
 ## Added
-- More comments
 - New conversion functions in MathUtils
     * convertDpToPixel
     * convertPixelToDp
+- More comments in source code
 
 ## Changed
 - RotationAnimation with new argument angleStart in constructor. The initial
 angle value is now taken into account for the rotation so that sudden rotational changes disappear
+- RelativeLinearTranslation makes the distinction between SpriteGroup and the rest so
+that the animation logic is only applied to its children and not to its properties.
+This fixes the problem if this animation is added to a SpriteGroup class.
 
 
 ## Bugfix
@@ -33,7 +36,7 @@ angle value is now taken into account for the rotation so that sudden rotational
 values will be reset to the initial value when the animation was started. Default
 is correctly set to false now
 - the scale member variable of the AnimatedSprite class isn't reset anymore
-to 1.0f when calling the init method
+to 1.0f when calling the init method. A sprite can have an initial scale value when it's created
 - TextElement now delegates correctly updateLogic() method of decorated sprite
 (if sprite is animated it will play its animation now properly)
 

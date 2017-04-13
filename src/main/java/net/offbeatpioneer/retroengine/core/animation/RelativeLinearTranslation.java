@@ -4,6 +4,7 @@ import android.graphics.PointF;
 
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.sprites.AbstractSprite;
+import net.offbeatpioneer.retroengine.core.sprites.SpriteGroup;
 import net.offbeatpioneer.retroengine.core.util.InterpolationHelper;
 
 import java.util.List;
@@ -72,8 +73,14 @@ public class RelativeLinearTranslation extends AnimationSuite {
                 if (getTimer() != null)
                     getTimer().cancel();
                 return;
+            } else {
+                if (getAnimatedSprite() instanceof SpriteGroup) {
+                    animateResetPosition(getAnimatedSprite().getChildren());
+                } else {
+                    getAnimatedSprite().resetPosition();
+                }
+                getListener().onAnimationRepeat(this);
             }
-            getListener().onAnimationRepeat(this);
         }
 
         PointF start = new PointF(getAnimatedSprite().getPosition().x, getAnimatedSprite().getPosition().y);
@@ -82,8 +89,11 @@ public class RelativeLinearTranslation extends AnimationSuite {
         float yValue = InterpolationHelper.linearPointBetween(start.y, pp.y, counter, N);
         currentPosition = new PointF(xValue, yValue);
         counter++;
-        animateSetPosition(getAnimatedSprite().getChildren(), currentPosition);
-        getAnimatedSprite().setPosition(currentPosition);
+        if (getAnimatedSprite() instanceof SpriteGroup) {
+            animateSetPosition(getAnimatedSprite().getChildren(), currentPosition);
+        } else {
+            getAnimatedSprite().setPosition(currentPosition);
+        }
     }
 
     private void animateSetPosition(List<AbstractSprite> childs, PointF position) {
@@ -92,8 +102,8 @@ public class RelativeLinearTranslation extends AnimationSuite {
                 animateSetPosition(child.getChildren(), position);
 
             }
-//            child.translate(position);
-            child.setPosition(new PointF(position.x, position.y));
+            child.translate(position);
+//            child.setPosition(new PointF(position.x, position.y));
         }
     }
 
