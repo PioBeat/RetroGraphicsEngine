@@ -34,6 +34,8 @@ values will be reset to the initial value when the animation was started. Defaul
 is correctly set to false now
 - the scale member variable of the AnimatedSprite class isn't reset anymore
 to 1.0f when calling the init method
+- TextElement now delegates correctly updateLogic() method of decorated sprite
+(if sprite is animated it will play its animation now properly)
 
 # [0.9.1] - 2017-04-08
 

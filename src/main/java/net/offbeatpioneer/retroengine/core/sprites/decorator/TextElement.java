@@ -139,6 +139,14 @@ public class TextElement extends Decorator {
         this.init(tempBmp, getSprite().getPosition(), new PointF(0, 0));
     }
 
+
+    @Override
+    public void updateLogic() {
+        getSprite().updateLogic();
+
+        super.updateLogic();
+    }
+
     @Override
     public void draw(Canvas canvas, long currentTime) {
         getSprite().draw(canvas, currentTime);
