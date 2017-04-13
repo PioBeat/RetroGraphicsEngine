@@ -157,11 +157,16 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
         }
         Class<?> currentStateTemp = renderThread.getCurrentState();
 
+        //try to get the current state
         if (GamestateManager.getInstance().getGamestates().size() == 1) {
             net.offbeatpioneer.retroengine.core.states.State state = GamestateManager.getInstance().getGamestates().get(0);
             currentStateTemp = state.getClass();
         } else if (currentStateTemp == null && GamestateManager.getInstance().getGamestates().size() > 1 && GamestateManager.getInstance().getActiveGameState() != null) {
             currentStateTemp = GamestateManager.getInstance().getActiveGameState().getClass();
+        }
+
+        if(currentStateTemp != null && GamestateManager.getInstance().getStateByClass(currentStateTemp) == null) {
+            throw new IllegalStateException("State is not added to the GamestateManager");
         }
 
         if (currentStateTemp != null && GamestateManager.getInstance().getStateByClass(currentStateTemp).isInitAsync()) {
