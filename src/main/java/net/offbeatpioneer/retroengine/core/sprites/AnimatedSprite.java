@@ -34,12 +34,13 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         viewportOrigin = new PointF(0, 0);
         frameUpdate = new AnimatedFrameUpdate(this);
         scale = 1f;
+        position = new PointF(0, 0);
     }
 
 
     public AnimatedSprite initAsAnimation(Bitmap bitmap, int height, int width, int fps, int frameCount, PointF pos, boolean loop) {
         oldPosition = null;
-        this.scale = 1f;
+
         if (bitmap != null) {
             this.texture = bitmap;
             this.backupTexture = bitmap;
@@ -79,6 +80,9 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
 
     /**
      * Basic initialisation of a sprite object. Sprite is not animated and represents a static graphic.
+     * <p>
+     * If sprite shouldn't move you can set the speed vector to (0,0) or call the
+     * alternative init-method {@code init(Bitmap texture, PointF position)}.
      *
      * @param tex Texture of the sprite
      * @param pos Position of the sprite
@@ -98,7 +102,6 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
             frameH = 0;
         }
 
-        this.scale = 1f;
         this.frameCnt = 1;
         this.frameStep = 1;
         this.speed = spd;

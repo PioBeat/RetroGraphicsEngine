@@ -114,6 +114,10 @@ public abstract class AbstractSprite implements ISprite {
         transformationMatrix.postRotate(getAngle(), pivotPoint.x, pivotPoint.y);
         transformationMatrix.preTranslate(getPosition().x, getPosition().y);
 
+        paint.setAntiAlias(true);
+        paint.setFilterBitmap(false);
+        paint.setDither(false);
+
         canvas.drawBitmap(getTexture(), transformationMatrix, paint);
     }
 

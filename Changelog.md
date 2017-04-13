@@ -32,6 +32,8 @@ angle value is now taken into account for the rotation so that sudden rotational
 - Animation reset logic is now working correctly. If doReset is set to true the animated
 values will be reset to the initial value when the animation was started. Default
 is correctly set to false now
+- the scale member variable of the AnimatedSprite class isn't reset anymore
+to 1.0f when calling the init method
 
 # [0.9.1] - 2017-04-08
 
