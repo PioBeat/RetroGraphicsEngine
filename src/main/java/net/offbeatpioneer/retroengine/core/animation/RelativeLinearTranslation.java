@@ -85,14 +85,16 @@ public class RelativeLinearTranslation extends AnimationSuite {
 
         PointF start = new PointF(getAnimatedSprite().getPosition().x, getAnimatedSprite().getPosition().y);
         PointF pp = new PointF(start.x + amountX, start.y + amountY);
-        float xValue = InterpolationHelper.linearPointBetween(start.x, pp.x, counter, N);
-        float yValue = InterpolationHelper.linearPointBetween(start.y, pp.y, counter, N);
+//        float xValue = InterpolationHelper.linearPointBetween(start.x, pp.x, counter, N);
+//        float yValue = InterpolationHelper.linearPointBetween(start.y, pp.y, counter, N);
+        float xValue = values[counter].x;
+        float yValue = values[counter].y;
         currentPosition = new PointF(xValue, yValue);
         counter++;
         if (getAnimatedSprite() instanceof SpriteGroup) {
             animateSetPosition(getAnimatedSprite().getChildren(), currentPosition);
         } else {
-            getAnimatedSprite().setPosition(currentPosition);
+            getAnimatedSprite().translate(currentPosition);
         }
     }
 
