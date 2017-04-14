@@ -128,6 +128,10 @@ public abstract class State {
         return rootGroup.getChildren().size();
     }
 
+    private SpriteGroup getRootGroup() {
+        return this.rootGroup;
+    }
+
     /**
      * Get the background layer at index position {@code i}
      *
