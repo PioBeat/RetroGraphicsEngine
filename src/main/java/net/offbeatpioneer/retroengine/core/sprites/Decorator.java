@@ -31,10 +31,10 @@ public abstract class Decorator extends AnimatedSprite {
         return sprite.hasChildren();
     }
 
-    @Override
-    public List<AbstractSprite> getChildren() {
-        return sprite.getChildren();
-    }
+//    @Override
+//    public List<AbstractSprite> getChildren() {
+//        return sprite.getChildren();
+//    }
 
     @Override
     public void resetPosition() {

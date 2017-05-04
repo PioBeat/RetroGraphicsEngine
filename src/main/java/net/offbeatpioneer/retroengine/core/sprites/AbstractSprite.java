@@ -126,9 +126,9 @@ public abstract class AbstractSprite implements ISprite {
         return false;
     }
 
-    public List<AbstractSprite> getChildren() {
-        return new ArrayList<>();
-    }
+//    public Object getChildren() {
+//        return new ArrayList<>();
+//    }
 
     public void translate(PointF p) {
         if (oldPosition == null) {

@@ -2,11 +2,14 @@ package net.offbeatpioneer.retroengine.core.animation;
 
 import android.graphics.PointF;
 
+import net.offbeatpioneer.retroengine.auxiliary.struct.quadtree.QuadTree;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.sprites.AbstractSprite;
-import net.offbeatpioneer.retroengine.core.sprites.SpriteGroup;
-import net.offbeatpioneer.retroengine.core.util.InterpolationHelper;
+import net.offbeatpioneer.retroengine.core.sprites.ISpriteGroup;
+import net.offbeatpioneer.retroengine.core.sprites.SpriteGroupList;
+import net.offbeatpioneer.retroengine.core.sprites.SpriteQuadtreeGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -65,7 +68,9 @@ public class RelativeLinearTranslation extends AnimationSuite {
                 finished = true;
                 getListener().onAnimationEnd(this);
                 if (isDoReset()) {
-                    animateResetPosition(getAnimatedSprite().getChildren());
+                    if (getAnimatedSprite().hasChildren()) {
+                        animateResetPosition(((ISpriteGroup) getAnimatedSprite()));
+                    }
                     getAnimatedSprite().resetPosition();
                 } else {
                     //Do nothing because sprite will end in the last position set
@@ -74,8 +79,8 @@ public class RelativeLinearTranslation extends AnimationSuite {
                     getTimer().cancel();
                 return;
             } else {
-                if (getAnimatedSprite() instanceof SpriteGroup) {
-                    animateResetPosition(getAnimatedSprite().getChildren());
+                if (getAnimatedSprite() instanceof ISpriteGroup) {
+                    animateResetPosition((ISpriteGroup) getAnimatedSprite());
                 } else {
                     getAnimatedSprite().resetPosition();
                 }
@@ -91,17 +96,18 @@ public class RelativeLinearTranslation extends AnimationSuite {
         float yValue = values[counter].y;
         currentPosition = new PointF(xValue, yValue);
         counter++;
-        if (getAnimatedSprite() instanceof SpriteGroup) {
-            animateSetPosition(getAnimatedSprite().getChildren(), currentPosition);
+        if (getAnimatedSprite() instanceof ISpriteGroup) {
+            animateSetPosition((ISpriteGroup) getAnimatedSprite(), currentPosition);
         } else {
             getAnimatedSprite().translate(currentPosition);
         }
     }
 
-    private void animateSetPosition(List<AbstractSprite> childs, PointF position) {
+    private void animateSetPosition(ISpriteGroup group, PointF position) {
+        List<AbstractSprite> childs = getListFromGroup(group);
         for (AbstractSprite child : childs) {
             if (child.hasChildren()) {
-                animateSetPosition(child.getChildren(), position);
+                animateSetPosition((ISpriteGroup) child, position);
 
             }
             child.translate(position);
@@ -109,14 +115,28 @@ public class RelativeLinearTranslation extends AnimationSuite {
         }
     }
 
-    private void animateResetPosition(List<AbstractSprite> childs) {
+    private void animateResetPosition(ISpriteGroup group) {
+        List<AbstractSprite> childs = getListFromGroup(group);
+
         for (AbstractSprite child : childs) {
             if (child.hasChildren()) {
-                animateResetPosition(child.getChildren());
-
+                animateResetPosition(((ISpriteGroup) child));
             }
             child.resetPosition();
         }
+    }
+
+    public List<AbstractSprite> getListFromGroup(ISpriteGroup group) {
+        List<AbstractSprite> childs = new ArrayList<>();
+        if (group instanceof SpriteGroupList) {
+            childs = ((SpriteGroupList) group).getChildren();
+        } else if (group instanceof SpriteQuadtreeGroup) {
+            List<QuadTree<AbstractSprite>.CoordHolder> items = ((SpriteQuadtreeGroup) group).getChildren().root.items;
+            for (QuadTree<AbstractSprite>.CoordHolder each : items) {
+                childs.add(each.o);
+            }
+        }
+        return childs;
     }
 
     public PointF getStart() {

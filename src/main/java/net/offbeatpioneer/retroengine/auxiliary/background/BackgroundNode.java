@@ -18,18 +18,15 @@ import java.util.List;
  */
 public class BackgroundNode {
 
-    private PointF referencePoint;
-    private RectF referenceRect;
+    private PointF referencePoint = new PointF();
+    private RectF referenceRect = new RectF();
     private List<BackgroundLayer> backgrounds = new ArrayList<>();
-    //    Paint paint = new Paint();
-//    Canvas c = new Canvas();
     private int width;
     private int height;
     private float xt = 0, yt = 0;
     private PointF viewportOrigin = new PointF(-xt, -yt);
-    //    Bitmap tempBmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-    private int offsetX = 0;
-    private int offsetY = 0;
+    public int offsetX = 0;
+    public int offsetY = 0;
 
     public BackgroundNode() {
     }
@@ -85,17 +82,15 @@ public class BackgroundNode {
 
 
     private void initTranslation() {
-//        int offsetX = (int) (width/2 - referencePoint.x);
-//        int offsetY = (int) (height/2 - referencePoint.y);
         xt = width / 2 + offsetX - referenceRect.width() / 2 - referencePoint.x;
         yt = height / 2 + offsetY - referenceRect.height() / 2 - referencePoint.y;
         setViewportOrigin(new PointF(-xt, -yt));
     }
 
     /**
-     * Top-Left corner of the canvas (Screen)
+     * Top-Left corner of the canvas (drawing surface)
      *
-     * @return
+     * @return viewport origin, the top-left corner, of the canvas
      */
     public PointF getViewportOrigin() {
 //        return new PointF(viewportOrigin.x - offsetX, viewportOrigin.y - offsetY);
@@ -106,6 +101,11 @@ public class BackgroundNode {
         this.viewportOrigin = viewportOrigin;
     }
 
+    /**
+     * Add a background layer to the background node
+     *
+     * @param layer background
+     */
     public void addLayer(BackgroundLayer layer) {
         this.backgrounds.add(layer);
     }
@@ -129,7 +129,10 @@ public class BackgroundNode {
 
     /**
      * Set the reference point necessary for some special background layers.
-     * Will be transfered to every layer in the list by the {@code scrollWorld} method.
+     * Will be transferred to every layer in the list by the {@code scrollWorld} method.
+     * <p>
+     * Normally this method will be called from the {@code setReferenceSprite()} method within
+     * the {@link net.offbeatpioneer.retroengine.core.states.State} class.
      *
      * @param referencePoint Reference point e.g. of a sprite
      */

@@ -3,6 +3,7 @@ package net.offbeatpioneer.retroengine.core.states;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -13,7 +14,9 @@ import net.offbeatpioneer.retroengine.auxiliary.background.BackgroundNode;
 import net.offbeatpioneer.retroengine.core.GamestateManager;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.sprites.AbstractSprite;
-import net.offbeatpioneer.retroengine.core.sprites.SpriteGroup;
+import net.offbeatpioneer.retroengine.core.sprites.ISpriteGroup;
+import net.offbeatpioneer.retroengine.core.sprites.SpriteGroupList;
+import net.offbeatpioneer.retroengine.core.sprites.SpriteQuadtreeGroup;
 import net.offbeatpioneer.retroengine.view.DrawView;
 
 import java.util.List;
@@ -53,7 +56,7 @@ public abstract class State {
 
     public boolean initAsync = false;
 
-    private SpriteGroup rootGroup;
+    private ISpriteGroup rootGroup;
     private BackgroundNode backgroundNode;
     private boolean scrollWorld = true;
 
@@ -67,9 +70,14 @@ public abstract class State {
     protected GamestateManager manager = GamestateManager.getInstance();
 
     public State() {
-        rootGroup = new SpriteGroup();
+        this(new SpriteGroupList());
+    }
+
+    protected State(ISpriteGroup rootGroup) {
+        this.rootGroup = rootGroup;
         backgroundNode = BackgroundNode.Builder.create();
         setFinished(false);
+//        setReferenceSpriteOffsets(-RetroEngine.W / 2, -RetroEngine.H / 2);
     }
 
     /**
@@ -102,6 +110,20 @@ public abstract class State {
     }
 
     /**
+     * Set the rectangle that defines the search area of the drawing surface. Only necessary when
+     * the {@link SpriteQuadtreeGroup} is used as root node of this {@link State}.
+     * The update and draw methods of {@link SpriteQuadtreeGroup} will find all points that appear
+     * within this range and apply those methods only for the found sprites.
+     *
+     * @param rect the rectangle where to search for sprites on the drawing surface
+     */
+    public void setQueryRange(RectF rect) {
+        if (rootGroup instanceof SpriteQuadtreeGroup) {
+            ((SpriteQuadtreeGroup) rootGroup).setQueryRange(rect);
+        }
+    }
+
+    /**
      * Has to be set only if scrolling background are used in a state like {@link net.offbeatpioneer.retroengine.auxiliary.background.ParallaxLayer}
      * Call the method once in the {@code init()} method and in the {@code updateLogic} method.
      *
@@ -115,6 +137,26 @@ public abstract class State {
         backgroundNode.setWidth(RetroEngine.W);
     }
 
+    /**
+     * Set the offset of the position of the reference sprite so that the reference sprite will
+     * not be drawn in the center of the screen. Normally it will be positioned in the center
+     * if a sprite is set as reference sprite. This is only necessary if: <br>
+     * you have a moving / parallax background <b>AND</b> if you don't want the "main" actor
+     * (reference sprite) in the center of the screen.
+     * <p>
+     * Example: To position a reference sprite at the top-left corner you have to call the method
+     * like this: {@code setReferenceSpriteOffsets(-RetroEngine.W / 2, -RetroEngine.H / 2);}
+     * <p>
+     * You need to call this method only once, e.g. in the {@code init()} method of a {@link State}
+     *
+     * @param offsetX relative offset for the "x-axis"
+     * @param offsetY relative offset for the "y-axis"
+     */
+    public void setReferenceSpriteOffsets(int offsetX, int offsetY) {
+        backgroundNode.offsetX = offsetX;
+        backgroundNode.offsetY = offsetY;
+    }
+
     public void drawBackground(Canvas canvas) {
         backgroundNode.scrollWorld(canvas, scrollWorld);
     }
@@ -125,10 +167,10 @@ public abstract class State {
      * @return Number of sprites in {@code rootGroup}
      */
     public int getSpriteCount() {
-        return rootGroup.getChildren().size();
+        return rootGroup.getChildrenSize();
     }
 
-    private SpriteGroup getRootGroup() {
+    private ISpriteGroup getRootGroup() {
         return this.rootGroup;
     }
 
@@ -182,9 +224,10 @@ public abstract class State {
     }
 
     /**
-     * Initialisierung des Spieltzustandes. Es empfiehlt sich hier nur Initialisierungen vorzunehmen, die
-     * nach jedem erneuten Start des gleichen Spielzustandes wieder auf die Ausgangsposition gebracht werden müssen.
-     * Nicht empfehlenswert sind daher das Laden von Bild- und Soundressourcen.
+     * Initialise method of a state. It will be called from the {@link GamestateManager}.
+     * It is recommended to only do initialisation of things that should and can be repeated every time
+     * a state is restarted or switched.
+     * It's not recommended to load resources like images or such alike.
      */
     public abstract void init();
 
