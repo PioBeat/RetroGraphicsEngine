@@ -15,7 +15,7 @@ import net.offbeatpioneer.retroengine.core.GamestateManager;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.sprites.AbstractSprite;
 import net.offbeatpioneer.retroengine.core.sprites.ISpriteGroup;
-import net.offbeatpioneer.retroengine.core.sprites.SpriteGroupList;
+import net.offbeatpioneer.retroengine.core.sprites.SpriteListGroup;
 import net.offbeatpioneer.retroengine.core.sprites.SpriteQuadtreeGroup;
 import net.offbeatpioneer.retroengine.view.DrawView;
 
@@ -70,7 +70,7 @@ public abstract class State {
     protected GamestateManager manager = GamestateManager.getInstance();
 
     public State() {
-        this(new SpriteGroupList());
+        this(new SpriteListGroup());
     }
 
     protected State(ISpriteGroup rootGroup) {

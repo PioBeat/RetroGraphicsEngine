@@ -20,10 +20,10 @@ import java.util.List;
  * @author Dominik Grzelak
  * @since 26.01.2015
  */
-public class SpriteGroupList extends AbstractSprite implements ISpriteGroup {
+public class SpriteListGroup extends AbstractSprite implements ISpriteGroup {
     private List<AbstractSprite> children = new ArrayList<>();
 
-    public SpriteGroupList() {
+    public SpriteListGroup() {
         active = true;
         position = new PointF(0, 0);
         speed = new PointF(0, 0);
@@ -40,7 +40,7 @@ public class SpriteGroupList extends AbstractSprite implements ISpriteGroup {
     public synchronized void draw(List<AbstractSprite> childs, Canvas canvas, long currentTime) {
         for (AbstractSprite child : childs) {
             if (child.hasChildren()) {
-                draw(((SpriteGroupList) child).getChildren(), canvas, currentTime); //safe case because only groups have children
+                draw(((SpriteListGroup) child).getChildren(), canvas, currentTime); //safe case because only groups have children
             } else {
                 child.draw(canvas, currentTime);
             }
@@ -60,7 +60,7 @@ public class SpriteGroupList extends AbstractSprite implements ISpriteGroup {
                 if (!children.get(i).isActive()) {
                     children.remove(i);
                 } else {
-                    removeInActive(((SpriteGroupList) children.get(i)).getChildren()); //safe case because only groups have children
+                    removeInActive(((SpriteListGroup) children.get(i)).getChildren()); //safe case because only groups have children
                 }
             } else {
                 AbstractSprite each = children.get(i);
@@ -107,7 +107,7 @@ public class SpriteGroupList extends AbstractSprite implements ISpriteGroup {
             AbstractSprite each = childs.get(i);
             if (each.hasChildren() && each.isActive()) {
                 each.updateLogicTemplate();
-                update(((SpriteGroupList) each).getChildren()); //safe case because only groups have children
+                update(((SpriteListGroup) each).getChildren()); //safe case because only groups have children
 //                this.updateLogic();
             } else {
                 if (each.isActive()) {
@@ -165,7 +165,7 @@ public class SpriteGroupList extends AbstractSprite implements ISpriteGroup {
     }
 
     /**
-     * Has this {@link SpriteGroupList} child sprites?
+     * Has this {@link SpriteListGroup} child sprites?
      *
      * @return true if group has childrens, otherwise false
      */
@@ -181,8 +181,8 @@ public class SpriteGroupList extends AbstractSprite implements ISpriteGroup {
     public synchronized int index() {
         if (getParent() != null) {
             for (int i = 0; ; i++) {
-                if (getParent() instanceof SpriteGroupList) {
-                    Object node = ((SpriteGroupList) getParent()).getChildren();
+                if (getParent() instanceof SpriteListGroup) {
+                    Object node = ((SpriteListGroup) getParent()).getChildren();
                     if (this == node) {
                         return i;
                     }

@@ -10,20 +10,28 @@
 - TextElement with BackgroundColor
 - Position of TextElement along sprite: TOPRIGHT, CENTER, TOP, CENTERBOTTOM, etc.
 
-- Quadtree to hold sprite elements in a State
 - AnimationSuite: handle delay for animation internally
 - AnimationSuite: set interpolation method (currently only linear interpolation is used)
 - Background color map for ScrollableBackgrounds
     * color coding for coll detection
     * FixedScrollableLayer getter for backgroundcolor at specific point (x,y)
 
+- SpriteGroup: hold inactive sprites in a separate list
+
 ## Added
+- Common interface for sprite groups: ISpriteGroup
+- added new SpriteQuadtreeGroup that has a quadtree data structure to
+hold the children
+- Method in State to set the query range for SpriteQuadtreeGroup
+- SpriteQuadtreeGroup can be used in a State as root node too
 - New conversion functions in MathUtils
     * convertDpToPixel
     * convertPixelToDp
 - More comments in source code
 
 ## Changed
+- Renamed class SpriteGroup to SpriteListGroup in the course of creating
+a common interface for sprite groups
 - RotationAnimation with new argument angleStart in constructor. The initial
 angle value is now taken into account for the rotation so that sudden rotational changes disappear
 - RelativeLinearTranslation makes the distinction between SpriteGroup and the rest so

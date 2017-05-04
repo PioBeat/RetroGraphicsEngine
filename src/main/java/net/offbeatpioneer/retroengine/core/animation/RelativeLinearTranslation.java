@@ -6,7 +6,7 @@ import net.offbeatpioneer.retroengine.auxiliary.struct.quadtree.QuadTree;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.sprites.AbstractSprite;
 import net.offbeatpioneer.retroengine.core.sprites.ISpriteGroup;
-import net.offbeatpioneer.retroengine.core.sprites.SpriteGroupList;
+import net.offbeatpioneer.retroengine.core.sprites.SpriteListGroup;
 import net.offbeatpioneer.retroengine.core.sprites.SpriteQuadtreeGroup;
 
 import java.util.ArrayList;
@@ -128,8 +128,8 @@ public class RelativeLinearTranslation extends AnimationSuite {
 
     public List<AbstractSprite> getListFromGroup(ISpriteGroup group) {
         List<AbstractSprite> childs = new ArrayList<>();
-        if (group instanceof SpriteGroupList) {
-            childs = ((SpriteGroupList) group).getChildren();
+        if (group instanceof SpriteListGroup) {
+            childs = ((SpriteListGroup) group).getChildren();
         } else if (group instanceof SpriteQuadtreeGroup) {
             List<QuadTree<AbstractSprite>.CoordHolder> items = ((SpriteQuadtreeGroup) group).getChildren().root.items;
             for (QuadTree<AbstractSprite>.CoordHolder each : items) {
