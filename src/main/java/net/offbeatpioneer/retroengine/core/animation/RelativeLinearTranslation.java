@@ -1,6 +1,7 @@
 package net.offbeatpioneer.retroengine.core.animation;
 
 import android.graphics.PointF;
+import android.graphics.RectF;
 
 import net.offbeatpioneer.retroengine.auxiliary.struct.quadtree.QuadTree;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
@@ -38,20 +39,11 @@ public class RelativeLinearTranslation extends AnimationSuite {
         setEnd(end);
         currentPosition = start;
         float timeReal = ((time * 1.0f) / (RetroEngine.TICKS_PER_SECOND - RetroEngine.SKIP_TICKS) * (1.0f));
-//        (this.milliseconds / (RetroEngine.TICKS_PER_SECOND - RetroEngine.SKIP_TICKS));
         float vx = (end.x / timeReal);
         float vy = (end.y / (timeReal));
         N = (int) ((time * 1.0f) / (RetroEngine.TICKS_PER_SECOND - RetroEngine.SKIP_TICKS));
-//        float N2 = (time / ((RetroEngine.TICKS_PER_SECOND - RetroEngine.SKIP_TICKS)*(1.0f)));
         amountX = vx; //(float)(N*vx);
         amountY = vy; //(float)(N*vy);
-//        Log.v("N", ""+N);
-//        Log.v("Speed aufgeteilt nach N", ""+(N/v));
-//        int[] xvalues = new int[N]; //InterpolationHelper.linear(start.x, end.x, N);
-//        int[] yvalues = InterpolationHelper.linear(start.y, end.y, N);
-//        int[] yvalues = new int[N];
-//        Arrays.fill(yvalues, end.y);
-//        Arrays.fill(xvalues, end.x);
         values = new PointF[N];
         for (int i = 0; i < N; i++) {
 //            values[i] = new Point(end.x, end.y);
@@ -104,7 +96,7 @@ public class RelativeLinearTranslation extends AnimationSuite {
     }
 
     private void animateSetPosition(ISpriteGroup group, PointF position) {
-        List<AbstractSprite> childs = getListFromGroup(group);
+        List<AbstractSprite> childs = getChildrensFromSpriteGroup(group);
         for (AbstractSprite child : childs) {
             if (child.hasChildren()) {
                 animateSetPosition((ISpriteGroup) child, position);
@@ -116,7 +108,7 @@ public class RelativeLinearTranslation extends AnimationSuite {
     }
 
     private void animateResetPosition(ISpriteGroup group) {
-        List<AbstractSprite> childs = getListFromGroup(group);
+        List<AbstractSprite> childs = getChildrensFromSpriteGroup(group);
 
         for (AbstractSprite child : childs) {
             if (child.hasChildren()) {
@@ -126,17 +118,29 @@ public class RelativeLinearTranslation extends AnimationSuite {
         }
     }
 
-    public List<AbstractSprite> getListFromGroup(ISpriteGroup group) {
+    public List<AbstractSprite> getChildrensFromSpriteGroup(ISpriteGroup group) {
         List<AbstractSprite> childs = new ArrayList<>();
         if (group instanceof SpriteListGroup) {
             childs = ((SpriteListGroup) group).getChildren();
         } else if (group instanceof SpriteQuadtreeGroup) {
-            List<QuadTree<AbstractSprite>.CoordHolder> items = ((SpriteQuadtreeGroup) group).getChildren().root.items;
+//            List<QuadTree<AbstractSprite>.CoordHolder> items = ((SpriteQuadtreeGroup) group).getChildren().root.items;
+            RectF qr = ((SpriteQuadtreeGroup) group).getQueryRange();
+            List<QuadTree<AbstractSprite>.CoordHolder> items = ((SpriteQuadtreeGroup) group).getChildren().findAll(qr.left, qr.top, qr.right, qr.bottom);
             for (QuadTree<AbstractSprite>.CoordHolder each : items) {
                 childs.add(each.o);
             }
         }
         return childs;
+    }
+
+    @Deprecated
+    private List<QuadTree<AbstractSprite>.CoordHolder> collectAllItems(QuadTree<AbstractSprite> childs) {
+        List<QuadTree<AbstractSprite>.CoordHolder> list = new ArrayList<>();
+        list.addAll(childs.root.LL.items);
+        list.addAll(childs.root.LR.items);
+        list.addAll(childs.root.UL.items);
+        list.addAll(childs.root.UR.items);
+        return list;
     }
 
     public PointF getStart() {
