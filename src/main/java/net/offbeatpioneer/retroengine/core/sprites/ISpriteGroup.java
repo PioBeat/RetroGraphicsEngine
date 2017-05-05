@@ -3,10 +3,13 @@ package net.offbeatpioneer.retroengine.core.sprites;
 import android.graphics.PointF;
 
 /**
+ * Interface for grouping sprites
+ * <p>
+ * Subclasses implement different collections on how to hold and manage the sprites.
+ *
  * @author Dominik Grzelak
  * @since 04.05.2017
  */
-
 public interface ISpriteGroup<T> extends ISprite {
     boolean isRoot();
 
@@ -17,7 +20,10 @@ public interface ISpriteGroup<T> extends ISprite {
     void setViewportOrigin(PointF viewportOrigin);
 
     PointF getViewportOrigin();
+
     T getChildren();
+
     int getChildrenSize();
+
     void clearSprites();
 }

@@ -75,16 +75,34 @@ public class CircleSprite extends AnimatedSprite implements Colorable {
         position = new PointF(x - this.radius, y - this.radius);
 
         //prepare circle image and save it as bitmap
+//        tempBmp.recycle();
+//        tempBmp = Bitmap.createBitmap((int) radius * 2, (int) radius * 2, Bitmap.Config.ARGB_8888);
+//        c.setBitmap(tempBmp);
+////        c.drawColor(Color.BLUE);
+//        int ar = Color.argb(getAlphaValue(), Color.red(color), Color.green(color), Color.blue(color));
+//        paint.setColor(ar);
+//        paint.setStrokeWidth(1);
+//        paint.setAntiAlias(true);
+//        c.drawCircle((int) radius, (int) radius, this.radius, paint);
+
+
+        return redraw(); //this.init(tempBmp, position, new PointF(0, 0));
+    }
+
+    public AnimatedSprite redraw() {
         tempBmp.recycle();
-        tempBmp = Bitmap.createBitmap((int) radius * 2, (int) radius * 2, Bitmap.Config.ARGB_8888);
+        tempBmp = Bitmap.createBitmap((int) (radius * 2 * getScale()), (int) (radius * 2 * getScale()),
+                Bitmap.Config.ARGB_8888);
+        c = new Canvas();
         c.setBitmap(tempBmp);
 //        c.drawColor(Color.BLUE);
         int ar = Color.argb(getAlphaValue(), Color.red(color), Color.green(color), Color.blue(color));
         paint.setColor(ar);
         paint.setStrokeWidth(1);
+//        paint.setAlpha(getAlphaValue());
         paint.setAntiAlias(true);
-        c.drawCircle((int) radius, (int) radius, this.radius, paint);
-
+        c.drawCircle((int) radius * getScale(), (int) radius * getScale(), this.radius * getScale(), paint);
+//        position = new PointF(position.x, position.y);
         return this.init(tempBmp, position, new PointF(0, 0));
     }
 

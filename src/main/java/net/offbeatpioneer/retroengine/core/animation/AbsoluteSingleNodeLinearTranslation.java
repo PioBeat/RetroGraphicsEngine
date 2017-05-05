@@ -150,8 +150,10 @@ public class AbsoluteSingleNodeLinearTranslation extends AnimationSuite {
             counter = 0;
             if (!isLoop()) {
                 finished = true;
+                getListener().onAnimationEnd(this);
                 return;
             }
+            getListener().onAnimationRepeat(this);
         }
 
         counter++;

@@ -1,13 +1,10 @@
 # [UNRELEASED]
 ## ToDo
 - Function to load states from json
-- Width/Height in RetroGraphicsEngine should represent canvas width/heigth and not screen metricss
 - Generic Value Animator
     - like android valueAnimator
 - ReferenceSprite: if no one is set, generate a empty one
 - Copy Constructor for Sprite
-- implement IAnimationSuiteListener: end-Notification for AbsoluteSingleNodeLinearTranslation
-- TextElement with BackgroundColor
 - Position of TextElement along sprite: TOPRIGHT, CENTER, TOP, CENTERBOTTOM, etc.
 
 - AnimationSuite: handle delay for animation internally
@@ -16,20 +13,21 @@
     * color coding for coll detection
     * FixedScrollableLayer getter for backgroundcolor at specific point (x,y)
 
-- SpriteGroup: hold inactive sprites in a separate list
-
 ## Added
 - Common interface for sprite groups: ISpriteGroup
 - added new SpriteQuadtreeGroup that has a quadtree data structure to
-hold the children
+hold the children. The quadtree implementation comes from (pvto)[https://github.com/pvto].
 - Method in State to set the query range for SpriteQuadtreeGroup
 - SpriteQuadtreeGroup can be used in a State as root node too
 - New conversion functions in MathUtils
     * convertDpToPixel
     * convertPixelToDp
+- TextElement with BackgroundColor
+- IAnimationSuiteListener notification inserted in AbsoluteSingleNodeLinearTranslation
 - More comments in source code
 
 ## Changed
+
 - Renamed class SpriteGroup to SpriteListGroup in the course of creating
 a common interface for sprite groups
 - RotationAnimation with new argument angleStart in constructor. The initial
@@ -51,6 +49,8 @@ to 1.0f when calling the init method. A sprite can have an initial scale value w
 # [0.9.1] - 2017-04-08
 
 ## Changed
+- Width/Height in RetroGraphicsEngine represents canvas width/height and
+   not screen metrics
 - Fixed spelling of class name ScrollableBackgroundLayer
 - Renamed GameThread to RenderThread
 

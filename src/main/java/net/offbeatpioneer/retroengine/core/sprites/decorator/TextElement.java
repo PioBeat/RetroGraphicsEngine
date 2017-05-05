@@ -31,6 +31,7 @@ public class TextElement extends Decorator {
     private Canvas c = new Canvas();
     private int textWidth = 0, textHeight = 0;
     private float descent = 0f;
+    private int bgColor = -1;
 
     /**
      * Constructor for decorating an existing sprite with text.
@@ -131,6 +132,8 @@ public class TextElement extends Decorator {
         c.setBitmap(tempBmp);
 //        c.drawPaint(paint);
 //        c.drawColor(Color.BLUE);
+        if(bgColor != -1)
+            c.drawColor(bgColor);
 //        int ar = Color.argb(getAlphaValue(), Color.red(color), Color.green(color), Color.blue(color));
         paint.setColor(font.getFontColor());
         paint.setAntiAlias(true);
@@ -193,6 +196,13 @@ public class TextElement extends Decorator {
         this.text = text;
     }
 
+    public int getBgColor() {
+        return bgColor;
+    }
+
+    public void setBgColor(int bgColor) {
+        this.bgColor = bgColor;
+    }
 
     @SuppressWarnings("unused")
     public GameFont getFont() {
