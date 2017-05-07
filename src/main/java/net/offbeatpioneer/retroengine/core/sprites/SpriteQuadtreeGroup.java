@@ -44,30 +44,39 @@ public class SpriteQuadtreeGroup extends AbstractSprite implements ISpriteGroup 
     public void draw(Canvas canvas, long currentTime) {
         QuadTree<AbstractSprite> childs = getChildren();
         synchronized (childs) {
-            this.draw(childs, canvas, queryRange, currentTime);
+            List<QuadTree<AbstractSprite>.CoordHolder> childCoords =
+                    childs.findAll(queryRange.left, queryRange.top, queryRange.right, queryRange.bottom);
+            this.draw(childCoords,
+                    canvas,
+                    currentTime);
         }
 
     }
 
-    public synchronized void draw(QuadTree<AbstractSprite> childs, Canvas canvas, RectF rect, long currentTime) {
-        this.draw(childs, canvas, rect.left, rect.top, rect.right, rect.bottom, currentTime);
+    public List<QuadTree<AbstractSprite>.CoordHolder> findAll() {
+        return this.findAll(getQueryRange());
     }
 
-    public synchronized void draw(QuadTree<AbstractSprite> childs, Canvas canvas,
-                                  float x1,
-                                  float y1,
-                                  float x2,
-                                  float y2,
+    public List<QuadTree<AbstractSprite>.CoordHolder> findAll(RectF queryRange) {
+        if (getChildren().root == null) {
+            return new ArrayList<>();
+        }
+        return getChildren().findAll(queryRange.left, queryRange.top, queryRange.right, queryRange.bottom);
+    }
+
+//    public synchronized void draw(QuadTree<AbstractSprite> childs, Canvas canvas, RectF rect, long currentTime) {
+//        this.draw(childs, canvas, rect.left, rect.top, rect.right, rect.bottom, currentTime);
+//    }
+
+    public synchronized void draw(List<QuadTree<AbstractSprite>.CoordHolder> childs, Canvas canvas,
                                   long currentTime) {
-        List<QuadTree<AbstractSprite>.CoordHolder> list = childs.findAll(x1, y1, x2, y2);
-        for (QuadTree.CoordHolder each : list) {
+//        List<QuadTree<AbstractSprite>.CoordHolder> list = childs.findAll(x1, y1, x2, y2);
+        for (QuadTree.CoordHolder each : childs) {
             AbstractSprite eachSprite = (AbstractSprite) each.o;
             if (eachSprite.hasChildren()) {
-                draw(((SpriteQuadtreeGroup) eachSprite).getChildren(), canvas,
-                        x1,
-                        y1,
-                        x2,
-                        y2,
+                List<QuadTree<AbstractSprite>.CoordHolder> list2 = ((SpriteQuadtreeGroup) eachSprite).getChildren().findAll(queryRange.left, queryRange.top, queryRange.right, queryRange.bottom);
+                draw(list2,
+                        canvas,
                         currentTime); //safe case because only groups have children
             } else {
                 eachSprite.draw(canvas, currentTime);
@@ -79,7 +88,8 @@ public class SpriteQuadtreeGroup extends AbstractSprite implements ISpriteGroup 
     public void updateLogic() {
         QuadTree<AbstractSprite> childs = getChildren();
         synchronized (childs) {
-            update(childs);
+            List<QuadTree<AbstractSprite>.CoordHolder> list2 = childs.findAll(queryRange.left, queryRange.top, queryRange.right, queryRange.bottom);
+            update(list2);
         }
     }
 
@@ -92,15 +102,13 @@ public class SpriteQuadtreeGroup extends AbstractSprite implements ISpriteGroup 
         return list;
     }
 
-    protected synchronized void update(QuadTree<AbstractSprite> childs) {
-        //childs.root.items;//childs.findAll(queryRange.left, queryRange.top, queryRange.right, queryRange.bottom);
-//        List<QuadTree<AbstractSprite>.CoordHolder> list = collectAllItems(childs);
-        List<QuadTree<AbstractSprite>.CoordHolder> list = childs.findAll(queryRange.left, queryRange.top, queryRange.right, queryRange.bottom);
+    public synchronized void update(List<QuadTree<AbstractSprite>.CoordHolder> list) {
         for (QuadTree<AbstractSprite>.CoordHolder each : list) {
             AbstractSprite eachSprite = each.o;
             if (eachSprite.hasChildren() && eachSprite.isActive()) {
                 eachSprite.updateLogicTemplate();
-                update(((SpriteQuadtreeGroup) eachSprite).getChildren()); //safe case because only groups have children
+                List<QuadTree<AbstractSprite>.CoordHolder> list2 = ((SpriteQuadtreeGroup) eachSprite).getChildren().findAll(queryRange.left, queryRange.top, queryRange.right, queryRange.bottom);
+                update(list2); //safe case because only groups have children
             } else {
                 if (eachSprite.isActive()) {
                     eachSprite.updateLogic();
@@ -125,16 +133,16 @@ public class SpriteQuadtreeGroup extends AbstractSprite implements ISpriteGroup 
     public void removeInActive() {
         QuadTree<AbstractSprite> childs = getChildren();
         synchronized (childs) {
-            removeInActive(childs);
+            List<QuadTree<AbstractSprite>.CoordHolder> list = childs.findAll(queryRange.left, queryRange.top, queryRange.right, queryRange.bottom);
+            removeInActive(list);
         }
     }
 
-    private void removeInActive(QuadTree<AbstractSprite> childs) {
+    private void removeInActive(List<QuadTree<AbstractSprite>.CoordHolder> list) {
 //        List<QuadTree.CoordHolder> list = children.findAll(queryRange.left,
 //                queryRange.top, queryRange.right, queryRange.bottom);
 //        List<QuadTree<AbstractSprite>.CoordHolder> list = children.root.items;
 //        List<QuadTree<AbstractSprite>.CoordHolder> list = collectAllItems(childs);
-        List<QuadTree<AbstractSprite>.CoordHolder> list = childs.findAll(queryRange.left, queryRange.top, queryRange.right, queryRange.bottom);
         for (int i = list.size() - 1; i >= 0; i--) {
             QuadTree.CoordHolder each = list.get(i);
             AbstractSprite eachSprite = (AbstractSprite) each.o;
@@ -142,7 +150,8 @@ public class SpriteQuadtreeGroup extends AbstractSprite implements ISpriteGroup 
                 if (!eachSprite.isActive()) {
                     each.remove();
                 } else {
-                    removeInActive(((SpriteQuadtreeGroup) eachSprite).getChildren());
+                    List<QuadTree<AbstractSprite>.CoordHolder> list2 = ((SpriteQuadtreeGroup) eachSprite).getChildren().findAll(queryRange.left, queryRange.top, queryRange.right, queryRange.bottom);
+                    removeInActive(list2);
                 }
             } else {
                 if (!eachSprite.isActive()) {

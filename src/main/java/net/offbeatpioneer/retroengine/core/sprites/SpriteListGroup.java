@@ -2,6 +2,7 @@ package net.offbeatpioneer.retroengine.core.sprites;
 
 import android.graphics.Canvas;
 import android.graphics.PointF;
+import android.graphics.RectF;
 
 import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 
@@ -151,6 +152,11 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup {
 
     public synchronized void clearSprites() {
         children.clear();
+    }
+
+    @Override
+    public void setQueryRange(RectF queryRange) {
+        // ToDo
     }
 
     /**

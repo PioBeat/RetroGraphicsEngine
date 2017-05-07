@@ -1,6 +1,7 @@
 package net.offbeatpioneer.retroengine.core.sprites;
 
 import android.graphics.PointF;
+import android.graphics.RectF;
 
 /**
  * Interface for grouping sprites
@@ -26,4 +27,6 @@ public interface ISpriteGroup<T> extends ISprite {
     int getChildrenSize();
 
     void clearSprites();
+
+    void setQueryRange(RectF queryRange);
 }

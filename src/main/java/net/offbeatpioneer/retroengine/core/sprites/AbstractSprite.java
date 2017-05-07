@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
+import net.offbeatpioneer.retroengine.auxiliary.matheusdev.CollectionEntity;
 import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.List;
  * @author Dominik Grzelak
  * @since 2017-01-14
  */
-public abstract class AbstractSprite implements ISprite {
+public abstract class AbstractSprite implements CollectionEntity, ISprite {
     AbstractSprite parentSprite;
     final double bufferZoneFactor = 0.2;
     List<AnimationSuite> animations = new ArrayList<AnimationSuite>();
@@ -70,6 +71,11 @@ public abstract class AbstractSprite implements ISprite {
         for (AnimationSuite animation : getAnimations()) {
             animation.animationLogic();
         }
+    }
+
+    @Override
+    public net.offbeatpioneer.retroengine.auxiliary.matheusdev.Rect getAABB() {
+        return new net.offbeatpioneer.retroengine.auxiliary.matheusdev.Rect(getPosition().x, getPosition().y, frameW, frameH);
     }
 
     public int getFps() {

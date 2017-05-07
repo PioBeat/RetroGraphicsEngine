@@ -118,9 +118,7 @@ public abstract class State {
      * @param rect the rectangle where to search for sprites on the drawing surface
      */
     public void setQueryRange(RectF rect) {
-        if (rootGroup instanceof SpriteQuadtreeGroup) {
-            ((SpriteQuadtreeGroup) rootGroup).setQueryRange(rect);
-        }
+        rootGroup.setQueryRange(rect);
     }
 
     /**
