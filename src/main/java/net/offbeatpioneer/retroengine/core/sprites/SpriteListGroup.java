@@ -56,15 +56,15 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup {
 
     private void removeInActive(List<AbstractSprite> children) {
         for (int i = children.size() - 1; i >= 0; i--) {
-            if (children.get(i).hasChildren()) {
-                if (!children.get(i).isActive()) {
+            AbstractSprite eachSprite = children.get(i);
+            if (eachSprite.hasChildren()) {
+                if (!eachSprite.isActive()) {
                     children.remove(i);
                 } else {
                     removeInActive(((SpriteListGroup) children.get(i)).getChildren()); //safe case because only groups have children
                 }
             } else {
-                AbstractSprite each = children.get(i);
-                if (!each.isActive()) {
+                if (!eachSprite.isActive()) {
                     children.remove(i);
                 }
             }
@@ -75,7 +75,6 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup {
     public void updateLogic() {
         List<AbstractSprite> childs = getChildren();
         synchronized (childs) {
-//            super.updateLogic();
             update(childs);
         }
     }
@@ -108,7 +107,6 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup {
             if (each.hasChildren() && each.isActive()) {
                 each.updateLogicTemplate();
                 update(((SpriteListGroup) each).getChildren()); //safe case because only groups have children
-//                this.updateLogic();
             } else {
                 if (each.isActive()) {
                     each.updateLogic();
