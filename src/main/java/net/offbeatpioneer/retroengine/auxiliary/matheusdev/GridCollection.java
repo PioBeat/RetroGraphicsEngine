@@ -66,7 +66,11 @@ public class GridCollection<E extends CollectionEntity> {
 					list.add(e);
 					map.put(new Vec2i(x, y), list);
 				} else {
-					mapList.add(e);
+					if(mapList.indexOf(e) != -1) {
+						mapList.set(mapList.indexOf(e), e);
+					} else {
+						mapList.add(e);
+					}
 				}
 			}
 		}
@@ -84,8 +88,8 @@ public class GridCollection<E extends CollectionEntity> {
 				ArrayList<E> elements = map.get(pos);
 
 				if (elements != null) {
-					for (int i = 0; i < elements.size(); i++) {
-						boolean continueSearching = callback.handleElement(x, y, elements.get(i));
+					for (int i = elements.size() - 1; i >= 0; i--) {
+						boolean continueSearching = callback.handleElement(x, y, elements.get(i), elements);
 
 						if (!continueSearching) {
 							return;
@@ -115,24 +119,6 @@ public class GridCollection<E extends CollectionEntity> {
 			}
 		}
 		return queryList;
-	}
-
-	public void updateRegion(Rect region, ArrayList<E> newQueryList) {
-		int beginx = ((int) region.x) / width;
-		int beginy = ((int) region.y) / height;
-		int endx = ((int) (region.x + region.w)) / width;
-		int endy = ((int) (region.y + region.h)) / height;
-
-		for (int y = beginy; y <= endy; y++) {
-			for (int x = beginx; x <= endx; x++) {
-				Vec2i pos = Vec2i.get(x, y);
-				ArrayList<E> elements = map.get(pos);
-
-				if (elements != null) {
-					map.put(pos, newQueryList);
-				}
-			}
-		}
 	}
 
 	public void update() {

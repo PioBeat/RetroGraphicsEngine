@@ -13,6 +13,19 @@
     * color coding for coll detection
     * FixedScrollableLayer getter for backgroundcolor at specific point (x,y)
 
+## Added
+- added convenient method SpriteQuadtreeGroup#findAll() and SpriteQuadtreeGroup#findAll(RectF queryRange)
+to find all children in the specified area. No need to get the intern quadtree object first
+- ISpriteGroup has public method setQueryRange
+- SpriteGridGroup (GridCollection from matheusdev, extended by me) uses a GridCollection
+to manage sprites in a group
+
+## Bugfix
+- Minor bugfix in SpriteQuadtreeGroup. If an empty SpriteQuadtreeGroup
+(no sprite children added) is added to a root node which is a quadtree
+group in a State class then a null pointer exception was thrown when calling
+findall. A check is implemented to prevent this
+
 # [0.9.3] - 2017-05-07
 
 ## Added

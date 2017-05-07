@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import net.offbeatpioneer.retroengine.auxiliary.matheusdev.CollectionTraverser;
 import net.offbeatpioneer.retroengine.auxiliary.matheusdev.GridCollection;
 import net.offbeatpioneer.retroengine.auxiliary.matheusdev.Rect;
 import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
@@ -58,55 +59,100 @@ public class SpriteGridGroup extends AbstractSprite implements ISpriteGroup {
     }
 
     public void removeInActive() {
-        List<AbstractSprite> child1 = children.query(makeRect(queryRange));
-        synchronized (children) {
-            removeInActive(child1);
-        }
+        this.removeInActive(children);
     }
 
-    private void removeInActive(List<AbstractSprite> children) {
-        for (int i = children.size() - 1; i >= 0; i--) {
-            AbstractSprite eachSprite = children.get(i);
-            if (eachSprite.hasChildren()) {
-                if (!eachSprite.isActive()) {
-                    children.remove(i);
+    private void removeInActive(GridCollection<AbstractSprite> children) {
+        children.query(new CollectionTraverser<AbstractSprite>() {
+            @Override
+            public boolean handleElement(int xPosition, int yPosition, AbstractSprite eachSprite, List<AbstractSprite> elements) {
+                if (eachSprite.hasChildren()) {
+                    if (!eachSprite.isActive()) {
+                        elements.remove(eachSprite);
+                    } else {
+//                        List<AbstractSprite> tmp = ((SpriteGridGroup) eachSprite).getChildren().query(makeRect(queryRange));
+                        removeInActive(((SpriteGridGroup) eachSprite).getChildren()); //safe case because only groups have children
+                    }
                 } else {
-                    List<AbstractSprite> tmp = ((SpriteGridGroup) eachSprite).getChildren().query(makeRect(queryRange));
-                    removeInActive(tmp); //safe case because only groups have children
+                    if (!eachSprite.isActive()) {
+                        elements.remove(eachSprite);
+                        childCnt--;
+                    }
                 }
-            } else {
-                if (!eachSprite.isActive()) {
-                    children.remove(i);
-                    childCnt--;
-                }
+                return true;
             }
-        }
+        }, makeRect(queryRange));
     }
+
+//    private void removeInActive(List<AbstractSprite> children) {
+//        for (int i = children.size() - 1; i >= 0; i--) {
+//            AbstractSprite eachSprite = children.get(i);
+//            if (eachSprite.hasChildren()) {
+//                if (!eachSprite.isActive()) {
+//                    children.remove(i);
+//                } else {
+//                    List<AbstractSprite> tmp = ((SpriteGridGroup) eachSprite).getChildren().query(makeRect(queryRange));
+//                    removeInActive(tmp); //safe case because only groups have children
+//                }
+//            } else {
+//                if (!eachSprite.isActive()) {
+//                    children.remove(i);
+//                    childCnt--;
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public void updateLogic() {
-        List<AbstractSprite> child1 = children.query(makeRect(queryRange));
-        synchronized (children) {
-            update(child1);
-        }
+//        List<AbstractSprite> child1 = children.query(makeRect(queryRange));
+//        synchronized (children) {
+//            update(child1);
+//        }
+        this.update(children);
     }
 
-    protected synchronized void update(List<AbstractSprite> childs) {
-        for (int i = childs.size() - 1; i >= 0; i--) {
-            AbstractSprite each = childs.get(i);
-            if (each.hasChildren() && each.isActive()) {
-                each.updateLogicTemplate();
-                List<AbstractSprite> tmp = ((SpriteGridGroup) each).getChildren().query(makeRect(queryRange));
-                update(tmp); //safe case because only groups have children
-            } else {
-                if (each.isActive()) {
-                    each.updateLogic();
+    protected synchronized void update(final GridCollection<AbstractSprite> children) {
+        children.query(new CollectionTraverser<AbstractSprite>() {
+            @Override
+            public boolean handleElement(int xPosition, int yPosition, AbstractSprite each, List<AbstractSprite> elements) {
+                if (each.hasChildren() && each.isActive()) {
+                    each.updateLogicTemplate();
+                    update(((SpriteGridGroup) each).getChildren()); //safe case because only groups have children
                 } else {
-                    childs.remove(i); //each.remove(i);
+                    if (each.isActive()) {
+                        each.updateLogic();
+                    } else {
+                        elements.remove(each); //each.remove(i);
+                    }
+                    children.add(each);
                 }
+                return true;
             }
-        }
-        children.updateRegion(makeRect(queryRange), (ArrayList<AbstractSprite>) childs);
+        }, makeRect(queryRange));
+    }
+
+//    protected synchronized void update(final List<AbstractSprite> childs) {
+//        for (int i = childs.size() - 1; i >= 0; i--) {
+//            AbstractSprite each = childs.get(i);
+//            if (each.hasChildren() && each.isActive()) {
+//                each.updateLogicTemplate();
+//                List<AbstractSprite> tmp = ((SpriteGridGroup) each).getChildren().query(makeRect(queryRange));
+//                update(tmp); //safe case because only groups have children
+//            } else {
+//                if (each.isActive()) {
+//                    each.updateLogic();
+//                } else {
+//                    childs.remove(i); //each.remove(i);
+//                }
+//                children.add(each);
+//            }
+//        }
+////        children.updateRegion(makeRect(queryRange), (ArrayList<AbstractSprite>) childs);
+//    }
+
+    public void updateGrid() {
+        children.update();
     }
 
     public synchronized void add(AbstractSprite child) {

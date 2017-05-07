@@ -22,6 +22,8 @@
 package net.offbeatpioneer.retroengine.auxiliary.matheusdev;
 
 
+import java.util.List;
+
 /**
  * @author matheusdev
  *
@@ -39,6 +41,6 @@ public interface CollectionTraverser<E> {
 	 * @param element the element to handle.
 	 * @return whether to go on with searching / querying or not.
 	 */
-	public boolean handleElement(int xPosition, int yPosition, E element);
+	public boolean handleElement(int xPosition, int yPosition, E element, List<E> elements);
 
 }
