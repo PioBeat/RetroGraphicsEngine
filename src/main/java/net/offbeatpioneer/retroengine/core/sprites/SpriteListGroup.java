@@ -63,7 +63,7 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
                 if (!eachSprite.isActive()) {
                     children.remove(i);
                 } else {
-                    removeInActive(((SpriteListGroup) children.get(i)).getChildren()); //safe case because only groups have children
+                    removeInActive(((SpriteListGroup) eachSprite).getChildren()); //safe case because only groups have children
                 }
             } else {
                 if (!eachSprite.isActive()) {

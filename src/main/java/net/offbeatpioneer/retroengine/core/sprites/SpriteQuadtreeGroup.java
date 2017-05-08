@@ -99,7 +99,7 @@ public class SpriteQuadtreeGroup extends AbstractSprite implements ISpriteGroup<
             if (eachSprite.hasChildren() && eachSprite.isActive()) {
                 eachSprite.updateLogicTemplate();
                 List<QuadTree<AbstractSprite>.CoordHolder> list2 = ((SpriteQuadtreeGroup) eachSprite).getChildren();
-                update(list2); //safe case because only groups have children
+                update(list2);
             } else {
                 if (eachSprite.isActive()) {
                     eachSprite.updateLogic();
