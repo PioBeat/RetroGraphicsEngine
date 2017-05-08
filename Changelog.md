@@ -36,7 +36,7 @@ findall. A check is implemented to prevent this
 ## Added
 - Common interface for sprite groups: ISpriteGroup
 - added new SpriteQuadtreeGroup that has a quadtree data structure to
-hold the children. The quadtree implementation comes from (pvto)[https://github.com/pvto].
+hold the children. The quadtree implementation comes from [pvto](https://github.com/pvto).
 - Method in State to set the query range for SpriteQuadtreeGroup
 - SpriteQuadtreeGroup can be used in a State as root node too
 - New conversion functions in MathUtils
