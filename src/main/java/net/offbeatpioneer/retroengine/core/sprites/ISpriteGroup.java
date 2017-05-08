@@ -3,6 +3,8 @@ package net.offbeatpioneer.retroengine.core.sprites;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import java.util.List;
+
 /**
  * Interface for grouping sprites
  * <p>
@@ -15,6 +17,7 @@ public interface ISpriteGroup<T> extends ISprite {
     boolean isRoot();
 
     void removeInActive();
+    void removeInActive(List<T> childs);
 
     void add(AbstractSprite child);
 
@@ -22,7 +25,7 @@ public interface ISpriteGroup<T> extends ISprite {
 
     PointF getViewportOrigin();
 
-    T getChildren();
+    List<T> getChildren();
 
     int getChildrenSize();
 

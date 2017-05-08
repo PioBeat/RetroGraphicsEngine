@@ -1,7 +1,6 @@
 package net.offbeatpioneer.retroengine.core.animation;
 
 import android.graphics.PointF;
-import android.graphics.RectF;
 
 import net.offbeatpioneer.retroengine.auxiliary.struct.quadtree.QuadTree;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
@@ -103,7 +102,6 @@ public class RelativeLinearTranslation extends AnimationSuite {
 
             }
             child.translate(position);
-//            child.setPosition(new PointF(position.x, position.y));
         }
     }
 
@@ -123,24 +121,12 @@ public class RelativeLinearTranslation extends AnimationSuite {
         if (group instanceof SpriteListGroup) {
             childs = ((SpriteListGroup) group).getChildren();
         } else if (group instanceof SpriteQuadtreeGroup) {
-//            List<QuadTree<AbstractSprite>.CoordHolder> items = ((SpriteQuadtreeGroup) group).getChildren().root.items;
-            RectF qr = ((SpriteQuadtreeGroup) group).getQueryRange();
-            List<QuadTree<AbstractSprite>.CoordHolder> items = ((SpriteQuadtreeGroup) group).getChildren().findAll(qr.left, qr.top, qr.right, qr.bottom);
+            List<QuadTree<AbstractSprite>.CoordHolder> items = ((SpriteQuadtreeGroup) group).getChildren();
             for (QuadTree<AbstractSprite>.CoordHolder each : items) {
                 childs.add(each.o);
             }
         }
         return childs;
-    }
-
-    @Deprecated
-    private List<QuadTree<AbstractSprite>.CoordHolder> collectAllItems(QuadTree<AbstractSprite> childs) {
-        List<QuadTree<AbstractSprite>.CoordHolder> list = new ArrayList<>();
-        list.addAll(childs.root.LL.items);
-        list.addAll(childs.root.LR.items);
-        list.addAll(childs.root.UL.items);
-        list.addAll(childs.root.UR.items);
-        return list;
     }
 
     public PointF getStart() {

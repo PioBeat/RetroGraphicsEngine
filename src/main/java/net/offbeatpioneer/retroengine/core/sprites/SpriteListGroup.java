@@ -21,7 +21,7 @@ import java.util.List;
  * @author Dominik Grzelak
  * @since 26.01.2015
  */
-public class SpriteListGroup extends AbstractSprite implements ISpriteGroup {
+public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<AbstractSprite> {
     private List<AbstractSprite> children = new ArrayList<>();
 
     public SpriteListGroup() {
@@ -55,7 +55,8 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup {
         }
     }
 
-    private void removeInActive(List<AbstractSprite> children) {
+    @Override
+    public void removeInActive(List<AbstractSprite> children) {
         for (int i = children.size() - 1; i >= 0; i--) {
             AbstractSprite eachSprite = children.get(i);
             if (eachSprite.hasChildren()) {
