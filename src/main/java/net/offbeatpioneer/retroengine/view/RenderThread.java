@@ -27,7 +27,7 @@ import net.offbeatpioneer.retroengine.core.RetroEngine;
 public class RenderThread extends Thread {
 
     private final String TAG_LOG = "RenderThread";
-//    public static Resources res;
+    //    public static Resources res;
     private GamestateManager manager = GamestateManager.getInstance();
     private Class<?> currentState = null;
 
@@ -41,16 +41,6 @@ public class RenderThread extends Thread {
         this.mSurfaceHolder = ParentView.getHolder();
         ((DrawView) view).setRenderThread(this);
     }
-
-
-//    //TODO remove this constructor
-//    @Deprecated
-//    public RenderThread(SurfaceView view, Resources r) {
-//        ParentView = view;
-//        this.mSurfaceHolder = ParentView.getHolder();
-//        ((DrawView) view).setRenderThread(this);
-//        res = r;
-//    }
 
     public void addState(net.offbeatpioneer.retroengine.core.states.State state) {
         this.manager.getGamestates().add(state);
@@ -99,45 +89,40 @@ public class RenderThread extends Thread {
         int loops;
         while (RetroEngine.isRunning) {
 
-//            synchronized (this) {
             if (RetroEngine.shouldWait) {
-                GamestateManager.IS_CHANGING = true;
-                if (currentStateTmp != null) {
-                    currentStateTmp.setActive(false);
-                    currentStateTmp.cleanUp();
-                }
-
-                if ((currentStateTmp = manager.getActiveGameState()) == null) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        Log.e(TAG_LOG, e.getMessage());
+                if (RetroEngine.resetStateIfWait) {
+                    GamestateManager.IS_CHANGING = true;
+                    if (currentStateTmp != null) {
+                        currentStateTmp.setActive(false);
+                        currentStateTmp.cleanUp();
                     }
-                    break;
+
+                    if ((currentStateTmp = manager.getActiveGameState()) == null) {
+                        sleepThread(100);
+                        break;
+                    } else {
+                        RetroEngine.shouldWait = false;
+                        GamestateManager.IS_CHANGING = false;
+                    }
                 } else {
-                    RetroEngine.shouldWait = false;
-                    GamestateManager.IS_CHANGING = false;
+                    sleepThread(250);
+                    continue;
                 }
             }
-//            }
-//           synchronized (manager) {
-//                 if(GamestateManager.IS_CHANGING) {
-//                currentStateTmp = manager.getActiveGameState();
-//                GamestateManager.IS_CHANGING = false;
-//                 }
-//            }
-            loops = 0;
-            // if (currentStateTmp != null) {
-            while (RetroEngine.getTickCount() > next_game_tick && loops < RetroEngine.MAX_FRAMESKIP) {
-                currentStateTmp.updateLogic();
-                next_game_tick += RetroEngine.SKIP_TICKS;
-                loops++;
-            }
-            //}
 
+            loops = 0;
             Canvas canvas = null;
             try {
-                canvas = mSurfaceHolder.lockCanvas();
+                if (!mSurfaceHolder.getSurface().isValid()) continue;
+                // if (currentStateTmp != null) {
+                while (RetroEngine.getTickCount() > next_game_tick && loops < RetroEngine.MAX_FRAMESKIP) {
+                    currentStateTmp.updateLogic();
+                    next_game_tick += RetroEngine.SKIP_TICKS;
+                    loops++;
+                }
+                //}
+
+                canvas = mSurfaceHolder.lockCanvas(null);
                 synchronized (mSurfaceHolder) {
                     // Render the current state
                     if (currentStateTmp != null && canvas != null && !GamestateManager.IS_CHANGING)
@@ -153,6 +138,14 @@ public class RenderThread extends Thread {
         }
         cleanUp();
         Log.v(TAG_LOG, "End of RenderThread");
+    }
+
+    private void sleepThread(long duration) {
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException e) {
+            Log.e(TAG_LOG, e.getMessage());
+        }
     }
 
     /**

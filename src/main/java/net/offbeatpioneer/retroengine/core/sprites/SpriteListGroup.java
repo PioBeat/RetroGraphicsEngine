@@ -38,7 +38,7 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
         }
     }
 
-    public synchronized void draw(List<AbstractSprite> childs, Canvas canvas, long currentTime) {
+    public void draw(List<AbstractSprite> childs, Canvas canvas, long currentTime) {
         for (AbstractSprite child : childs) {
             if (child.hasChildren()) {
                 draw(((SpriteListGroup) child).getChildren(), canvas, currentTime); //safe case because only groups have children
@@ -103,7 +103,7 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
         }
     }
 
-    protected synchronized void update(List<AbstractSprite> childs) {
+    protected void update(List<AbstractSprite> childs) {
         for (int i = childs.size() - 1; i >= 0; i--) {
             AbstractSprite each = childs.get(i);
             if (each.hasChildren() && each.isActive()) {
@@ -119,11 +119,11 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
         }
     }
 
-    public synchronized void add(AbstractSprite child) {
+    public void add(AbstractSprite child) {
         add(child, -1);
     }
 
-    public synchronized void add(AbstractSprite child, int index) {
+    public void add(AbstractSprite child, int index) {
         // Add the child to the list of children.
         if (child == null) return;
         if (index < 0 || index == children.size())  // then append
@@ -138,7 +138,7 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
         child.setParentSprite(this);
     }
 
-    public synchronized List<AbstractSprite> getChildren() {
+    public List<AbstractSprite> getChildren() {
         return children;
     }
 
@@ -147,11 +147,11 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
         return getChildren().size();
     }
 
-    public synchronized void setChildren(List<AbstractSprite> children) {
+    public void setChildren(List<AbstractSprite> children) {
         this.children = children;
     }
 
-    public synchronized void clearSprites() {
+    public void clearSprites() {
         children.clear();
     }
 
@@ -174,7 +174,7 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
      *
      * @return true if group has childrens, otherwise false
      */
-    public synchronized boolean hasChildren() {
+    public boolean hasChildren() {
         return getChildrenSize() != 0;
     }
 
@@ -183,7 +183,7 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
      *
      * @return index of the child, -1 if this is the root node
      */
-    public synchronized int index() {
+    public int index() {
         if (getParent() != null) {
             for (int i = 0; ; i++) {
                 if (getParent() instanceof SpriteListGroup) {

@@ -28,6 +28,7 @@ public class RetroEngine {
 
     public static boolean isRunning = false;
     public static boolean shouldWait = false;
+    public static boolean resetStateIfWait = false;
 
     public static int W;
     public static int H;
@@ -41,5 +42,15 @@ public class RetroEngine {
     public static void init(Context context) {
         DENSITY = context.getResources().getDisplayMetrics().density;
         Resources = context.getResources();
+    }
+
+    public static void renderThreadWaitNoReset() {
+        shouldWait = true;
+        resetStateIfWait = false;
+    }
+
+    public static void renderThreadWaitAndReset() {
+        shouldWait = true;
+        resetStateIfWait = true;
     }
 }
