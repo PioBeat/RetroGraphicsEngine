@@ -3,7 +3,7 @@
 **RetroGraphicsEngine** is a pure canvas‑based graphics engine for _Android_.
 Easy to setup. Easy to use. Fun to play.
 
-**Current Version: 0.9.3.1**
+**Current Version: 0.9.3.2**
 
 ## Compatibilty
 
@@ -16,6 +16,8 @@ To add the library to your
 application include it as a library project along with the *.aar file.
 
 ### Gradle
+
+__Currently only version 0.9.3 is available as maven dependency__
 
 ```
 repositories {
@@ -46,4 +48,8 @@ to download the demo app which shows some of the features
  can be found at **[rge.offbeat-pioneer.net](http://rge.offbeat-pioneer.net)**
 
 <!--* Javadoc can be found **[here]()**-->
+
+## External Libraries
+
+- Quadtree implmentation by pvto [https://github.com/pvto](https://github.com/pvto)
 

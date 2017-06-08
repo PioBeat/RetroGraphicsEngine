@@ -1,6 +1,8 @@
 # [UNRELEASED]
+
 ## ToDo
-- Function to load states from json
+- Documentation for flyweight pattern
+<!-- - Function to load states from json -->
 - Generic Value Animator
     - like android valueAnimator
 - ReferenceSprite: if no one is set, generate a empty one
@@ -13,8 +15,19 @@
     * color coding for coll detection
     * FixedScrollableLayer getter for backgroundcolor at specific point (x,y)
 
+# [0.9.3.2] - 2017-06-08
+
+## Added
+- ``RenderThread`` can be set to "wait mode" via ``RetroEngine`` class
+so that an active state isn't reset
+- ``BitmapHelper``: new method ``BitmapHelper#decodeSampledBitmapFromResource()``
+to load large bitmaps efficiently (Code from Android Developer)
+
+## Changed
+- small performance issues resolved (removed synchronized keywords in ``SpriteListGroup``)
+
 # [0.9.3.1] - 2017-05-08
-"transitional" version to more sprite groups with some bugfixes
+A "transitional" version for more sprite groups and some bugfixes
 
 ## Added
 - added convenient method SpriteQuadtreeGroup#findAll() and SpriteQuadtreeGroup#findAll(RectF queryRange)
