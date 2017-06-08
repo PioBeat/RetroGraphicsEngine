@@ -34,6 +34,7 @@ public class TouchListener implements OnKeyListener, OnTouchListener {
 
 	public boolean onTouch(View v, MotionEvent event) {
 		currentState = manager.getActiveGameState();
+		if(currentState == null) return false;
 		currentState.onTouchEvent(v, event);
 		return true;
 	}
