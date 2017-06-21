@@ -15,6 +15,13 @@
     * color coding for coll detection
     * FixedScrollableLayer getter for backgroundcolor at specific point (x,y)
 
+## Added
+- StaticBackgroundLayer: constructor offers option to scale or tile the
+bitmap for the whole background
+
+## Changed
+- Arguments of ISprite#draw(Canvas, long) are final now
+
 # [0.9.3.2] - 2017-06-08
 
 ## Added
