@@ -30,17 +30,26 @@ public class StaticBackgroundLayer implements BackgroundLayer {
     private PointF viewportOrigin;
 
     /**
-     * Default constructor
+     * Default constructor.
+     * Bitmap is scaled to fit into the screen
      *
      * @param br Bitmap for the bitmap
      */
     public StaticBackgroundLayer(Bitmap br) {
+        this(br, true);
+    }
+
+
+    public StaticBackgroundLayer(Bitmap br, boolean scaleToFit) {
         background = br;
 
         layerW = background.getWidth();
         layerH = background.getHeight();
 
-        scaleToFit();
+        if (scaleToFit)
+            scaleToFit();
+        else
+            tiledBitmap();
     }
 
     public PointF getReferencePoint() {
@@ -51,6 +60,30 @@ public class StaticBackgroundLayer implements BackgroundLayer {
         this.referencePoint = referencePoint;
     }
 
+
+    private void tiledBitmap() {
+        if (background == null) {
+            return;
+        }
+
+        int m = (int) Math.ceil(RetroEngine.W / layerW);
+        int n = (int) Math.ceil(RetroEngine.H / layerH);
+
+        Bitmap.Config conf = Bitmap.Config.RGB_565; // see other conf types
+        backgroundResized = Bitmap.createBitmap(RetroEngine.W, RetroEngine.H, conf); // this creates a MUTABLE bitmap
+        Canvas canvas = new Canvas(backgroundResized);
+        Paint paint = new Paint();
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= m; j++) {
+                PointF p = calcPosition(j, i);
+                canvas.drawBitmap(background, p.x, p.y, paint);
+            }
+        }
+    }
+
+    private PointF calcPosition(int x, int y) {
+        return new PointF(x * layerW, y * layerH);
+    }
 
     private void scaleToFit() {
         if (background == null) {
@@ -74,6 +107,10 @@ public class StaticBackgroundLayer implements BackgroundLayer {
 
         // Sichtwelt ausgehend vom Referenzpunkt vollstaendig bekacheln
         canvas.drawBitmap(backgroundResized, o.x, o.y, paint);
+    }
+
+    public void recycle() {
+        backgroundResized.recycle();
     }
 
     public AbstractSprite getParent() {
