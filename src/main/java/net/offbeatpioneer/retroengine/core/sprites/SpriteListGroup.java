@@ -22,7 +22,7 @@ import java.util.List;
  * @since 26.01.2015
  */
 public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<AbstractSprite> {
-    private List<AbstractSprite> children = new ArrayList<>();
+    private final List<AbstractSprite> children = new ArrayList<>();
 
     public SpriteListGroup() {
         active = true;
@@ -33,12 +33,12 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
     @Override
     public void draw(Canvas canvas, long currentTime) {
         List<AbstractSprite> childs = getChildren();
-        synchronized (childs) {
+        synchronized (children) {
             draw(childs, canvas, currentTime);
         }
     }
 
-    public void draw(List<AbstractSprite> childs, Canvas canvas, long currentTime) {
+    public void draw(final List<AbstractSprite> childs, Canvas canvas, long currentTime) {
         for (AbstractSprite child : childs) {
             if (child.hasChildren()) {
                 draw(((SpriteListGroup) child).getChildren(), canvas, currentTime); //safe case because only groups have children
@@ -50,7 +50,7 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
 
     public void removeInActive() {
         List<AbstractSprite> childs = getChildren();
-        synchronized (childs) {
+        synchronized (children) {
             removeInActive(childs);
         }
     }
@@ -76,7 +76,7 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
     @Override
     public void updateLogic() {
         List<AbstractSprite> childs = getChildren();
-        synchronized (childs) {
+        synchronized (children) {
             update(childs);
         }
     }
@@ -113,7 +113,7 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
                 if (each.isActive()) {
                     each.updateLogic();
                 } else {
-                    childs.remove(i); //each.remove(i);
+//                    childs.remove(i); //each.remove(i);
                 }
             }
         }
@@ -148,7 +148,8 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
     }
 
     public void setChildren(List<AbstractSprite> children) {
-        this.children = children;
+        this.children.clear();
+        this.children.addAll(children);
     }
 
     public void clearSprites() {

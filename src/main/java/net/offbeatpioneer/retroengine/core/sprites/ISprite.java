@@ -14,7 +14,7 @@ import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
  */
 public interface ISprite {
 
-    void draw(Canvas canvas, long currentTime);
+    void draw(final Canvas canvas, final long currentTime);
 
     void updateLogic();
 

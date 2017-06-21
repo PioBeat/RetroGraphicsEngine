@@ -103,7 +103,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
      * @param canvas      a canvas, the drawing surface
      * @param currentTime current time in milliseconds
      */
-    public void draw(Canvas canvas, long currentTime) {
+    public void draw(final Canvas canvas, final long currentTime) {
         //Don't draw the sprite if it's disabled
         if (disable) {
             return;
