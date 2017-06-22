@@ -68,7 +68,8 @@ public class FixedScrollableLayer implements BackgroundLayer {
         this.factor = factor;
         viewportOrigin = new PointF(0, 0);
         float scaleWidth = ((float) RetroEngine.W) / layerW;
-        float scaleHeight = ((float) RetroEngine.H) / layerH;
+        float scaleHeight = (float) Math.ceil((float) RetroEngine.H / (float) layerH);
+//        float scaleHeight2 = (float)layerH / RetroEngine.H;
         background = scaleToFit(backgroundBackUp, scaleWidth, scaleHeight);
     }
 
@@ -112,6 +113,12 @@ public class FixedScrollableLayer implements BackgroundLayer {
 
     public PointF getReferencePoint() {
         return referencePoint;
+    }
+
+    @Override
+    public void recycle() {
+        if (!background.isRecycled()) background.recycle();
+        if (!backgroundBackUp.isRecycled()) backgroundBackUp.recycle();
     }
 
     public Bitmap getBackground() {

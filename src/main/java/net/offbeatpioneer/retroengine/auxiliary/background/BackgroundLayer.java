@@ -17,6 +17,8 @@ public interface BackgroundLayer extends ISprite, ISpriteAnimateable {
 
     PointF getReferencePoint();
 
+    void recycle();
+
     void setReferencePoint(PointF referencePoint);
 
 }

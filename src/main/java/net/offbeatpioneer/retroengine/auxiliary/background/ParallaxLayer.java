@@ -50,6 +50,12 @@ public class ParallaxLayer implements BackgroundLayer {
         return referencePoint;
     }
 
+    @Override
+    public void recycle() {
+        if (!background.isRecycled())
+            background.recycle();
+    }
+
     public void setReferencePoint(PointF referencePoint) {
         this.referencePoint = referencePoint;
     }

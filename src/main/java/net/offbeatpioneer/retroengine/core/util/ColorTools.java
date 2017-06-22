@@ -10,6 +10,14 @@ import android.graphics.Color;
  */
 public class ColorTools {
 
+    /**
+     * Test if two colours are the same
+     *
+     * @param color1
+     * @param color2
+     * @param tolerance
+     * @return
+     */
     public static boolean closeMatch(int color1, int color2, int tolerance) {
         if ((int) Math.abs(Color.red(color1) - Color.red(color2)) > tolerance)
             return false;

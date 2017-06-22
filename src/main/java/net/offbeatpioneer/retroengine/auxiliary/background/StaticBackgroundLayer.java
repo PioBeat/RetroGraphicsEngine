@@ -110,7 +110,10 @@ public class StaticBackgroundLayer implements BackgroundLayer {
     }
 
     public void recycle() {
-        backgroundResized.recycle();
+        if (!backgroundResized.isRecycled())
+            backgroundResized.recycle();
+        if (!background.isRecycled())
+            background.recycle();
     }
 
     public AbstractSprite getParent() {
