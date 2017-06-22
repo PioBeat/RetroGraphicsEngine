@@ -160,6 +160,18 @@ public abstract class State {
     }
 
     /**
+     * Return the number of background layers used in the state
+     *
+     * @return background layer count
+     */
+    public int getBackgroundLayerCount() {
+        if (backgroundNode == null) {
+            return 0;
+        }
+        return backgroundNode.getBackgrounds().size();
+    }
+
+    /**
      * Get the number of sprites inserted as direct child in the {@code rootGroup}.
      *
      * @return Number of sprites in {@code rootGroup}
