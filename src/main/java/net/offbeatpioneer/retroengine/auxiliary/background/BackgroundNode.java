@@ -20,7 +20,7 @@ public class BackgroundNode {
 
     private PointF referencePoint = new PointF();
     private RectF referenceRect = new RectF();
-    private List<BackgroundLayer> backgrounds = new ArrayList<>();
+    private final List<BackgroundLayer> backgrounds = new ArrayList<>();
     private int width;
     private int height;
     private float xt = 0, yt = 0;
@@ -47,7 +47,8 @@ public class BackgroundNode {
     }
 
     public void setBackgrounds(List<BackgroundLayer> backgrounds) {
-        this.backgrounds = backgrounds;
+        this.backgrounds.clear();
+        this.backgrounds.addAll(backgrounds);
     }
 
     public float getXt() {
