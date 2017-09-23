@@ -2,12 +2,12 @@ apply plugin: 'com.android.library'
 apply from: "./bintray.data.gradle"
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode libraryVersionCode
         versionName libraryVersion
 //        compileOptions {
@@ -39,5 +39,5 @@ task copyToLib(type: Copy) {
 
 build.dependsOn copyToLib
 
-apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'
+//apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
+//apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'

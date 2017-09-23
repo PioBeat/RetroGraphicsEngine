@@ -7,8 +7,8 @@ ext {
     artifact = 'retroengine' // equal to the name of the Android Studio library module
 
     libraryDescription = 'RetroGraphicsEngine is a pure canvas‑based graphics engine for Android'
-    libraryVersion = '0.9.3.3'
-    libraryVersionCode = 4
+    libraryVersion = '0.9.4-beta'
+    libraryVersionCode = 5
 
     siteUrl = 'https://github.com/PioBeat/'
     gitUrl = 'https://github.com/PioBeat/'
