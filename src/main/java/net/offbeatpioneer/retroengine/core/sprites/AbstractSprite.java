@@ -38,6 +38,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
     private int fps;
     int alphaValue = 255;
     boolean loop;
+    private RectF rect;
     int cnt; // interner Zaehler
     int frameNr = 0; // aktuelles Frame
     int frameCnt; // Anzahl Frames im Filmstreifen
@@ -249,7 +250,12 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
      * @return Extent of the sprite
      */
     public RectF getRect() {
-        return new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
+        if(rect == null)
+            rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
+        else {
+            rect.set(position.x, position.y, position.x + frameW, position.y + frameH);
+        }
+        return rect;
     }
 
     /**
