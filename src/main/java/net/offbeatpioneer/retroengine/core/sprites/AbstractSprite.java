@@ -24,7 +24,7 @@ import java.util.List;
 public abstract class AbstractSprite implements CollectionEntity, ISprite {
     AbstractSprite parentSprite;
     final double bufferZoneFactor = 0.2;
-    List<AnimationSuite> animations = new ArrayList<AnimationSuite>();
+    List<AnimationSuite> animations = new ArrayList<>();
 
     protected Bitmap texture; // Textur-Filmstreifen
     //    protected Bitmap texture2;
@@ -69,7 +69,9 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
     public void updateLogic() {
         frameNr = frameUpdate.updateFrame();
         updateLogicTemplate();
-        for (AnimationSuite animation : getAnimations()) {
+        int n = animations.size();
+        for (int i = 0; i < n; i++) {
+            AnimationSuite animation = animations.get(i);
             animation.animationLogic();
         }
     }
@@ -170,27 +172,33 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
     }
 
     /**
-     * Startet alle Animationen sofort
+     * Starts all animations
      */
     public void beginAnimation() {
         if (animations != null) {
-            for (AnimationSuite animationSuite : animations)
+            int n = animations.size();
+            for (int i = 0; i < n; i++) {
+                AnimationSuite animationSuite = animations.get(i);
                 animationSuite.startAnimation();
+            }
         }
     }
 
     public void stopAnimations() {
         if (animations == null)
             return;
-        for (AnimationSuite animationSuite : animations)
+        int n = animations.size();
+        for (int i = 0; i < n; i++) {
+            AnimationSuite animationSuite = animations.get(i);
             animationSuite.stop();
+        }
     }
 
 
     /**
      * Starts a specific animation
      *
-     * @param idx Index of the animation to start
+     * @param idx Index of the added animation to start
      */
     public void beginAnimation(int idx) {
         if (animations != null) {
@@ -224,7 +232,9 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
      * @return Animation of type {@link AnimationSuite} or {@code null} if animation is not present
      */
     public AnimationSuite findAnimation(Class<? extends AnimationSuite> suiteClass) {
-        for (AnimationSuite animationSuite : animations) {
+        int n = animations.size();
+        for (int i = 0; i < n; i++) {
+            AnimationSuite animationSuite = animations.get(i);
             if (animationSuite.getClass() == suiteClass)
                 return animationSuite;
         }
@@ -250,7 +260,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
      * @return Extent of the sprite
      */
     public RectF getRect() {
-        if(rect == null)
+        if (rect == null)
             rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
         else {
             rect.set(position.x, position.y, position.x + frameW, position.y + frameH);

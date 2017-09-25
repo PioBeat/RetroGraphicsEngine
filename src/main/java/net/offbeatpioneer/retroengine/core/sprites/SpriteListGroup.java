@@ -39,7 +39,9 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
     }
 
     public void draw(final List<AbstractSprite> childs, Canvas canvas, long currentTime) {
-        for (AbstractSprite child : childs) {
+        int n = childs.size();
+        for (int i = 0; i < n; i++) {
+            AbstractSprite child = childs.get(i);
             if (child.hasChildren()) {
                 draw(((SpriteListGroup) child).getChildren(), canvas, currentTime); //safe case because only groups have children
             } else {
@@ -57,7 +59,8 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
 
     @Override
     public void removeInActive(List<AbstractSprite> children) {
-        for (int i = children.size() - 1; i >= 0; i--) {
+        int n = children.size() - 1;
+        for (int i = n; i >= 0; i--) {
             AbstractSprite eachSprite = children.get(i);
             if (eachSprite.hasChildren()) {
                 if (!eachSprite.isActive()) {
@@ -86,7 +89,9 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
      */
     @Override
     public void updateLogicTemplate() {
-        for (AnimationSuite animation : getAnimations()) {
+        int n = animations.size();
+        for (int i = 0; i < n; i++) {
+            AnimationSuite animation = animations.get(i);
             animation.animationLogic();
         }
     }
@@ -98,7 +103,10 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
      */
     @Override
     public void onAction(Object parameter) {
-        for (AbstractSprite each : getChildren()) {
+        List<AbstractSprite> childs = getChildren();
+        int n = childs.size();
+        for (int i = 0; i < n; i++) {
+            AbstractSprite each = childs.get(i);
             each.onAction(parameter);
         }
     }
@@ -124,15 +132,14 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
     }
 
     public void add(AbstractSprite child, int index) {
-        // Add the child to the list of children.
+        int n = children.size();
+        // Add the child to the list of children
         if (child == null) return;
-        if (index < 0 || index == children.size())  // then append
-        {
+        if (index < 0 || index == n) { // then append
             children.add(child);
-        } else if (index > children.size()) {
-            throw new IllegalArgumentException("Cannot add child to index " + index + ".  There are only " + children.size() + " children.");
-        } else  // insert
-        {
+        } else if (index > n) {
+            throw new IllegalArgumentException("Cannot add child to index " + index + ".  There are only " + n + " children.");
+        } else { // insert
             children.set(index, child);
         }
         child.setParentSprite(this);
