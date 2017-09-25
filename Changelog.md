@@ -1,5 +1,19 @@
 # [UNRELEASED]
 
+## Added
+- **New** Audio Service (``AudioService``) can be accessed via the
+Audio Service Locator (``AudioServiceLocator``). Included is a basic
+implementation to play sounds and background music (``SoundWorkerImpl``).
+This provides a global access for the audio service and decouples graphics
+and sound.
+
+## Changed
+- **Performance** rect extent of a sprite is now a member variable
+(no more multiple instance creation)
+- **Performance** used a hand-written counted loop in ``SpriteListGroup``
+ and ``AbstractSprite`` to iterate over children and animations
+ ([Use Enhanced For Loop Syntax](https://developer.android.com/training/articles/perf-tips.html#Loops))
+
 # [0.9.3.3] - 2017-06-08
 
 ## Added
