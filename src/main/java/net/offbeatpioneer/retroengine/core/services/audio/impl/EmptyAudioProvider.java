@@ -20,6 +20,11 @@ public class EmptyAudioProvider implements AudioService {
     }
 
     @Override
+    public boolean isPlayingBgMusic() {
+        return false;
+    }
+
+    @Override
     public void stopBackgroundMusic() {
 
     }

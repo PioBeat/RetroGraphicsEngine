@@ -1,10 +1,12 @@
 package net.offbeatpioneer.retroengine.core.services.audio.impl;
 
 import android.content.Context;
+import android.media.MediaDataSource;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.util.Log;
 
 import net.offbeatpioneer.retroengine.core.services.audio.AudioMessage;
 import net.offbeatpioneer.retroengine.core.services.audio.AudioService;
@@ -15,6 +17,7 @@ import net.offbeatpioneer.retroengine.core.services.audio.AudioService;
  */
 
 public class SoundWorkerImpl extends HandlerThread implements AudioService, Handler.Callback {
+    private final static String TAG = "SoundWorkerImpl";
     private Handler mWorkerHandler;
     private final static int PLAY_SOUND = 100;
     private final static int PLAY_BG_MUSIC = 101;
@@ -49,9 +52,24 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
     }
 
     @Override
+    public boolean isPlayingBgMusic() {
+        try {
+            return backgroundMusic != null && backgroundMusic.isPlaying();
+        } catch (IllegalStateException e) {
+            Log.e(TAG, e.toString(), e);
+            return false;
+        }
+    }
+
+    @Override
     public void stopBackgroundMusic() {
         if (backgroundMusic != null) {
-            backgroundMusic.stop();
+            try {
+                backgroundMusic.stop();
+            } catch (IllegalStateException e) {
+                Log.e(TAG, e.toString(), e);
+            }
+            backgroundMusic.release();
         }
     }
 
@@ -75,9 +93,11 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
                 break;
             case PLAY_BG_MUSIC:
                 AudioMessage playMessage1 = (AudioMessage) message.obj;
+                this.stopBackgroundMusic();
                 backgroundMusic = MediaPlayer.create(this.context, playMessage1.getSoundId());
                 backgroundMusic.setLooping(true);
                 backgroundMusic.start();
+
                 break;
         }
         return true;

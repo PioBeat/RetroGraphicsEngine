@@ -7,8 +7,12 @@ package net.offbeatpioneer.retroengine.core.services.audio;
 
 public interface AudioService {
     void playSound(AudioMessage audioMessage);
+
     void playBackgroundMusic(AudioMessage audioMessage);
 
+    boolean isPlayingBgMusic();
+
     void stopBackgroundMusic();
+
     void stopAll();
 }
