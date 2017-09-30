@@ -30,6 +30,11 @@ public class EmptyAudioProvider implements AudioService {
     }
 
     @Override
+    public void stopSound(int resId) {
+
+    }
+
+    @Override
     public void stopAll() {
 
     }
