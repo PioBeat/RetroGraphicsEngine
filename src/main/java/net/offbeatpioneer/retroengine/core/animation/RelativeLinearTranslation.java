@@ -18,14 +18,10 @@ import java.util.List;
  */
 public class RelativeLinearTranslation extends AnimationSuite {
 
-    private PointF currentPosition;
     private PointF[] values;
     private int N;
     private int counter;
-
     private PointF end;
-    private float amountX = 0;
-    private float amountY = 0;
 
     //Typ mitgeben welche art von end-Vektor: zB absolute angabe oder als "speed"-Vektor
     //Speed-vektor kann man auch ausrechnen: v=s/t
@@ -40,11 +36,9 @@ public class RelativeLinearTranslation extends AnimationSuite {
         float vx = (end.x / timeReal);
         float vy = (end.y / (timeReal));
         N = (int) ((time * 1.0f) / (RetroEngine.TICKS_PER_SECOND - RetroEngine.SKIP_TICKS));
-        amountX = vx;
-        amountY = vy;
         values = new PointF[N];
         for (int i = 0; i < N; i++) {
-            values[i] = new PointF(amountX, amountY);
+            values[i] = new PointF(vx, vy);
         }
     }
 
@@ -79,7 +73,7 @@ public class RelativeLinearTranslation extends AnimationSuite {
 
         float xValue = values[counter].x;
         float yValue = values[counter].y;
-        currentPosition = new PointF(xValue, yValue);
+        PointF currentPosition = new PointF(xValue, yValue);
         counter++;
         if (getAnimatedSprite() instanceof ISpriteGroup) {
             animateSetPosition((ISpriteGroup) getAnimatedSprite(), currentPosition);
