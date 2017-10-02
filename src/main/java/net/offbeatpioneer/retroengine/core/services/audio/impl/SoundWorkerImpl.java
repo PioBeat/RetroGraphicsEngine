@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Basic implementation of the {@link AudioService}. <br/>
+ * Basic implementation of the {@link AudioService}.
  * The {@link MediaPlayer} instances are created in the {@link HandlerThread} and messages are used to indicate
  * whether and which kind of sound (background music or sound effect) should be played.
  * <p>
