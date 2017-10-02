@@ -28,18 +28,19 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         parentSprite = null;
         sRectangle = new Rect(0, 0, 0, 0);
         loop = false;
-        animations = new ArrayList<AnimationSuite>();
+        animations = new ArrayList<>();
         actionEventCallback = new EmptyAction();
-        oldPosition = null;
+//        oldPosition = null;
         viewportOrigin = new PointF(0, 0);
         frameUpdate = new AnimatedFrameUpdate(this);
         scale = 1f;
         position = new PointF(0, 0);
+//        oldPosition = new PointF(0, 0);
     }
 
 
     public AnimatedSprite initAsAnimation(Bitmap bitmap, int height, int width, int fps, int frameCount, PointF pos, boolean loop) {
-        oldPosition = null;
+//        oldPosition = null;
 
         if (bitmap != null) {
             this.texture = bitmap;
@@ -55,7 +56,9 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         this.sRectangle.left = 0;
         this.sRectangle.right = frameW;
         this.frameCnt = frameCount;
-        this.position = pos;
+//        this.position = pos;
+//        oldPosition = pos;
+        position = pos;
         int speedScalar = 5;
         speed = new PointF(0, 0);
         speed.x = speedScalar;
@@ -68,6 +71,9 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         angle = 0;
         active = true;
         autoDestroy = true;
+
+        rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
+//        oldPosition = new PointF(p.x, p.y);
 
         if (parentSprite != null) {
             viewportOrigin = parentSprite.getViewportOrigin() != null ? parentSprite.getViewportOrigin() : new PointF(0, 0);
@@ -105,12 +111,13 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         this.frameCnt = 1;
         this.frameStep = 1;
         this.speed = spd;
-        this.position = pos;
+//        oldPosition = pos;
+        position = pos;
         this.alphaValue = 255;
         cnt = 0;
         frameNr = 0;
         this.framePeriod = 1000 / 25;
-
+        rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
         angle = 0;
         //forceIdleness = false;
         active = true;
@@ -120,7 +127,7 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
     }
 
     /**
-     * Convienent method for still sprites.
+     * Convenient method for sprites with no texture film stripe.
      * Speed is set to zero.
      *
      * @param texture  Texture of the sprite

@@ -82,9 +82,9 @@ public class TextElement extends Decorator {
      * <p>
      * The position is inherited from the sprite always
      */
-    public void init() {
+    public TextElement init() {
         if (text == null) text = "";
-        this.initWithText(this.text);
+        return this.initWithText(this.text);
     }
 
     /**
@@ -94,13 +94,13 @@ public class TextElement extends Decorator {
      *
      * @param pos position of the text
      */
-    public void init(PointF pos) {
+    public TextElement init(PointF pos) {
         if (text == null) text = "";
-        this.initWithText(this.text, pos);
+        return this.initWithText(this.text, pos);
     }
 
-    public void initWithText(String text) {
-        this.initWithText(text, getSprite().getPosition());
+    public TextElement initWithText(String text) {
+        return this.initWithText(text, getSprite().getPosition());
     }
 
     //https://chris.banes.me/2014/03/27/measuring-text/
@@ -113,7 +113,7 @@ public class TextElement extends Decorator {
      * @param pos  position of the text. Will be assigned to the underlying sprite
      */
     @SuppressWarnings("all")
-    public void initWithText(String text, PointF pos) {
+    public TextElement initWithText(String text, PointF pos) {
         getSprite().setPosition(pos);
 
         paint.setTextAlign(Paint.Align.LEFT);
@@ -132,14 +132,14 @@ public class TextElement extends Decorator {
         c.setBitmap(tempBmp);
 //        c.drawPaint(paint);
 //        c.drawColor(Color.BLUE);
-        if(bgColor != -1)
+        if (bgColor != -1)
             c.drawColor(bgColor);
 //        int ar = Color.argb(getAlphaValue(), Color.red(color), Color.green(color), Color.blue(color));
         paint.setColor(font.getFontColor());
         paint.setAntiAlias(true);
 //        paint.setColor(Color.argb(getAlphaValue(), 255, 255, 255));
         c.drawText(text, 0, textHeight + 0.5f, paint);
-        this.init(tempBmp, getSprite().getPosition(), new PointF(0, 0));
+        return (TextElement) this.init(tempBmp, getSprite().getPosition());
     }
 
 

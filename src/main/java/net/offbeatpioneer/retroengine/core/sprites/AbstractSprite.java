@@ -38,7 +38,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
     private int fps;
     int alphaValue = 255;
     boolean loop;
-    private RectF rect;
+    protected RectF rect;
     int cnt; // interner Zaehler
     int frameNr = 0; // aktuelles Frame
     int frameCnt; // Anzahl Frames im Filmstreifen
@@ -69,8 +69,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
     public void updateLogic() {
         frameNr = frameUpdate.updateFrame();
         updateLogicTemplate();
-        int n = animations.size();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0, n = animations.size(); i < n; i++) {
             AnimationSuite animation = animations.get(i);
             animation.animationLogic();
         }
@@ -135,17 +134,6 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
         return false;
     }
 
-//    public Object getChildren() {
-//        return new ArrayList<>();
-//    }
-
-    public void translate(PointF p) {
-        if (oldPosition == null) {
-            oldPosition = getPosition();
-        }
-        this.position = new PointF(position.x + p.x, position.y + p.y);
-    }
-
     /**
      * Functionality of a sprite for events or such alike. For example if a collision with this
      * sprite is detected.
@@ -158,14 +146,46 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
     public void onAction(Object parameter) {
     }
 
+    /**
+     * Resets the position to the value of the old position saved in {@code oldPosition}
+     */
     public void resetPosition() {
         this.position = oldPosition;
         oldPosition = null;
     }
 
+    public void translate(PointF p) {
+        if (oldPosition == null) {
+            oldPosition = getPosition();
+        }
+        this.position = new PointF(position.x + p.x, position.y + p.y);
+    }
+
+    /**
+     * Set the position of the sprite. You have to add the viewport origin by yourself
+     * if the canvas is translated to set the correct position.
+     *
+     * @param p position vector
+     */
+    public void setPosition(PointF p) {
+        if (oldPosition == null) {
+            oldPosition = p;
+        }
+        this.position = p;
+    }
+
+    /**
+     * Position of the sprite
+     *
+     * @return position of type {@link PointF}
+     */
+    public PointF getPosition() {
+        return this.position;
+    }
+
     public void addAnimation(AnimationSuite animation) {
         if (animations == null)
-            animations = new ArrayList<AnimationSuite>();
+            animations = new ArrayList<>();
         if (animation.getAnimatedSprite() == null)
             animation.setAnimatedSprite(this);
         animations.add(animation);
@@ -176,8 +196,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
      */
     public void beginAnimation() {
         if (animations != null) {
-            int n = animations.size();
-            for (int i = 0; i < n; i++) {
+            for (int i = 0, n = animations.size(); i < n; i++) {
                 AnimationSuite animationSuite = animations.get(i);
                 animationSuite.startAnimation();
             }
@@ -187,8 +206,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
     public void stopAnimations() {
         if (animations == null)
             return;
-        int n = animations.size();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0, n = animations.size(); i < n; i++) {
             AnimationSuite animationSuite = animations.get(i);
             animationSuite.stop();
         }
@@ -205,7 +223,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
             try {
                 animations.get(idx).startAnimation();
             } catch (Exception e) {
-                Log.e("Animation Error", "Animation could not be started, Index does not exist.");
+                Log.e("Animation Error", "Animation could not be started, index does not exist.", e);
             }
         }
     }
@@ -220,7 +238,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
             try {
                 findAnimation(suiteClass).startAnimation();
             } catch (Exception e) {
-                Log.e("Animation Error", "Animation could not be started, Index does not exist.");
+                Log.e("Animation Error", "Animation could not be started, it does not exist.", e);
             }
         }
     }
@@ -232,8 +250,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
      * @return Animation of type {@link AnimationSuite} or {@code null} if animation is not present
      */
     public AnimationSuite findAnimation(Class<? extends AnimationSuite> suiteClass) {
-        int n = animations.size();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0, n = animations.size(); i < n; i++) {
             AnimationSuite animationSuite = animations.get(i);
             if (animationSuite.getClass() == suiteClass)
                 return animationSuite;
@@ -260,11 +277,11 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
      * @return Extent of the sprite
      */
     public RectF getRect() {
-        if (rect == null)
-            rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
-        else {
-            rect.set(position.x, position.y, position.x + frameW, position.y + frameH);
-        }
+//        if (rect == null)
+//            rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
+//        else {
+        rect.set(position.x, position.y, position.x + frameW, position.y + frameH);
+//        }
         return rect;
     }
 
@@ -331,31 +348,6 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
     public boolean ContainsRect(RectF r) {
         RectF rect = this.getRect();
         return r.contains(rect);
-    }
-
-    /**
-     * Set position of the sprite. You have to add the viewport origin by yourself
-     * if the canvas is translated to set the correct position.
-     *
-     * @param p position vector
-     */
-    public void setPosition(PointF p) {
-        if (oldPosition == null) {
-            oldPosition = p;
-        }
-        this.position = p;
-    }
-
-    /**
-     * Position of the sprite
-     *
-     * @return position of type {@link PointF}
-     */
-    public PointF getPosition() {
-//        if(getViewportOrigin() != null) {
-//            this.position = new PointF(getViewportOrigin().x + position.x, getViewportOrigin().y + position.y);
-//        }
-        return this.position;
     }
 
     /**
