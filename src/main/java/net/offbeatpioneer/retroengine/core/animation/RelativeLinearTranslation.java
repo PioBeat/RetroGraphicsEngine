@@ -22,7 +22,7 @@ public class RelativeLinearTranslation extends AnimationSuite {
     private PointF[] values;
     private int N;
     private int counter;
-    private PointF start;
+
     private PointF end;
     private float amountX = 0;
     private float amountY = 0;
@@ -31,21 +31,19 @@ public class RelativeLinearTranslation extends AnimationSuite {
     //Speed-vektor kann man auch ausrechnen: v=s/t
     public RelativeLinearTranslation(PointF end, int time) {
         super();
-        this.counter = 0;
-        //milliseconds = time;
-        setTime(time);
-        setStart(start);
+
         setEnd(end);
-        currentPosition = start;
+        setTime(time);
+
+        counter = 0;
         float timeReal = ((time * 1.0f) / (RetroEngine.TICKS_PER_SECOND - RetroEngine.SKIP_TICKS) * (1.0f));
         float vx = (end.x / timeReal);
         float vy = (end.y / (timeReal));
         N = (int) ((time * 1.0f) / (RetroEngine.TICKS_PER_SECOND - RetroEngine.SKIP_TICKS));
-        amountX = vx; //(float)(N*vx);
-        amountY = vy; //(float)(N*vy);
+        amountX = vx;
+        amountY = vy;
         values = new PointF[N];
         for (int i = 0; i < N; i++) {
-//            values[i] = new Point(end.x, end.y);
             values[i] = new PointF(amountX, amountY);
         }
     }
@@ -79,10 +77,6 @@ public class RelativeLinearTranslation extends AnimationSuite {
             }
         }
 
-        PointF start = new PointF(getAnimatedSprite().getPosition().x, getAnimatedSprite().getPosition().y);
-        PointF pp = new PointF(start.x + amountX, start.y + amountY);
-//        float xValue = InterpolationHelper.linearPointBetween(start.x, pp.x, counter, N);
-//        float yValue = InterpolationHelper.linearPointBetween(start.y, pp.y, counter, N);
         float xValue = values[counter].x;
         float yValue = values[counter].y;
         currentPosition = new PointF(xValue, yValue);
@@ -99,9 +93,9 @@ public class RelativeLinearTranslation extends AnimationSuite {
         for (AbstractSprite child : childs) {
             if (child.hasChildren()) {
                 animateSetPosition((ISpriteGroup) child, position);
-
+            } else {
+                child.translate(position);
             }
-            child.translate(position);
         }
     }
 
@@ -111,8 +105,9 @@ public class RelativeLinearTranslation extends AnimationSuite {
         for (AbstractSprite child : childs) {
             if (child.hasChildren()) {
                 animateResetPosition(((ISpriteGroup) child));
+            } else {
+                child.resetPosition();
             }
-            child.resetPosition();
         }
     }
 
@@ -127,14 +122,6 @@ public class RelativeLinearTranslation extends AnimationSuite {
             }
         }
         return childs;
-    }
-
-    public PointF getStart() {
-        return start;
-    }
-
-    public void setStart(PointF start) {
-        this.start = start;
     }
 
     public PointF getEnd() {

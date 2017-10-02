@@ -3,8 +3,11 @@ package net.offbeatpioneer.retroengine.core.animation;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.sprites.AbstractSprite;
+import net.offbeatpioneer.retroengine.core.sprites.ISpriteGroup;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,6 +33,7 @@ public abstract class AnimationSuite {
     protected IAnimationSuiteListener listener = new EmptyAnimationSuiteListener();
 
     private boolean loop = false;
+    private long now = 0;
 
     @Deprecated
     //TODO: entfernen, soll einfach in einer Action für ein Sprite festgelegt werden und nicht hier, dazu noch eine extra logic action für ein sprite machen oder sowas

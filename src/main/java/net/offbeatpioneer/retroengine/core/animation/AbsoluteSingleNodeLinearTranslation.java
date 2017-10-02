@@ -29,7 +29,7 @@ public class AbsoluteSingleNodeLinearTranslation extends AnimationSuite {
     private Direction direction;
     private PointF currentPosition;
 
-    private PointF[] values;
+    //    private PointF[] values;
     private int N;
     private int counter;
     private PointF start;
@@ -39,15 +39,16 @@ public class AbsoluteSingleNodeLinearTranslation extends AnimationSuite {
     private int offsetX = 0;
     private int offsetY = 0;
 
-    long timePassed = 0;
+//    long timePassed = 0;
 
     public AbsoluteSingleNodeLinearTranslation(Direction direction, int time) {
         super();
         this.counter = 0;
         setTime(time);
-        now = -1;
+        now = 0;
         this.direction = direction;
-        N = (time / (RetroEngine.TICKS_PER_SECOND - RetroEngine.SKIP_TICKS));
+        N = (time / 1000 * RetroEngine.TICKS_PER_SECOND);
+        currentPosition = new PointF(0, 0);
     }
 
     public AbsoluteSingleNodeLinearTranslation(AbstractSprite sprite, Direction direction, int time) {
@@ -143,7 +144,7 @@ public class AbsoluteSingleNodeLinearTranslation extends AnimationSuite {
 
         float xValue = InterpolationHelper.linearPointBetween(start.x, ende.x, counter, N);
         float yValue = InterpolationHelper.linearPointBetween(start.y, ende.y, counter, N);
-        currentPosition = new PointF(xValue, yValue);
+        currentPosition.set(xValue, yValue);
 
         if (counter >= N) {
             getAnimatedSprite().setPosition(currentPosition);
