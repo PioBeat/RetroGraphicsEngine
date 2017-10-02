@@ -150,15 +150,11 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
      * Resets the position to the value of the old position saved in {@code oldPosition}
      */
     public void resetPosition() {
-        this.position = oldPosition;
-        oldPosition = null;
+        this.position.set(oldPosition.x, oldPosition.y);
     }
 
     public void translate(PointF p) {
-        if (oldPosition == null) {
-            oldPosition = getPosition();
-        }
-        this.position = new PointF(position.x + p.x, position.y + p.y);
+        this.position.set(position.x + p.x, position.y + p.y);
     }
 
     /**
@@ -168,10 +164,12 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
      * @param p position vector
      */
     public void setPosition(PointF p) {
-        if (oldPosition == null) {
-            oldPosition = p;
-        }
-        this.position = p;
+//        this.oldPosition.set(p.x, p.y);
+        this.position.set(p.x, p.y);
+    }
+
+    public void setOldPosition(PointF oldPosition) {
+        this.oldPosition.set(oldPosition.x, oldPosition.y);
     }
 
     /**

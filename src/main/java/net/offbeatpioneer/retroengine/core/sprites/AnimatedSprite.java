@@ -57,8 +57,8 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         this.sRectangle.right = frameW;
         this.frameCnt = frameCount;
 //        this.position = pos;
-//        oldPosition = pos;
-        position = pos;
+        oldPosition = new PointF(pos.x, pos.y);
+        position = new PointF(pos.x, pos.y);
         int speedScalar = 5;
         speed = new PointF(0, 0);
         speed.x = speedScalar;
@@ -111,8 +111,8 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         this.frameCnt = 1;
         this.frameStep = 1;
         this.speed = spd;
-//        oldPosition = pos;
-        position = pos;
+        oldPosition = new PointF(pos.x, pos.y);
+        position = new PointF(pos.x, pos.y);
         this.alphaValue = 255;
         cnt = 0;
         frameNr = 0;
