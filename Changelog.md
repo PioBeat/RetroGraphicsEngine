@@ -9,10 +9,13 @@ and sound.
 
 ## Changed
 - **Performance** rect extent of a sprite is now a member variable
-(no more multiple instance creation)
+(no more numerous instance creation)
 - **Performance** used a hand-written counted loop in ``SpriteListGroup``
  and ``AbstractSprite`` to iterate over children and animations
  ([Use Enhanced For Loop Syntax](https://developer.android.com/training/articles/perf-tips.html#Loops))
+- **Performance** member variables ``position`` and ``oldPosition`` of
+``AbstractSprite`` class are now instantiated before (``init()``-methods).
+No new instances are created now anymore in the setter of those variables.
 
 # [0.9.3.3] - 2017-06-08
 
