@@ -6,6 +6,7 @@
 
 #signing
 *.jks
+keystore.properties
 
 # Files for the ART/Dalvik VM
 *.dex
