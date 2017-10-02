@@ -18,7 +18,7 @@ import java.util.TimerTask;
  * @since 22.10.2014
  */
 public class AnimationTimeline {
-    private List<StoryLineSlot> slots = new ArrayList<StoryLineSlot>();
+    private List<StoryLineSlot> slots = new ArrayList<>();
     //private Iterator<StoryLineSlot> spriteIterator;
     private int counter = 0;
     public static boolean CHANGED = false;
@@ -56,11 +56,11 @@ public class AnimationTimeline {
         currentTime = RetroEngine.getTickCount();
     }
 
-    public boolean isCHANGED() {
+    public boolean isChanged() {
         return CHANGED;
     }
 
-    public void setCHANGEDFalse() {
+    public void setNoChange() {
         CHANGED = false;
     }
 
@@ -82,8 +82,8 @@ public class AnimationTimeline {
             StoryLineSlot nextElem;
             oldElem = getCurrentElement();
             if ((nextElem = getNext()) != null) {
-                setCHANGEDFalse();
-                //storyLine.setCHANGEDFalse();
+                setNoChange();
+                //storyLine.setNoChange();
                 initCurrentSlot();
                 return nextElem.getAnimatedSprites();
             }
