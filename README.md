@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    compile 'net.offbeat-pioneer.android:retroengine:0.9.3.3'
+    compile 'net.offbeat-pioneer.android:retroengine:0.9.4'
 }
 ```
 
