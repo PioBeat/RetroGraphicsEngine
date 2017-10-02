@@ -5,6 +5,7 @@ import net.offbeatpioneer.retroengine.core.sprites.AnimatedSprite;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.TimerTask;
 
@@ -17,7 +18,7 @@ import java.util.TimerTask;
  * @since 22.10.2014
  */
 public class StoryLineSlot {
-    public List<AbstractSprite> animatedSprites = new ArrayList<AbstractSprite>();
+    public List<AbstractSprite> animatedSprites = new ArrayList<>();
     private int duration;
     private boolean active;
     private boolean overwrite;
@@ -39,7 +40,7 @@ public class StoryLineSlot {
      * @param duration       Dauer
      */
     public StoryLineSlot(AnimatedSprite animatedSprite, int duration) {
-        this(new ArrayList<AbstractSprite>(Arrays.asList(animatedSprite)), duration);
+        this(new ArrayList<AbstractSprite>(Collections.singletonList(animatedSprite)), duration);
     }
 
     public StoryLineSlot(List<AbstractSprite> animatedSprites, int duration) {
