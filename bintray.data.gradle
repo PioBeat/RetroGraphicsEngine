@@ -15,7 +15,7 @@ ext {
 
     developerId = 'piobeat'
     developerName = 'Dominik Grzelak'
-    developerEmail = ''
+    developerEmail = 'android@offbeat-pioneer.net'
 
     licenseName = 'The Apache Software License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'

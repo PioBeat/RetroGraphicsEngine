@@ -54,5 +54,7 @@ task copyToLib(type: Copy) {
 
 build.dependsOn copyToLib
 
+apply from: './installv1.gradle'
+apply from: './bintrayv1.gradle'
 //apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
 //apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'
