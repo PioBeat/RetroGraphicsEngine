@@ -50,7 +50,7 @@ public class AnimationTimeline {
         this.counter = 0;
     }
 
-    public void finalize() {
+    public void finalizeTimeline() {
         if (slots != null)
             oldElem = slots.get(0);
         currentTime = RetroEngine.getTickCount();
