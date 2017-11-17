@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.os.Process;
 import android.util.Log;
 
 import net.offbeatpioneer.retroengine.core.services.audio.AudioMessage;
@@ -35,6 +36,7 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
 
     private AtomicInteger cnt = new AtomicInteger(0);
     private Context context;
+    private final int maxSounds;
 
     /**
      * Is called by the client
@@ -47,14 +49,37 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
     }
 
     private SoundWorkerImpl(String name, int maxSounds) {
-        super(name);
+        super(name, Process.THREAD_PRIORITY_BACKGROUND);
         this.MAX_SOUNDS = maxSounds;
-        start();
+        this.maxSounds = maxSounds;
+    }
+
+    @Override
+    protected void onLooperPrepared() {
+        super.onLooperPrepared();
         prepareHandler();
     }
 
     private void prepareHandler() {
-        mWorkerHandler = new Handler(getLooper(), this);
+        if (mWorkerHandler == null)
+            mWorkerHandler = new Handler(getLooper(), this);
+    }
+
+    /**
+     * Start the {@link HandlerThread} in the background.
+     *
+     * @throws Exception is only thrown if thread already started, but the Looper is null. This is
+     *                   the signal to provide a new audio service of this kind
+     */
+    @Override
+    public void initialize() throws Exception {
+        try {
+            start();
+        } catch (IllegalThreadStateException e) {
+            if (getLooper() == null) {
+                throw e;
+            }
+        }
     }
 
     @Override
@@ -101,10 +126,26 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
 
     }
 
+    /**
+     * Calling stopAll() will stop all currently playing sounds and will also
+     * destroy this thread. In case you want to access this audio service again you have
+     * to create a new one.
+     */
     @Override
     public void stopAll() {
+        cnt.set(maxSounds);
         this.stopBackgroundMusic();
-        cnt.set(0);
+        if (mWorkerHandler != null) {
+            mWorkerHandler.removeMessages(PLAY_SOUND);
+            mWorkerHandler.removeMessages(PLAY_BG_MUSIC);
+            mWorkerHandler.removeCallbacks(this);
+        }
+        try {
+            this.quit();
+        } catch (Exception e) {
+            Log.e(TAG, e.toString(), e);
+        }
+        mWorkerHandler = null;
     }
 
     @Override

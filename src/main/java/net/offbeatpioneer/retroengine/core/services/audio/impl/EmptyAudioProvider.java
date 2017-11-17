@@ -10,6 +10,11 @@ import net.offbeatpioneer.retroengine.core.services.audio.AudioService;
 
 public class EmptyAudioProvider implements AudioService {
     @Override
+    public void initialize() throws Exception {
+
+    }
+
+    @Override
     public void playSound(AudioMessage audioMessage) {
 
     }

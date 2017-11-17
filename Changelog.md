@@ -5,7 +5,8 @@
 Audio Service Locator (``AudioServiceLocator``). Included is a basic
 implementation to play sounds and background music (``SoundWorkerImpl``).
 This provides a global access for the audio service and decouples graphics
-and sound.
+and sound. The ``SoundWorkerImpl`` is an implementation that runs as a thread
+in the background.
 
 ## Changed
 - **Performance** rect extent of a sprite is now a member variable
@@ -16,6 +17,13 @@ and sound.
 - **Performance** member variables ``position`` and ``oldPosition`` of
 ``AbstractSprite`` class are now instantiated before (``init()``-methods).
 No new instances are created now anymore in the setter of those variables.
+
+## Bugifx
+- fixed multiple issues reagarding ``SoundWorkerImpl``
+    - ``SoundWorkerImpl`` has now priority ``THREAD_PRIORITY_BACKGROUND``
+    - ``SoundWorkerImpl#stopAll()`` destroys thread - a new audio service has to be created
+    and provided for the ``AudioServiceLocator``
+
 
 # [0.9.3.3] - 2017-06-08
 

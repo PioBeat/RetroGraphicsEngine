@@ -6,6 +6,11 @@ package net.offbeatpioneer.retroengine.core.services.audio;
  */
 
 public interface AudioService {
+
+    /**
+     * Do some initialization
+     */
+    void initialize() throws Exception;
     /**
      * Plays a simple short sound. This should be used for simple non looping
      * sounds
