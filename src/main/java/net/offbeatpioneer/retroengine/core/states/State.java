@@ -128,8 +128,8 @@ public abstract class State {
      * @param referenceSprite reference sprite
      */
     public void setReferenceSprite(AbstractSprite referenceSprite) {
-        backgroundNode.setReferenceRect(referenceSprite.getRect()); //einmalig, spielergröße
-        backgroundNode.setReferencePoint(referenceSprite.getPosition());
+        backgroundNode.updateReferenceRect(referenceSprite.getRect()); //einmalig, spielergröße
+        backgroundNode.updateReferencePoint(referenceSprite.getPosition());
         rootGroup.setViewportOrigin(backgroundNode.getViewportOrigin());
         backgroundNode.setHeight(RetroEngine.H);
         backgroundNode.setWidth(RetroEngine.W);

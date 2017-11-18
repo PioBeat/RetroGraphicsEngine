@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable {
 
     private IActionEventCallback actionEventCallback = new EmptyAction();
+    protected RectF checkBoundsRect;
 
     public AnimatedSprite() {
         disable = false;
@@ -30,18 +31,15 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         loop = false;
         animations = new ArrayList<>();
         actionEventCallback = new EmptyAction();
-//        oldPosition = null;
         viewportOrigin = new PointF(0, 0);
         frameUpdate = new AnimatedFrameUpdate(this);
         scale = 1f;
         position = new PointF(0, 0);
-//        oldPosition = new PointF(0, 0);
+        checkBoundsRect = new RectF();
     }
 
 
     public AnimatedSprite initAsAnimation(Bitmap bitmap, int height, int width, int fps, int frameCount, PointF pos, boolean loop) {
-//        oldPosition = null;
-
         if (bitmap != null) {
             this.texture = bitmap;
             this.backupTexture = bitmap;
@@ -58,7 +56,7 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         this.frameCnt = frameCount;
 //        this.position = pos;
         oldPosition = new PointF(pos.x, pos.y);
-        position = new PointF(pos.x, pos.y);
+        position.set(pos.x, pos.y);
         int speedScalar = 5;
         speed = new PointF(0, 0);
         speed.x = speedScalar;
@@ -100,29 +98,29 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
             this.backupTexture = tex;
         }
 
-        if (texture != null) {
-            frameW = texture.getWidth();
-            frameH = texture.getHeight();
+        if (this.texture != null) {
+            this.frameW = this.texture.getWidth();
+            this.frameH = this.texture.getHeight();
         } else {
-            frameW = 0;
-            frameH = 0;
+            this.frameW = 0;
+            this.frameH = 0;
         }
 
         this.frameCnt = 1;
         this.frameStep = 1;
         this.speed = spd;
-        oldPosition = new PointF(pos.x, pos.y);
-        position = new PointF(pos.x, pos.y);
+        this.oldPosition = new PointF(pos.x, pos.y);
+        this.position = new PointF(pos.x, pos.y);
         this.alphaValue = 255;
-        cnt = 0;
-        frameNr = 0;
+        this.cnt = 0;
+        this.frameNr = 0;
         this.framePeriod = 1000 / 25;
-        rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
-        angle = 0;
+        this.rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
+        this.angle = 0;
         //forceIdleness = false;
-        active = true;
-        autoDestroy = true;
-        frameUpdate = new NoFrameUpdate();
+        this.active = true;
+        this.autoDestroy = true;
+        this.frameUpdate = new NoFrameUpdate();
         return this;
     }
 
@@ -140,10 +138,12 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
     public void updateLogicTemplate() {
         if (autoDestroy) {
             PointF o = getViewportOrigin();
-            if (!ContainsRect(new RectF(o.x - (int) (RetroEngine.W * bufferZoneFactor), o.y
-                    - (int) (RetroEngine.H * bufferZoneFactor), o.x
-                    + (int) (RetroEngine.W * (1.0 + bufferZoneFactor)), o.y
-                    + (int) (RetroEngine.H * (1.0 + bufferZoneFactor))))) {
+            checkBoundsRect.set(o.x - (int) (RetroEngine.W * bufferZoneFactor),
+                    o.y - (int) (RetroEngine.H * bufferZoneFactor),
+                    o.x + (int) (RetroEngine.W * (1.0 + bufferZoneFactor)),
+                    o.y + (int) (RetroEngine.H * (1.0 + bufferZoneFactor))
+            );
+            if (!ContainsRect(checkBoundsRect)) {
                 active = false;
             }
         }

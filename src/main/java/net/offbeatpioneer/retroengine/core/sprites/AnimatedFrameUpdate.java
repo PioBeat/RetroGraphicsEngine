@@ -39,9 +39,9 @@ public class AnimatedFrameUpdate implements IFrameUpdate {
         Rect sRectangle = sprite.getsRectangle();
         sRectangle.left = (sprite.getFrameNr() * sprite.getFrameW());
         sRectangle.right = (sRectangle.left + sprite.getFrameW());
-        Bitmap texture;
         try {
-            texture = Bitmap.createBitmap(sprite.getBackupTexture(),
+//            sprite.getTexture().recycle();
+            Bitmap texture = Bitmap.createBitmap(sprite.getBackupTexture(),
                     sRectangle.left,
                     sRectangle.top,
                     sRectangle.width(),

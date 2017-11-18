@@ -21,7 +21,6 @@ public class RectangleSprite extends AnimatedSprite implements Colorable {
     private float height;
     private int color;
     private Bitmap tempBmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-    private Canvas c = new Canvas();
 
 
     public RectangleSprite() {
@@ -33,9 +32,10 @@ public class RectangleSprite extends AnimatedSprite implements Colorable {
     }
 
     public RectangleSprite(PointF position, float width, float height, int color) {
+        super();
         this.width = width * RetroEngine.DENSITY + 0.5f;
         this.height = height * RetroEngine.DENSITY + 0.5f;
-        this.position = position;
+        this.position.set(position.x, position.y);
         this.color = color;
     }
 
@@ -47,6 +47,7 @@ public class RectangleSprite extends AnimatedSprite implements Colorable {
         //prepare circle image and save it as bitmap
         tempBmp.recycle();
         tempBmp = Bitmap.createBitmap((int) this.width, (int) this.height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas();
         c.setBitmap(tempBmp);
 //        c.drawColor(Color.BLUE);
         int ar = Color.argb(getAlphaValue(), Color.red(color), Color.green(color), Color.blue(color));

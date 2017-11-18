@@ -31,6 +31,8 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
     Bitmap backupTexture;
     protected PointF speed; // Pixelgeschwindigkeit pro Frame in x-, y-Richtung
     protected PointF position; // aktuelle Position
+    protected final PointF pivotPoint = new PointF(0, 0);
+    protected final Matrix transformationMatrix = new Matrix();
     PointF oldPosition; //Backup, wenn transliert wurde, die ursprüngliche Version beibehalten zum zurücksetzen
     PointF viewportOrigin;
     Rect sRectangle;
@@ -111,16 +113,17 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
             return;
         }
 
-        PointF pivotPoint = new PointF(
+        pivotPoint.set(
                 getPosition().x + getFrameW() / 2,
                 getPosition().y + getFrameH() / 2);
 
         paint.setAlpha(getAlphaValue());
 
-        Matrix transformationMatrix = new Matrix();
+//        Matrix transformationMatrix = new Matrix();
+        transformationMatrix.reset();
         transformationMatrix.postScale(getScale(), getScale(), pivotPoint.x, pivotPoint.y);
         transformationMatrix.postRotate(getAngle(), pivotPoint.x, pivotPoint.y);
-        transformationMatrix.preTranslate(getPosition().x, getPosition().y);
+        transformationMatrix.preTranslate(this.position.x, this.position.y);
 
         paint.setAntiAlias(true);
         paint.setFilterBitmap(false);
@@ -463,6 +466,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
     }
 
     public void setTexture(Bitmap texture) {
+//        this.texture.recycle();
         this.texture = texture;
     }
 

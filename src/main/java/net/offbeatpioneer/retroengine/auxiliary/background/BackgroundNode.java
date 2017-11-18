@@ -18,17 +18,21 @@ import java.util.List;
  */
 public class BackgroundNode {
 
-    private PointF referencePoint = new PointF();
-    private RectF referenceRect = new RectF();
-    private final List<BackgroundLayer> backgrounds = new ArrayList<>();
+    private PointF referencePoint;
+    private RectF referenceRect;
     private int width;
     private int height;
     private float xt = 0, yt = 0;
-    private PointF viewportOrigin = new PointF(-xt, -yt);
+    private PointF viewportOrigin;
     public int offsetX = 0;
     public int offsetY = 0;
 
+    private final List<BackgroundLayer> backgrounds = new ArrayList<>();
+
     public BackgroundNode() {
+        referencePoint = new PointF(0, 0);
+        referenceRect = new RectF(0, 0, 0, 0);
+        viewportOrigin = new PointF(-xt, -yt);
     }
 
     public static class Builder {
@@ -85,7 +89,8 @@ public class BackgroundNode {
     private void initTranslation() {
         xt = width / 2 + offsetX - referenceRect.width() / 2 - referencePoint.x;
         yt = height / 2 + offsetY - referenceRect.height() / 2 - referencePoint.y;
-        setViewportOrigin(new PointF(-xt, -yt));
+//        setViewportOrigin(new PointF(-xt, -yt));
+        updateViewportOrigin(-xt, -yt);
     }
 
     /**
@@ -100,6 +105,10 @@ public class BackgroundNode {
 
     public void setViewportOrigin(PointF viewportOrigin) {
         this.viewportOrigin = viewportOrigin;
+    }
+
+    public void updateViewportOrigin(float x, float y) {
+        this.viewportOrigin.set(x, y);
     }
 
     /**
@@ -141,12 +150,20 @@ public class BackgroundNode {
         this.referencePoint = referencePoint;
     }
 
+    public void updateReferencePoint(PointF referencePoint) {
+        this.referencePoint.set(referencePoint.x, referencePoint.y);
+    }
+
     public RectF getReferenceRect() {
         return referenceRect;
     }
 
     public void setReferenceRect(RectF referenceRect) {
         this.referenceRect = referenceRect;
+    }
+
+    public void updateReferenceRect(RectF referenceRect) {
+        this.referenceRect.set(referenceRect.left, referenceRect.top, referenceRect.right, referenceRect.bottom);
     }
 
     public int getWidth() {

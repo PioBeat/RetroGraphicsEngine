@@ -155,17 +155,16 @@ public class TextElement extends Decorator {
         getSprite().draw(canvas, currentTime);
 
         PointF spritePos = getSprite().getPosition();
-        PointF pivotPoint = new PointF(
+        pivotPoint.set(
                 spritePos.x + frameW / 2,
                 spritePos.y + frameH / 2);
 
         paint.setAlpha(getAlphaValue());
-        Matrix rotator = new Matrix();
-
-        rotator.postScale(getScale(), getScale(), pivotPoint.x, pivotPoint.y);
-        rotator.postRotate(getAngle(), pivotPoint.x, pivotPoint.y);
-        rotator.preTranslate(spritePos.x, spritePos.y);
-        canvas.drawBitmap(texture, rotator, paint);
+        transformationMatrix.reset();
+        transformationMatrix.postScale(getScale(), getScale(), pivotPoint.x, pivotPoint.y);
+        transformationMatrix.postRotate(getAngle(), pivotPoint.x, pivotPoint.y);
+        transformationMatrix.preTranslate(spritePos.x, spritePos.y);
+        canvas.drawBitmap(texture, transformationMatrix, paint);
     }
 
     /**

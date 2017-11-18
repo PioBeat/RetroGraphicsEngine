@@ -12,7 +12,7 @@ import net.offbeatpioneer.retroengine.core.sprites.AnimatedSprite;
 import net.offbeatpioneer.retroengine.core.sprites.Colorable;
 
 /**
- * Basic shape represents which a equilateral triangle.
+ * Basic shape represents an equilateral triangle.
  *
  * @author Dominik Grzelak
  * @since 05.03.2017.
@@ -21,7 +21,6 @@ public class TriangleSprite extends AnimatedSprite implements Colorable {
 
     private int color;
     private Bitmap tempBmp = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-    private Canvas c = new Canvas();
     private float length; //length of one side
 
     public TriangleSprite(int color) {
@@ -30,6 +29,7 @@ public class TriangleSprite extends AnimatedSprite implements Colorable {
 
     @SuppressWarnings("all")
     public TriangleSprite(float length, int color) {
+        super();
         this.length = length;
         this.color = color;
     }
@@ -47,6 +47,7 @@ public class TriangleSprite extends AnimatedSprite implements Colorable {
         //prepare circle image and save it as bitmap
         tempBmp.recycle();
         tempBmp = Bitmap.createBitmap((int) this.length, (int) this.length, Bitmap.Config.ARGB_8888);
+        Canvas c =  new Canvas();
         c.setBitmap(tempBmp);
 //        c.drawColor(Color.BLUE);
         int ar = Color.argb(getAlphaValue(), Color.red(color), Color.green(color), Color.blue(color));
