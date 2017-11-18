@@ -15,6 +15,8 @@ API 16+
 To add the library to your
 application include it as a library project along with the *.aar file.
 
+Download the latest release in the [release section](https://github.com/PioBeat/RetroGraphicsEngine/releases).
+
 ### Gradle
 
 <!-- __Currently only version 0.9.3 is available as maven dependency__ -->
