@@ -1,7 +1,15 @@
 # [UNRELEASED]
 
+## Performance
+- Improved memory consumption reducing alloc count for ``Matrix``, ``PointF``, and ``RectF``:
+    - ``AbstractSprite`` has now one matrix, and one pivot point instance
+    - ``AnimatedSprite`` gets ``checkBoundsRect `` attrbute which is created only once
+    - ``RelativeLinearTranslation`` gets ``currentPosition`` as member variable
+    - ``TextElement`` and other simple shapes using matrix and pivot point from base class
+    - ``BackgroundNode``: ``RectF`` and ``PointF`` are now updated instead re-assigned
+
 ## Bugifx
-- fixed multiple issues reagarding ``SoundWorkerImpl``
+- Fixed multiple issues reagarding ``SoundWorkerImpl``
     - ``SoundWorkerImpl`` has now priority ``THREAD_PRIORITY_BACKGROUND``
     - ``SoundWorkerImpl#stopAll()`` destroys thread - a new audio service has to be created
     and provided for the ``AudioServiceLocator``
