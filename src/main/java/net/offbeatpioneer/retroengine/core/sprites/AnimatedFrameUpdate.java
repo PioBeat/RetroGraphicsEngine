@@ -1,31 +1,45 @@
 package net.offbeatpioneer.retroengine.core.sprites;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 
 /**
- * Created by Dome on 15.01.2017.
+ * Frame update function for animated sprite.
+ * For sprites that have a film stripe as texture.
+ *
+ * @author Dominik Grzelak
+ * @since 15.01.2017.
  */
-
 public class AnimatedFrameUpdate implements IFrameUpdate {
     private AbstractSprite sprite;
+    private Bitmap tempBmp;
+    private Canvas c;
+    private Rect source;
 
     public AnimatedFrameUpdate(AbstractSprite sprite) {
         this.sprite = sprite;
+        tempBmp = Bitmap.createBitmap(sprite.frameW, sprite.frameH, Bitmap.Config.ARGB_8888);
+        c = new Canvas(tempBmp);
+//        c.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        source = new Rect(0, 0, tempBmp.getWidth(), tempBmp.getHeight());
     }
 
     /**
-     * Aktualisierungsschritt. Falls ein Filmstreifen vorliegt, dann wird bei jedem Frame-Update das n�chste Bild ausgew�hlt.
+     * Update step. If a film strips is available the next part of the stripe is selected and the
+     * texture of the sprite is updated.
      *
-     * @return aktuelle Position im Filmstreifen.
+     * @return current position of the film stripe
      */
     @Override
     public int updateFrame() {
         long starttime = sprite.getStarttime();
-        if (RetroEngine.getTickCount() > starttime + sprite.getFramePeriod()) { //RetroEngine.TICKS_PER_SECOND) {
+        if (RetroEngine.getTickCount() > starttime + sprite.getFramePeriod()) {
             starttime = RetroEngine.getTickCount();
             sprite.setFrameNr(sprite.getFrameNr() + 1);
 
@@ -36,21 +50,19 @@ public class AnimatedFrameUpdate implements IFrameUpdate {
             }
             sprite.setStarttime(starttime);
         }
-        Rect sRectangle = sprite.getsRectangle();
-        sRectangle.left = (sprite.getFrameNr() * sprite.getFrameW());
-        sRectangle.right = (sRectangle.left + sprite.getFrameW());
+
+        int left = (sprite.getFrameNr() * sprite.getFrameW());
+        int right = (left + sprite.getFrameW());
+        sprite.updateSRectangle(left,
+                sprite.getsRectangle().top,
+                right,
+                sprite.getsRectangle().bottom);
         try {
-//            sprite.getTexture().recycle();
-            Bitmap texture = Bitmap.createBitmap(sprite.getBackupTexture(),
-                    sRectangle.left,
-                    sRectangle.top,
-                    sRectangle.width(),
-                    sRectangle.height()
-            );
-            sprite.setsRectangle(sRectangle);
-            sprite.setTexture(texture);
-        } catch (Exception e) {
-//            e.printStackTrace();
+            tempBmp.recycle();
+            c.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            c.drawBitmap(sprite.getBackupTexture(), sprite.getsRectangle(), source, null);
+            sprite.setTexture(tempBmp);
+        } catch (Exception ignored) {
         }
         return sprite.getFrameNr();
     }
