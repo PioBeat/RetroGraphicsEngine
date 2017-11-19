@@ -5,13 +5,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.RectF;
 
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 
 /**
- * Frame update function for animated sprite.
- * For sprites that have a film stripe as texture.
+ * Frame update function for animated sprites, for sprites that have a film stripe as texture.
+ * The original bitmap is clipped. A window will slide over the stripe to select the next segment of it.
+ * The {@link AbstractSprite#sRectangle} of the sprite gets updated.
+ * The init method of {@link AnimatedSprite} has to be called first so that the frame width and height
+ * can be set in order to make this frame update work correctly.
  *
  * @author Dominik Grzelak
  * @since 15.01.2017.
@@ -26,7 +28,6 @@ public class AnimatedFrameUpdate implements IFrameUpdate {
         this.sprite = sprite;
         tempBmp = Bitmap.createBitmap(sprite.frameW, sprite.frameH, Bitmap.Config.ARGB_8888);
         c = new Canvas(tempBmp);
-//        c.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         source = new Rect(0, 0, tempBmp.getWidth(), tempBmp.getHeight());
     }
 

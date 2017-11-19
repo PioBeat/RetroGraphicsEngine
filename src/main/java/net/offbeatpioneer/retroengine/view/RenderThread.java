@@ -27,18 +27,16 @@ import net.offbeatpioneer.retroengine.core.RetroEngine;
 public class RenderThread extends Thread {
 
     private final String TAG_LOG = "RenderThread";
-    //    public static Resources res;
+
     private GamestateManager manager = GamestateManager.getInstance();
     private Class<?> currentState = null;
 
-    private SurfaceView ParentView;
-
     private Handler handler;
     final private SurfaceHolder mSurfaceHolder;
+    private final Object[] lock = new Object[]{};
 
     public RenderThread(SurfaceView view) {
-        ParentView = view;
-        this.mSurfaceHolder = ParentView.getHolder();
+        this.mSurfaceHolder = view.getHolder();
         ((DrawView) view).setRenderThread(this);
     }
 
@@ -122,11 +120,13 @@ public class RenderThread extends Thread {
                 }
                 //}
 
-                canvas = mSurfaceHolder.lockCanvas(null);
-                synchronized (mSurfaceHolder) {
+                synchronized (lock) {
+                    canvas = mSurfaceHolder.lockCanvas(null);
                     // Render the current state
-                    if (currentStateTmp != null && canvas != null && !GamestateManager.IS_CHANGING)
+                    if (currentStateTmp != null && canvas != null && !GamestateManager.IS_CHANGING) {
+                        canvas.clipRect(0, 0, RetroEngine.W, RetroEngine.H);
                         currentStateTmp.render(canvas, paint, RetroEngine.getTickCount());
+                    }
                 }
             } finally {
                 // If an error occurred release the canvas

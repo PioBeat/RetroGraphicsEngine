@@ -1,9 +1,10 @@
 package net.offbeatpioneer.retroengine.core.sprites;
 
 /**
- * Created by Dome on 15.01.2017.
+ *
+ * @author Dominik Grzelak
+ * @since 15.01.2017.
  */
-
 public interface IFrameUpdate {
 
     /**
@@ -11,5 +12,5 @@ public interface IFrameUpdate {
      *
      * @return aktuelle Position im Filmstreifen.
      */
-    public int updateFrame();
+    int updateFrame();
 }
