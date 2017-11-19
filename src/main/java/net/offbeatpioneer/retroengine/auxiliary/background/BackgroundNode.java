@@ -78,10 +78,10 @@ public class BackgroundNode {
             canvas.translate(xt, yt);
         }
 
-        for (BackgroundLayer layer : backgrounds) {
-            layer.setViewportOrigin(viewportOrigin);
-            layer.setReferencePoint(referencePoint);
-            layer.draw(canvas, 0);
+        for (int i = 0, n = backgrounds.size(); i < n; i++) {
+            backgrounds.get(i).setViewportOrigin(viewportOrigin);
+            backgrounds.get(i).setReferencePoint(referencePoint);
+            backgrounds.get(i).draw(canvas, 0);
         }
     }
 
