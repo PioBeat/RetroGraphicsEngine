@@ -32,7 +32,7 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         animations = new ArrayList<>();
         actionEventCallback = new EmptyAction();
         viewportOrigin = new PointF(0, 0);
-        frameUpdate = new AnimatedFrameUpdate(this);
+//        frameUpdate = new AnimatedFrameUpdate(this);
         scale = 1f;
         position = new PointF(0, 0);
         checkBoundsRect = new RectF();
@@ -49,12 +49,12 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         this.sRectangle.top = 0;
         this.sRectangle.bottom = frameH;
         this.disable = false;
-
+        this.frameUpdate = new AnimatedFrameUpdate(this);
         this.framePeriod = 1000 / fps;
         this.sRectangle.left = 0;
         this.sRectangle.right = frameW;
         this.frameCnt = frameCount;
-//        this.position = pos;
+
         oldPosition = new PointF(pos.x, pos.y);
         position.set(pos.x, pos.y);
         int speedScalar = 5;

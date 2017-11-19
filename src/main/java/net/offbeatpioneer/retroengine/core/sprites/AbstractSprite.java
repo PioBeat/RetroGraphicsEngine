@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.util.Log;
 
 import net.offbeatpioneer.retroengine.auxiliary.matheusdev.CollectionEntity;
+import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 
 import java.util.ArrayList;
@@ -97,7 +98,8 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
      * The surface where the sprite is drawn should be either a {@link net.offbeatpioneer.retroengine.view.DrawView} or a {@link android.view.View} with canvas.
      * <p>
      * If the the sprites property disable is true then the it will not be drawn. It still exists in the
-     * root node of a state.
+     * root node of a state. Also, if its not in the clipping area, that means the visible area
+     * of the canvas, it will not be drawn to reduce CPU usage.
      * <p>
      * The texture of the sprite is drawn via transformation of matrices (Scale, Translate, Rotation) on the surface.
      * This is a generic drawing function which is working with bitmap textures.
@@ -109,7 +111,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
      */
     public void draw(final Canvas canvas, final long currentTime) {
         //Don't draw the sprite if it's disabled
-        if (disable) {
+        if (disable || canvas.quickReject(getViewportOrigin().x, getViewportOrigin().y, RetroEngine.W + getViewportOrigin().x, RetroEngine.H + getViewportOrigin().y, Canvas.EdgeType.BW)) {
             return;
         }
 
@@ -123,13 +125,13 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
         transformationMatrix.reset();
         transformationMatrix.postScale(getScale(), getScale(), pivotPoint.x, pivotPoint.y);
         transformationMatrix.postRotate(getAngle(), pivotPoint.x, pivotPoint.y);
-        transformationMatrix.preTranslate(this.position.x, this.position.y);
+        transformationMatrix.preTranslate(position.x, position.y);
 
         paint.setAntiAlias(true);
         paint.setFilterBitmap(false);
         paint.setDither(false);
 
-        canvas.drawBitmap(getTexture(), transformationMatrix, paint);
+        canvas.drawBitmap(texture, transformationMatrix, paint);
     }
 
     // Composite ops
@@ -453,6 +455,10 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
         this.sRectangle = sRectangle;
     }
 
+    public void updateSRectangle(int left, int top, int right, int bottom) {
+        this.sRectangle.set(left, top, right, bottom);
+    }
+
     public int getType() {
         return type;
     }
@@ -465,7 +471,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
         return texture;
     }
 
-    public void setTexture(Bitmap texture) {
+    public void setTexture(final Bitmap texture) {
 //        this.texture.recycle();
         this.texture = texture;
     }
