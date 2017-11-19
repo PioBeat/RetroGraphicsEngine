@@ -4,7 +4,7 @@ import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.util.InterpolationHelper;
 
 /**
- * {@link RotationAnimation} for sprites
+ * A rotation animation for sprites
  *
  * @author Dominik Grzelak
  * @since 2014-09-14
@@ -45,7 +45,6 @@ public class RotationAnimation extends AnimationSuite {
     protected void animationLogicTemplate() {
 
         if (cnt >= anglePoints.length) {
-//            currentAngle = anglePoints[anglePoints.length - 1];
             getAnimatedSprite().setAngle(currentAngle);
             cnt = 0;
             if (!isLoop()) {
@@ -62,7 +61,6 @@ public class RotationAnimation extends AnimationSuite {
             }
             getListener().onAnimationRepeat(this);
         }
-        System.out.println("currentAngle=" + currentAngle);
         currentAngle = anglePoints[cnt++];
         getAnimatedSprite().setAngle(currentAngle);
     }
