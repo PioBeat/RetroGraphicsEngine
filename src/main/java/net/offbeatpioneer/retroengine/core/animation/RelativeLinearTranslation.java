@@ -23,6 +23,7 @@ public class RelativeLinearTranslation extends AnimationSuite {
     private int counter;
     private PointF end;
     private PointF currentPosition;
+
     //Typ mitgeben welche art von end-Vektor: zB absolute angabe oder als "speed"-Vektor
     //Speed-vektor kann man auch ausrechnen: v=s/t
     public RelativeLinearTranslation(PointF end, int time) {
@@ -84,23 +85,22 @@ public class RelativeLinearTranslation extends AnimationSuite {
 
     private void animateSetPosition(ISpriteGroup group, PointF position) {
         List<AbstractSprite> childs = getChildrensFromSpriteGroup(group);
-        for (AbstractSprite child : childs) {
-            if (child.hasChildren()) {
-                animateSetPosition((ISpriteGroup) child, position);
+        for (int i = 0, n = childs.size(); i < n; i++) {
+            if (childs.get(i).hasChildren()) {
+                animateSetPosition((ISpriteGroup) childs.get(i), position);
             } else {
-                child.translate(position);
+                childs.get(i).translate(position);
             }
         }
     }
 
     private void animateResetPosition(ISpriteGroup group) {
         final List<AbstractSprite> childs = getChildrensFromSpriteGroup(group);
-
-        for (AbstractSprite child : childs) {
-            if (child.hasChildren()) {
-                animateResetPosition(((ISpriteGroup) child));
+        for (int i = 0, n = childs.size(); i < n; i++) {
+            if (childs.get(i).hasChildren()) {
+                animateResetPosition(((ISpriteGroup) childs.get(i)));
             } else {
-                child.resetPosition();
+                childs.get(i).resetPosition();
             }
         }
     }
