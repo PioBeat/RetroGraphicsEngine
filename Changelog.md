@@ -4,9 +4,14 @@
 - Improved memory consumption reducing alloc count for ``Matrix``, ``PointF``, and ``RectF``:
     - ``AbstractSprite`` has now one matrix, and one pivot point instance
     - ``AnimatedSprite`` gets ``checkBoundsRect `` attrbute which is created only once
-    - ``RelativeLinearTranslation`` gets ``currentPosition`` as member variable
+    - ``RelativeLinearTranslation`` gets ``currentPosition`` as member variable, optimized for-loop to avoid array list iterator creation
+    - ``GamestateManager`` optimized for-loop to avoid array list iterator creation
     - ``TextElement`` and other simple shapes using matrix and pivot point from base class
     - ``BackgroundNode``: ``RectF`` and ``PointF`` are now updated instead re-assigned
+    - ``AnimatedFrameUpdate`` only one bitmap is created to clip the right
+    rectangle of the original sprite stripe. Remove Bitmap.createBitmap method
+- Reduce CPU usage by not drawing sprites when they are not in the clipping
+area of the canvas (using canvas.quickreject method)
 
 ## Bugifx
 - Fixed multiple issues reagarding ``SoundWorkerImpl``

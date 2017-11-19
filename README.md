@@ -40,7 +40,7 @@ Using this library is simple. You have three options to get started:
 * Go to the [play store](https://play.google.com/store/apps/details?id=net.offbeatpioneer.demoapp.retrographicsengine)
 to download the demo app which shows some of the features
 
-* Look into the source code of examples which is available in this [repository](https://github.com/PioBeat/Demo-RetroGraphicsEngine)
+* Look into the source code which is available in this [repository](https://github.com/PioBeat/Demo-RetroGraphicsEngine) to see some examples
 
 * Have a look into the [documentation](#documentation)
 
