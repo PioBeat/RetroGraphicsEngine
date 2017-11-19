@@ -1,6 +1,7 @@
 package net.offbeatpioneer.retroengine.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.graphics.Canvas;
@@ -27,7 +28,7 @@ public class GamestateManager {
 
     private Activity mParentActivity = null;
 
-    private final ArrayList<State> gamestateList = new ArrayList<State>();
+    private final List<State> gamestateList = new ArrayList<State>();
 
     private static GamestateManager instance = null;
 
@@ -48,11 +49,13 @@ public class GamestateManager {
      * @return
      */
     public synchronized State getActiveGameState() {
-        for (State each : gamestateList) {
-            if (each.isActive())
-                return each;
+        synchronized (gamestateList) {
+            for (int i = 0, n = gamestateList.size(); i < n; i++) {
+                if (gamestateList.get(i).isActive())
+                    return gamestateList.get(i);
+            }
+            return null;
         }
-        return null;
     }
 
     public synchronized void render(Canvas canvas, Paint paint, long currentTime) {
@@ -105,23 +108,23 @@ public class GamestateManager {
      */
     private void setDeactivateAllStates() {
         synchronized (gamestateList) {
-            for (State state : gamestateList) {
-                state.setActive(false);
+            for (int i = 0, n = gamestateList.size(); i < n; i++) {
+                gamestateList.get(i).setActive(false);
             }
         }
     }
 
     public synchronized void changeGameState(Class<?> c) {
         IS_CHANGING = true;
-        for (State each : gamestateList) {
-            if (each.getClass().equals(c)) {
+        for (int i = 0, n = gamestateList.size(); i < n; i++) {
+            if (gamestateList.get(i).getClass().equals(c)) {
                 State oldState = getActiveGameState();
                 if (oldState != null) {
                     oldState.setActive(false);
                     oldState.cleanUp();
                 }
-                each.setActive(true);
-                each.init();
+                gamestateList.get(i).setActive(true);
+                gamestateList.get(i).init();
                 break;
             }
         }
@@ -134,18 +137,18 @@ public class GamestateManager {
     }
 
     public State getStateByName(String name) {
-        for (State each : gamestateList) {
-            if (each.getStateName().equalsIgnoreCase(name))
-                return each;
+        for (int i = 0, n = gamestateList.size(); i < n; i++) {
+            if (gamestateList.get(i).getStateName().equalsIgnoreCase(name))
+                return gamestateList.get(i);
         }
         return null;
     }
 
     public State getStateByClass(Class name) {
         if (name != null) {
-            for (State each : gamestateList) {
-                if (each.getClass() == name)
-                    return each;
+            for (int i = 0, n = gamestateList.size(); i < n; i++) {
+                if (gamestateList.get(i).getClass() == name)
+                    return gamestateList.get(i);
             }
         }
         return null;
@@ -167,7 +170,7 @@ public class GamestateManager {
         this.mParentActivity = mParentActivity;
     }
 
-    public ArrayList<State> getGamestates() {
+    public List<State> getGamestates() {
         return gamestateList;
     }
 }
