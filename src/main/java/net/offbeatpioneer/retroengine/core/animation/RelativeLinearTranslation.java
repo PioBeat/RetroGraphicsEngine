@@ -106,16 +106,16 @@ public class RelativeLinearTranslation extends AnimationSuite {
     }
 
     public List<AbstractSprite> getChildrensFromSpriteGroup(ISpriteGroup group) {
-        List<AbstractSprite> childs = new ArrayList<>();
+        List<AbstractSprite> childBuffer = new ArrayList<>();
         if (group instanceof SpriteListGroup) {
-            childs = ((SpriteListGroup) group).getChildren();
+            childBuffer.addAll(((SpriteListGroup) group).getChildren());
         } else if (group instanceof SpriteQuadtreeGroup) {
             List<QuadTree<AbstractSprite>.CoordHolder> items = ((SpriteQuadtreeGroup) group).getChildren();
             for (QuadTree<AbstractSprite>.CoordHolder each : items) {
-                childs.add(each.o);
+                childBuffer.add(each.o);
             }
         }
-        return childs;
+        return childBuffer;
     }
 
     public PointF getEnd() {

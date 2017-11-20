@@ -80,7 +80,7 @@ public class RenderThread extends Thread {
     public void run() {
         //manager.getActiveGameState().initAsAnimation();
         net.offbeatpioneer.retroengine.core.states.State currentStateTmp = manager.getActiveGameState();
-        GamestateManager.IS_CHANGING = false;
+        GamestateManager.IS_CHANGING.set(false);
         RetroEngine.shouldWait = false;
         Paint paint = new Paint();
         long next_game_tick = RetroEngine.getTickCount();
@@ -89,7 +89,7 @@ public class RenderThread extends Thread {
 
             if (RetroEngine.shouldWait) {
                 if (RetroEngine.resetStateIfWait) {
-                    GamestateManager.IS_CHANGING = true;
+                    GamestateManager.IS_CHANGING.set(true);
                     if (currentStateTmp != null) {
                         currentStateTmp.setActive(false);
                         currentStateTmp.cleanUp();
@@ -100,7 +100,7 @@ public class RenderThread extends Thread {
                         break;
                     } else {
                         RetroEngine.shouldWait = false;
-                        GamestateManager.IS_CHANGING = false;
+                        GamestateManager.IS_CHANGING.set(false);
                     }
                 } else {
                     sleepThread(250);
@@ -112,18 +112,19 @@ public class RenderThread extends Thread {
             Canvas canvas = null;
             try {
                 if (!mSurfaceHolder.getSurface().isValid()) continue;
-                // if (currentStateTmp != null) {
+                if (GamestateManager.IS_CHANGING.get()) continue;
+
                 while (RetroEngine.getTickCount() > next_game_tick && loops < RetroEngine.MAX_FRAMESKIP) {
+                    assert currentStateTmp != null;
                     currentStateTmp.updateLogic();
                     next_game_tick += RetroEngine.SKIP_TICKS;
                     loops++;
                 }
-                //}
 
                 synchronized (lock) {
                     canvas = mSurfaceHolder.lockCanvas(null);
                     // Render the current state
-                    if (currentStateTmp != null && canvas != null && !GamestateManager.IS_CHANGING) {
+                    if (currentStateTmp != null && canvas != null) {
                         canvas.clipRect(0, 0, RetroEngine.W, RetroEngine.H);
                         currentStateTmp.render(canvas, paint, RetroEngine.getTickCount());
                     }
@@ -144,7 +145,7 @@ public class RenderThread extends Thread {
         try {
             Thread.sleep(duration);
         } catch (InterruptedException e) {
-            Log.e(TAG_LOG, e.getMessage());
+            Log.e(TAG_LOG, e.toString(), e);
         }
     }
 
@@ -154,7 +155,6 @@ public class RenderThread extends Thread {
     public void cleanUp() {
         if (manager.getActiveGameState() != null)
             manager.getActiveGameState().cleanUp();
-        Log.v(TAG_LOG, "Clean up active state");
     }
 
     public Handler getHandler() {

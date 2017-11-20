@@ -42,10 +42,8 @@ public class SpriteQuadtreeGroup extends AbstractSprite implements ISpriteGroup<
      */
     @Override
     public void draw(Canvas canvas, long currentTime) {
-        List<QuadTree<AbstractSprite>.CoordHolder> childs = getChildren();
-        synchronized (childs) {
-            this.draw(childs, canvas, currentTime);
-        }
+        final List<QuadTree<AbstractSprite>.CoordHolder> childs = getChildren();
+        this.draw(childs, canvas, currentTime);
     }
 
     public List<QuadTree<AbstractSprite>.CoordHolder> findAll() {
@@ -78,10 +76,8 @@ public class SpriteQuadtreeGroup extends AbstractSprite implements ISpriteGroup<
 
     @Override
     public void updateLogic() {
-        List<QuadTree<AbstractSprite>.CoordHolder> childs = getChildren();
-        synchronized (childs) {
-            update(childs);
-        }
+        final List<QuadTree<AbstractSprite>.CoordHolder> childs = getChildren();
+        update(childs);
     }
 
     private List<QuadTree<AbstractSprite>.CoordHolder> collectAllItems(QuadTree<AbstractSprite> childs) {
@@ -93,7 +89,7 @@ public class SpriteQuadtreeGroup extends AbstractSprite implements ISpriteGroup<
         return list;
     }
 
-    public synchronized void update(List<QuadTree<AbstractSprite>.CoordHolder> list) {
+    private synchronized void update(List<QuadTree<AbstractSprite>.CoordHolder> list) {
         for (QuadTree<AbstractSprite>.CoordHolder each : list) {
             AbstractSprite eachSprite = each.o;
             if (eachSprite.hasChildren() && eachSprite.isActive()) {
@@ -128,7 +124,7 @@ public class SpriteQuadtreeGroup extends AbstractSprite implements ISpriteGroup<
         }
     }
 
-    public void removeInActive(List<QuadTree<AbstractSprite>.CoordHolder> list) {
+    private void removeInActive(List<QuadTree<AbstractSprite>.CoordHolder> list) {
         for (int i = list.size() - 1; i >= 0; i--) {
             QuadTree.CoordHolder each = list.get(i);
             AbstractSprite eachSprite = (AbstractSprite) each.o;
@@ -185,7 +181,7 @@ public class SpriteQuadtreeGroup extends AbstractSprite implements ISpriteGroup<
     }
 
     public void setQueryRange(RectF queryRange) {
-        this.queryRange = new RectF(queryRange);
+        this.queryRange.set(queryRange);
     }
 
 

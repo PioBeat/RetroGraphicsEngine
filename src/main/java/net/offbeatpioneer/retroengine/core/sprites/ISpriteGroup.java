@@ -3,6 +3,7 @@ package net.offbeatpioneer.retroengine.core.sprites;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public interface ISpriteGroup<T> extends ISprite {
     boolean isRoot();
 
     void removeInActive();
-    void removeInActive(List<T> childs);
+//    void removeInActive(List<T> childs);
 
     void add(AbstractSprite child);
 
@@ -25,7 +26,7 @@ public interface ISpriteGroup<T> extends ISprite {
 
     PointF getViewportOrigin();
 
-    List<T> getChildren();
+    Collection<T> getChildren();
 
     int getChildrenSize();
 

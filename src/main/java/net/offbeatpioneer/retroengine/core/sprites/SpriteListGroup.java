@@ -33,12 +33,12 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
     @Override
     public void draw(Canvas canvas, long currentTime) {
         final List<AbstractSprite> childs = getChildren();
-//        synchronized (children) {
+        synchronized (this.children) {
             draw(childs, canvas, currentTime);
-//        }
+        }
     }
 
-    public void draw(final List<AbstractSprite> childs, Canvas canvas, long currentTime) {
+    private void draw(final List<AbstractSprite> childs, Canvas canvas, long currentTime) {
         for (int i = 0, n = childs.size(); i < n; i++) {
             AbstractSprite child = childs.get(i);
             if (child.hasChildren()) {
@@ -51,13 +51,13 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
 
     public void removeInActive() {
         final List<AbstractSprite> childs = getChildren();
-//        synchronized (children) {
+        synchronized (this.children) {
             removeInActive(childs);
-//        }
+        }
     }
 
-    @Override
-    public void removeInActive(final List<AbstractSprite> children) {
+
+    private void removeInActive(final List<AbstractSprite> children) {
         for (int i = children.size() - 1; i >= 0; i--) {
             AbstractSprite eachSprite = children.get(i);
             if (eachSprite.hasChildren()) {
@@ -77,9 +77,9 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
     @Override
     public void updateLogic() {
         final List<AbstractSprite> childs = getChildren();
-//        synchronized (children) {
+        synchronized (this.children) {
             update(childs);
-//        }
+        }
     }
 
     /**
@@ -151,8 +151,10 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
     }
 
     public void setChildren(List<AbstractSprite> children) {
-        this.children.clear();
-        this.children.addAll(children);
+        synchronized (this.children) {
+            this.children.clear();
+            this.children.addAll(children);
+        }
     }
 
     public void clearSprites() {

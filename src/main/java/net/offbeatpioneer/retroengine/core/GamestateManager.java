@@ -2,6 +2,7 @@ package net.offbeatpioneer.retroengine.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import android.app.Activity;
 import android.graphics.Canvas;
@@ -24,15 +25,17 @@ import net.offbeatpioneer.retroengine.core.states.State;
  */
 public class GamestateManager {
 
-    public static volatile boolean IS_CHANGING = false;
+    public static AtomicBoolean IS_CHANGING = new AtomicBoolean(false);
 
     private Activity mParentActivity = null;
 
-    private final List<State> gamestateList = new ArrayList<State>();
+    private final List<State> gamestateList = new ArrayList<>();
 
     private static GamestateManager instance = null;
 
     private Handler handler;
+
+    private final Object[] lock = new Object[]{};
 
     public static synchronized GamestateManager getInstance() {
         if (instance == null)
@@ -44,9 +47,9 @@ public class GamestateManager {
     }
 
     /**
-     * Hole gerade aktuellen State.
+     * Get the currently active state
      *
-     * @return
+     * @return active state or null, if no state is active
      */
     public synchronized State getActiveGameState() {
         synchronized (gamestateList) {
@@ -58,16 +61,26 @@ public class GamestateManager {
         }
     }
 
+    /**
+     * Calls the render method of the current active state.
+     * This method will loop every time through all registered states to find the active
+     * one before calling the render method. It is recommended to get the active state first with
+     * {@link GamestateManager#getActiveGameState()} and call the render method directly.
+     *
+     * @param canvas      the canvas
+     * @param paint       the paint
+     * @param currentTime the time
+     */
     public synchronized void render(Canvas canvas, Paint paint, long currentTime) {
         getActiveGameState().render(canvas, paint, currentTime);
-
     }
 
     /**
      * Adds a new state to the managed list of {@link GamestateManager}. If State
-     * is from the same class then it will not be added.
+     * is from the same class then it will be removed and the given state will be added to
+     * the end of the list.
      *
-     * @param state state to add
+     * @param state the state to add
      */
     public void addGamestate(State state) {
         synchronized (gamestateList) {
@@ -94,9 +107,8 @@ public class GamestateManager {
     public void addGameState(State state, boolean active) {
         synchronized (gamestateList) {
             this.addGamestate(state);
-
             if (active) {
-                setDeactivateAllStates();
+                deactivateAllStates();
                 state.setActive(true);
                 state.init();
             }
@@ -106,7 +118,7 @@ public class GamestateManager {
     /**
      * Sets the active status to false for all added states in {@code gamestateList}.
      */
-    private void setDeactivateAllStates() {
+    private void deactivateAllStates() {
         synchronized (gamestateList) {
             for (int i = 0, n = gamestateList.size(); i < n; i++) {
                 gamestateList.get(i).setActive(false);
@@ -114,19 +126,22 @@ public class GamestateManager {
         }
     }
 
-    public synchronized void changeGameState(Class<?> c) {
-        IS_CHANGING = true;
-        for (int i = 0, n = gamestateList.size(); i < n; i++) {
-            if (gamestateList.get(i).getClass().equals(c)) {
-                State oldState = getActiveGameState();
-                if (oldState != null) {
-                    oldState.setActive(false);
-                    oldState.cleanUp();
+    public void changeGameState(Class<?> c) {
+        synchronized (gamestateList) {
+            IS_CHANGING.set(true);
+            for (int i = 0, n = gamestateList.size(); i < n; i++) {
+                if (gamestateList.get(i).getClass().equals(c)) {
+                    State oldState = getActiveGameState();
+                    if (oldState != null) {
+                        oldState.setActive(false);
+                        oldState.cleanUp();
+                    }
+                    gamestateList.get(i).setActive(true);
+                    gamestateList.get(i).init();
+                    break;
                 }
-                gamestateList.get(i).setActive(true);
-                gamestateList.get(i).init();
-                break;
             }
+            IS_CHANGING.set(false);
         }
     }
 
@@ -137,21 +152,25 @@ public class GamestateManager {
     }
 
     public State getStateByName(String name) {
-        for (int i = 0, n = gamestateList.size(); i < n; i++) {
-            if (gamestateList.get(i).getStateName().equalsIgnoreCase(name))
-                return gamestateList.get(i);
+        synchronized (gamestateList) {
+            for (int i = 0, n = gamestateList.size(); i < n; i++) {
+                if (gamestateList.get(i).getStateName().equalsIgnoreCase(name))
+                    return gamestateList.get(i);
+            }
+            return null;
         }
-        return null;
     }
 
     public State getStateByClass(Class name) {
-        if (name != null) {
-            for (int i = 0, n = gamestateList.size(); i < n; i++) {
-                if (gamestateList.get(i).getClass() == name)
-                    return gamestateList.get(i);
+        synchronized (gamestateList) {
+            if (name != null) {
+                for (int i = 0, n = gamestateList.size(); i < n; i++) {
+                    if (gamestateList.get(i).getClass() == name)
+                        return gamestateList.get(i);
+                }
             }
+            return null;
         }
-        return null;
     }
 
     public Handler getHandler() {

@@ -4,15 +4,15 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 
 /**
- * Game font class to define the font face of {@link net.offbeatpioneer.retroengine.core.sprites.decorator.TextElement} sprites
+ * A font class to define the font face of {@link net.offbeatpioneer.retroengine.core.sprites.decorator.TextElement} sprites
  *
  * @author Dominik Grzelak
  * @since 2014-09-14
  */
 public class GameFont {
-    public static final int DEFAULT_FONT_COLOR = Color.parseColor("black");
-    public static final String DEFAULT_FONT_FAMILY = Typeface.SANS_SERIF.toString();
-    public static final int DEFAULT_FONT_EMPHASIS = Typeface.NORMAL;
+    private static final int DEFAULT_FONT_COLOR = Color.parseColor("black");
+    private static final String DEFAULT_FONT_FAMILY = Typeface.SANS_SERIF.toString();
+    private static final int DEFAULT_FONT_EMPHASIS = Typeface.NORMAL;
 
     private String fontFamily;
     private int fontColor;

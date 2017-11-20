@@ -63,7 +63,7 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         speed.y = -speedScalar;
 
         this.loop = loop;
-
+        this.viewportOrigin = new PointF(0, 0);
         cnt = 0;
         frameNr = 0;
         angle = 0;
@@ -106,6 +106,7 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
             this.frameH = 0;
         }
 
+        this.viewportOrigin = new PointF(0, 0);
         this.frameCnt = 1;
         this.frameStep = 1;
         this.speed = spd;

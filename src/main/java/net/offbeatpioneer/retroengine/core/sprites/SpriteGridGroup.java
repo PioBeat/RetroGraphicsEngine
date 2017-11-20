@@ -58,7 +58,7 @@ public class SpriteGridGroup extends AbstractSprite implements ISpriteGroup<Abst
         this.removeInActive(getChildren());
     }
 
-    public void removeInActive(List<AbstractSprite> children) {
+    private void removeInActive(List<AbstractSprite> children) {
         for (AbstractSprite eachSprite : children) {
             if (eachSprite.hasChildren()) {
                 if (!eachSprite.isActive()) {

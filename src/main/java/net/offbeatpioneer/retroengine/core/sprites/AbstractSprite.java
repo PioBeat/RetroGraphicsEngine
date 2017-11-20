@@ -294,12 +294,19 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
      * Technically the difference of the actor ("player") sprite position and the actual middle point of the canvas itself represents the viewport.
      * This point is only important if the canvas is translated to simulate player movement and simultaneously
      * have the player at the same position.
+     * <p>
+     * If the sprite has a parent, the parents viewport origin value is returned.
+     * <p>
+     * Lazy initialization. If viewportOrigin was not set (which is normally instantiated within the init method)
+     * it will be set to <code>(0,0)</code>.
      *
      * @return origin point of the viewport, absolute (real) center point coordinates of the canvas
      */
     public PointF getViewportOrigin() {
+        if (viewportOrigin == null)
+            viewportOrigin = new PointF(0, 0);
         if (parentSprite != null) {
-            viewportOrigin = parentSprite.getViewportOrigin() != null ? parentSprite.getViewportOrigin() : new PointF(0, 0);
+            return parentSprite.getViewportOrigin(); //viewportOrigin.set(parentSprite.getViewportOrigin().x, parentSprite.getViewportOrigin().y);
         }
         return viewportOrigin;
     }
