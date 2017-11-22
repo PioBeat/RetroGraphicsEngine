@@ -256,9 +256,9 @@ public abstract class State {
      * Process key events
      *
      * @param v        view which sends an event
-     * @param keyCode
-     * @param keyEvent
-     * @return
+     * @param keyCode the key code
+     * @param keyEvent the key event
+     * @return true or false
      */
     public abstract boolean onKeyEvent(View v, int keyCode, KeyEvent keyEvent);
 
@@ -271,9 +271,9 @@ public abstract class State {
     /**
      * Methode für das Abfangen von Touchscreeneingaben.  Muss an einen TouchListener gebunden werden.
      *
-     * @param v     Event-Auslösende {@link View}
-     * @param event
-     * @return
+     * @param v     {@link View} that triggered the event
+     * @param event motion event
+     * @return true or false
      */
     public abstract boolean onTouchEvent(View v, MotionEvent event);
 

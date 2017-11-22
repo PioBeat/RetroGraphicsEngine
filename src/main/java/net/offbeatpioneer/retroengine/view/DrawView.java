@@ -272,7 +272,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
     /**
      * Set reference to parent activity
      *
-     * @param parentActivity
+     * @param parentActivity the activity where this component is inserted
      */
     public void setParentActivity(Activity parentActivity) {
         myActivity = parentActivity;

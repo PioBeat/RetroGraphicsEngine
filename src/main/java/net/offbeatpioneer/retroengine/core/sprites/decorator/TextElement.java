@@ -3,7 +3,6 @@ package net.offbeatpioneer.retroengine.core.sprites.decorator;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -81,6 +80,8 @@ public class TextElement extends Decorator {
      * call constructor with text argument or use the initWithText method.
      * <p>
      * The position is inherited from the sprite always
+     *
+     * @return the initialized text element sprite
      */
     public TextElement init() {
         if (text == null) text = "";
@@ -93,6 +94,7 @@ public class TextElement extends Decorator {
      * <p>
      *
      * @param pos position of the text
+     * @return the initialized text element sprite
      */
     public TextElement init(PointF pos) {
         if (text == null) text = "";

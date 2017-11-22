@@ -441,7 +441,7 @@ public abstract class AbstractSprite implements ISprite {
     /**
      * Like margin for a sprite
      *
-     * @return
+     * @return the buffer zone
      */
     public int getBufferZone() {
         return bufferZone;
@@ -450,7 +450,7 @@ public abstract class AbstractSprite implements ISprite {
     /**
      * set the "margin" of a sprite. Can be used for collision detection or other things
      *
-     * @param bufferZone
+     * @param bufferZone additional bufferzone, e.g. for collision checking
      */
     public void setBufferZone(int bufferZone) {
         this.bufferZone = bufferZone;

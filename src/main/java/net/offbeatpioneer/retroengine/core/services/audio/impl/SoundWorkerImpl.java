@@ -41,7 +41,8 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
     /**
      * Is called by the client
      *
-     * @param context context for the {@link MediaPlayer}
+     * @param context   context for the {@link MediaPlayer}
+     * @param maxSounds maximum allowed sounds that can be played
      */
     public SoundWorkerImpl(Context context, int maxSounds) {
         this("SoundWorkerImpl", maxSounds);

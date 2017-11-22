@@ -91,6 +91,7 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
      * @param tex Texture of the sprite
      * @param pos Position of the sprite
      * @param spd Speed of the sprites. For still ("stationary") sprites use {@code PointF(0,0)}
+     * @return the initialized sprite
      */
     public AnimatedSprite init(Bitmap tex, PointF pos, PointF spd) {
         if (tex != null) {
@@ -131,6 +132,7 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
      *
      * @param texture  Texture of the sprite
      * @param position Position of the sprite
+     * @return the initialized sprite
      */
     public AnimatedSprite init(Bitmap texture, PointF position) {
         return this.init(texture, position, new PointF(0, 0));
@@ -155,7 +157,7 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
      * instance.
      * Switching actions at runtime is therefore possible
      *
-     * @param parameter
+     * @param parameter additional parameter for the action callback method
      */
     @Override
     public void onAction(Object parameter) {

@@ -9,13 +9,16 @@ public interface AudioService {
 
     /**
      * Do some initialization
+     *
+     * @throws Exception exception is thrown when initializion fails
      */
     void initialize() throws Exception;
+
     /**
      * Plays a simple short sound. This should be used for simple non looping
      * sounds
      *
-     * @param audioMessage
+     * @param audioMessage audio message
      */
     void playSound(AudioMessage audioMessage);
 
@@ -23,7 +26,7 @@ public interface AudioService {
      * Plays a background sound. The specified raw resource id in {@link AudioMessage} will be
      * looped.
      *
-     * @param audioMessage
+     * @param audioMessage audio message
      */
     void playBackgroundMusic(AudioMessage audioMessage);
 

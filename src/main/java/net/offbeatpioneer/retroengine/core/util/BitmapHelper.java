@@ -38,11 +38,11 @@ public class BitmapHelper {
      * Source: <a href="https://developer.android.com/topic/performance/graphics/load-bitmap.html#read-bitmap">
      * https://developer.android.com/topic/performance/graphics/load-bitmap.html#read-bitmap</a>
      *
-     * @param res
-     * @param resId
-     * @param reqWidth
-     * @param reqHeight
-     * @return
+     * @param res resource object
+     * @param resId resource id of the drawable
+     * @param reqWidth new width
+     * @param reqHeight new height
+     * @return the loaded bitmap with the specified size
      */
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
                                                          int reqWidth, int reqHeight) {
@@ -66,10 +66,10 @@ public class BitmapHelper {
      * Source: <a href="https://developer.android.com/topic/performance/graphics/load-bitmap.html#read-bitmap">
      * https://developer.android.com/topic/performance/graphics/load-bitmap.html#read-bitmap</a>
      *
-     * @param options
-     * @param reqWidth
-     * @param reqHeight
-     * @return
+     * @param options options for the bitmap
+     * @param reqWidth new width
+     * @param reqHeight new height
+     * @return the new sampled size
      */
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {

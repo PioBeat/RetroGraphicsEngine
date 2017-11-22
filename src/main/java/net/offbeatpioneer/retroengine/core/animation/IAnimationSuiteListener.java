@@ -19,21 +19,21 @@ public interface IAnimationSuiteListener {
     /**
      * Listens for the start of an animation
      *
-     * @param animationSuite
+     * @param animationSuite animation class which was responsible for the animation
      */
     void onAnimationStart(AnimationSuite animationSuite);
 
     /**
      * Listens for a repeat of an animation, if its in looping mode
      *
-     * @param animationSuite
+     * @param animationSuite animation class which was responsible for the animation
      */
     void onAnimationRepeat(AnimationSuite animationSuite);
 
     /**
      * Listens to the end of an animations, if its finished
      *
-     * @param animationSuite
+     * @param animationSuite animation class which was responsible for the animation
      */
     void onAnimationEnd(AnimationSuite animationSuite);
 }
