@@ -12,38 +12,38 @@ import android.os.Handler;
 import net.offbeatpioneer.retroengine.core.states.State;
 
 /**
- * {@link GamestateManager} is a manger for all {@link State} objects
+ * {@link StateManager} is a manger for all {@link State} objects
  * This class is implemented as singleton.
  * <p>
  * It keeps a {@link java.util.List} of all available {@link State} instances.
- * The {@link GamestateManager} is used to switch between states.
+ * The {@link StateManager} is used to switch between states.
  * <p>
- * Each {@link State} instance keeps a reference to the {@link GamestateManager} to get access
+ * Each {@link State} instance keeps a reference to the {@link StateManager} to get access
  * to its methods and with that also to the calling {@link Activity}.
  *
  * @author Dominik Grzelak
  */
-public class GamestateManager {
+public class StateManager {
 
     public static AtomicBoolean IS_CHANGING = new AtomicBoolean(false);
 
     private Activity mParentActivity = null;
 
-    private final List<State> gamestateList = new ArrayList<>();
+    private final List<State> states = new ArrayList<>();
 
-    private static GamestateManager instance = null;
+    private static StateManager instance = null;
 
     private Handler handler;
 
     private final Object[] lock = new Object[]{};
 
-    public static synchronized GamestateManager getInstance() {
+    public static synchronized StateManager getInstance() {
         if (instance == null)
-            instance = new GamestateManager();
+            instance = new StateManager();
         return instance;
     }
 
-    private GamestateManager() {
+    private StateManager() {
     }
 
     /**
@@ -52,10 +52,10 @@ public class GamestateManager {
      * @return active state or null, if no state is active
      */
     public synchronized State getActiveGameState() {
-        synchronized (gamestateList) {
-            for (int i = 0, n = gamestateList.size(); i < n; i++) {
-                if (gamestateList.get(i).isActive())
-                    return gamestateList.get(i);
+        synchronized (states) {
+            for (int i = 0, n = states.size(); i < n; i++) {
+                if (states.get(i).isActive())
+                    return states.get(i);
             }
             return null;
         }
@@ -65,7 +65,7 @@ public class GamestateManager {
      * Calls the render method of the current active state.
      * This method will loop every time through all registered states to find the active
      * one before calling the render method. It is recommended to get the active state first with
-     * {@link GamestateManager#getActiveGameState()} and call the render method directly.
+     * {@link StateManager#getActiveGameState()} and call the render method directly.
      *
      * @param canvas      the canvas
      * @param paint       the paint
@@ -76,26 +76,26 @@ public class GamestateManager {
     }
 
     /**
-     * Adds a new state to the managed list of {@link GamestateManager}. If State
+     * Adds a new state to the managed list of {@link StateManager}. If State
      * is from the same class then it will be removed and the given state will be added to
      * the end of the list.
      *
      * @param state the state to add
      */
     public void addGamestate(State state) {
-        synchronized (gamestateList) {
+        synchronized (states) {
             State tmp = getStateByClass(state.getClass());
             if (tmp == null)
-                gamestateList.add(state);
+                states.add(state);
             else {
-                gamestateList.remove(tmp);
-                gamestateList.add(state);
+                states.remove(tmp);
+                states.add(state);
             }
         }
     }
 
     /**
-     * Adds a new state to the managed list of {@link GamestateManager}. If State
+     * Adds a new state to the managed list of {@link StateManager}. If State
      * is from the same class then it will not be added.
      * <p>
      * If the active status is set to true all other states active status will be set
@@ -105,7 +105,7 @@ public class GamestateManager {
      * @param active active status for the state, preferably true
      */
     public void addGameState(State state, boolean active) {
-        synchronized (gamestateList) {
+        synchronized (states) {
             this.addGamestate(state);
             if (active) {
                 deactivateAllStates();
@@ -116,28 +116,28 @@ public class GamestateManager {
     }
 
     /**
-     * Sets the active status to false for all added states in {@code gamestateList}.
+     * Sets the active status to false for all added states in {@code states}.
      */
     private void deactivateAllStates() {
-        synchronized (gamestateList) {
-            for (int i = 0, n = gamestateList.size(); i < n; i++) {
-                gamestateList.get(i).setActive(false);
+        synchronized (states) {
+            for (int i = 0, n = states.size(); i < n; i++) {
+                states.get(i).setActive(false);
             }
         }
     }
 
     public void changeGameState(Class<?> c) {
-        synchronized (gamestateList) {
+        synchronized (states) {
             IS_CHANGING.set(true);
-            for (int i = 0, n = gamestateList.size(); i < n; i++) {
-                if (gamestateList.get(i).getClass().equals(c)) {
+            for (int i = 0, n = states.size(); i < n; i++) {
+                if (states.get(i).getClass().equals(c)) {
                     State oldState = getActiveGameState();
                     if (oldState != null) {
                         oldState.setActive(false);
                         oldState.cleanUp();
                     }
-                    gamestateList.get(i).setActive(true);
-                    gamestateList.get(i).init();
+                    states.get(i).setActive(true);
+                    states.get(i).init();
                     break;
                 }
             }
@@ -146,27 +146,27 @@ public class GamestateManager {
     }
 
     public void clearStates() {
-        synchronized (gamestateList) {
-            gamestateList.clear();
+        synchronized (states) {
+            states.clear();
         }
     }
 
     public State getStateByName(String name) {
-        synchronized (gamestateList) {
-            for (int i = 0, n = gamestateList.size(); i < n; i++) {
-                if (gamestateList.get(i).getStateName().equalsIgnoreCase(name))
-                    return gamestateList.get(i);
+        synchronized (states) {
+            for (int i = 0, n = states.size(); i < n; i++) {
+                if (states.get(i).getStateName().equalsIgnoreCase(name))
+                    return states.get(i);
             }
             return null;
         }
     }
 
     public State getStateByClass(Class name) {
-        synchronized (gamestateList) {
+        synchronized (states) {
             if (name != null) {
-                for (int i = 0, n = gamestateList.size(); i < n; i++) {
-                    if (gamestateList.get(i).getClass() == name)
-                        return gamestateList.get(i);
+                for (int i = 0, n = states.size(); i < n; i++) {
+                    if (states.get(i).getClass() == name)
+                        return states.get(i);
                 }
             }
             return null;
@@ -190,6 +190,6 @@ public class GamestateManager {
     }
 
     public List<State> getGamestates() {
-        return gamestateList;
+        return states;
     }
 }
