@@ -1,5 +1,13 @@
 # [UNRELEASED]
 
+## Changes
+- Renamed ``GamestateManger`` to ``StateManger`` to represent a more
+generic behaviour
+- new abstract class ``SpatialPartitionGroup`` serves as interface for
+all sprite groups
+- Removed ``SpriteGridGroup``, because it needs a thorough rework first
+- Its possible now to set the priority of the ``RenderThread``
+
 ## Performance
 - Improved memory consumption reducing alloc count for ``Matrix``, ``PointF``, and ``RectF``:
     - ``AbstractSprite`` has now one matrix, and one pivot point instance
@@ -15,7 +23,7 @@ area of the canvas (using canvas.quickreject method)
 
 ## Bugifx
 - Fixed multiple issues reagarding ``SoundWorkerImpl``
-    - ``SoundWorkerImpl`` has now priority ``THREAD_PRIORITY_BACKGROUND``
+    - ``SoundWorkerImpl`` has now priority ``THREAD_PRIORITY_AUDIO``
     - ``SoundWorkerImpl#stopAll()`` destroys thread - a new audio service has to be created
     and provided for the ``AudioServiceLocator``
 
