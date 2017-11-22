@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
-import net.offbeatpioneer.retroengine.auxiliary.matheusdev.CollectionEntity;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 
@@ -22,7 +21,7 @@ import java.util.List;
  * @author Dominik Grzelak
  * @since 2017-01-14
  */
-public abstract class AbstractSprite implements CollectionEntity, ISprite {
+public abstract class AbstractSprite implements ISprite {
     AbstractSprite parentSprite;
     final double bufferZoneFactor = 0.2;
     List<AnimationSuite> animations = new ArrayList<>();
@@ -61,7 +60,7 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
     protected long starttime = 0;
     protected Paint paint = new Paint();
     float scale = 1.0f;
-
+    private RectF aabbRect;
     //Nicht gleich löschen, sondern nur nicht zeichnen
     //Wird für Gruppen-Nodes verwendet
     boolean disable;
@@ -78,9 +77,12 @@ public abstract class AbstractSprite implements CollectionEntity, ISprite {
         }
     }
 
-    @Override
-    public net.offbeatpioneer.retroengine.auxiliary.matheusdev.Rect getAABB() {
-        return new net.offbeatpioneer.retroengine.auxiliary.matheusdev.Rect(getPosition().x, getPosition().y, frameW, frameH);
+    public RectF getAABB() {
+        if (aabbRect == null) {
+            aabbRect = new RectF();
+        }
+        aabbRect.set(getPosition().x, getPosition().y, (getPosition().x + frameW), (getPosition().y + frameH));
+        return aabbRect;
     }
 
     public int getFps() {

@@ -7,14 +7,14 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Interface for grouping sprites
+ * Interface for group structures that can hold sprites.
  * <p>
  * Subclasses implement different collections on how to hold and manage the sprites.
  *
  * @author Dominik Grzelak
  * @since 04.05.2017
  */
-public interface ISpriteGroup<T> extends ISprite {
+public interface ISpriteGroup extends ISprite {
     boolean isRoot();
 
     void removeInActive();
@@ -25,8 +25,6 @@ public interface ISpriteGroup<T> extends ISprite {
     void setViewportOrigin(PointF viewportOrigin);
 
     PointF getViewportOrigin();
-
-    Collection<T> getChildren();
 
     int getChildrenSize();
 

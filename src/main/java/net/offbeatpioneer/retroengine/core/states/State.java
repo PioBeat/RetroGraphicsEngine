@@ -11,7 +11,7 @@ import android.view.View;
 
 import net.offbeatpioneer.retroengine.auxiliary.background.BackgroundLayer;
 import net.offbeatpioneer.retroengine.auxiliary.background.BackgroundNode;
-import net.offbeatpioneer.retroengine.core.GamestateManager;
+import net.offbeatpioneer.retroengine.core.StateManager;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.sprites.AbstractSprite;
 import net.offbeatpioneer.retroengine.core.sprites.ISpriteGroup;
@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * Abstract class which represents a scene or state of an graphics application.
- * All states are managed by the {@link GamestateManager} class.
+ * All states are managed by the {@link StateManager} class.
  * <p>
  * A state has always a root node where all created sprites should be appended to. Background layers
  * should be added with the {@code addBackgroundLayer} method.
@@ -66,8 +66,8 @@ public abstract class State {
     //@Deprecated
     protected long timeNow = 0;
 
-    // Save reference to the GamestateManager
-    protected GamestateManager manager = GamestateManager.getInstance();
+    // Save reference to the StateManager
+    protected StateManager manager = StateManager.getInstance();
 
     public State() {
         this(new SpriteListGroup());
@@ -81,7 +81,7 @@ public abstract class State {
     }
 
     /**
-     * Delegate method from {@link GamestateManager}
+     * Delegate method from {@link StateManager}
      * Returns the {@link Handler} instance from the {@link DrawView} component.
      *
      * @return android {@link Handler} instance from the {@link DrawView} component
@@ -234,7 +234,7 @@ public abstract class State {
     }
 
     /**
-     * Initialise method of a state. It will be called from the {@link GamestateManager}.
+     * Initialise method of a state. It will be called from the {@link StateManager}.
      * It is recommended to only do initialisation of things that should and can be repeated every time
      * a state is restarted or switched.
      * It's not recommended to load resources like images or such alike.

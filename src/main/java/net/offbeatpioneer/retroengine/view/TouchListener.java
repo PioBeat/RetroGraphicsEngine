@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 
-import net.offbeatpioneer.retroengine.core.GamestateManager;
+import net.offbeatpioneer.retroengine.core.StateManager;
 
 /**
  * {@link TouchListener} nimmt die Eingaben entgegen, die als Touch-Event oder
@@ -21,7 +21,7 @@ import net.offbeatpioneer.retroengine.core.GamestateManager;
 public class TouchListener implements OnKeyListener, OnTouchListener {
 
 	private net.offbeatpioneer.retroengine.core.states.State currentState = null;
-	private GamestateManager manager = GamestateManager.getInstance();
+	private StateManager manager = StateManager.getInstance();
 	
 	public TouchListener() {
 	}

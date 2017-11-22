@@ -7,6 +7,7 @@ import android.graphics.RectF;
 import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 //extra bitmap for canvas https://stackoverflow.com/questions/11838022/how-to-paint-with-alpha#11838354
@@ -21,7 +22,7 @@ import java.util.List;
  * @author Dominik Grzelak
  * @since 26.01.2015
  */
-public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<AbstractSprite> {
+public class SpriteListGroup extends SpatialPartitionGroup<AbstractSprite> {
     private final List<AbstractSprite> children = new ArrayList<>();
 
     public SpriteListGroup() {
@@ -143,6 +144,16 @@ public class SpriteListGroup extends AbstractSprite implements ISpriteGroup<Abst
 
     public List<AbstractSprite> getChildren() {
         return children;
+    }
+
+    @Override
+    public Collection<AbstractSprite> getChildren(float left, float top, float right, float bottom) {
+        return getChildren();
+    }
+
+    @Override
+    public Collection<AbstractSprite> getChildren(RectF queryRange) {
+        return getChildren();
     }
 
     @Override

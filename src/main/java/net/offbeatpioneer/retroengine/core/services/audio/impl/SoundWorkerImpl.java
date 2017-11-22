@@ -49,7 +49,7 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
     }
 
     private SoundWorkerImpl(String name, int maxSounds) {
-        super(name, Process.THREAD_PRIORITY_BACKGROUND);
+        super(name, Process.THREAD_PRIORITY_AUDIO);
         this.MAX_SOUNDS = maxSounds;
         this.maxSounds = maxSounds;
     }

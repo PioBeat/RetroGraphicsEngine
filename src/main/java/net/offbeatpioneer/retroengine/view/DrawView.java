@@ -18,7 +18,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import net.offbeatpioneer.retroengine.core.GamestateManager;
+import net.offbeatpioneer.retroengine.core.StateManager;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 
 /**
@@ -84,7 +84,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
 
         RetroEngine.init(context);
         setParentActivity(findActivity());
-        GamestateManager.getInstance().setParentActivity(getParentActivity());
+        StateManager.getInstance().setParentActivity(getParentActivity());
 
         // register our interest in hearing about changes to our surface
         SurfaceHolder holder = getHolder();
@@ -158,18 +158,18 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
         Class<?> currentStateTemp = renderThread.getCurrentState();
 
         //try to get the current state
-        if (GamestateManager.getInstance().getGamestates().size() == 1) {
-            net.offbeatpioneer.retroengine.core.states.State state = GamestateManager.getInstance().getGamestates().get(0);
+        if (StateManager.getInstance().getGamestates().size() == 1) {
+            net.offbeatpioneer.retroengine.core.states.State state = StateManager.getInstance().getGamestates().get(0);
             currentStateTemp = state.getClass();
-        } else if (currentStateTemp == null && GamestateManager.getInstance().getGamestates().size() > 1 && GamestateManager.getInstance().getActiveGameState() != null) {
-            currentStateTemp = GamestateManager.getInstance().getActiveGameState().getClass();
+        } else if (currentStateTemp == null && StateManager.getInstance().getGamestates().size() > 1 && StateManager.getInstance().getActiveGameState() != null) {
+            currentStateTemp = StateManager.getInstance().getActiveGameState().getClass();
         }
 
-        if(currentStateTemp != null && GamestateManager.getInstance().getStateByClass(currentStateTemp) == null) {
-            throw new IllegalStateException("State is not added to the GamestateManager");
+        if(currentStateTemp != null && StateManager.getInstance().getStateByClass(currentStateTemp) == null) {
+            throw new IllegalStateException("State is not added to the StateManager");
         }
 
-        if (currentStateTemp != null && GamestateManager.getInstance().getStateByClass(currentStateTemp).isInitAsync()) {
+        if (currentStateTemp != null && StateManager.getInstance().getStateByClass(currentStateTemp).isInitAsync()) {
             dialog = ProgressDialog.show(getParentActivity(), "Loading", "Loading game ...", true, false);
             new LoadTask().execute(this);
         } else {
