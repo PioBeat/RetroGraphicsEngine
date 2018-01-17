@@ -5,7 +5,7 @@ Easy to setup. Easy to use. Fun to play.
 
 **Current Version: 0.9.4**
 
-## Compatibilty
+## Compatibility
 
 API 16+
 
