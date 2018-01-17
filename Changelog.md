@@ -1,5 +1,8 @@
 # [UNRELEASED]
 
+## Added
+- ``AbstractSprite#addAnimations(AnimationSuite...)`` to add multiple sprite at once
+
 ## Changes
 - Renamed ``GamestateManger`` to ``StateManger`` to represent a more
 generic behaviour
@@ -7,6 +10,8 @@ generic behaviour
 all sprite groups
 - Removed ``SpriteGridGroup``, because it needs a thorough rework first
 - Its possible now to set the priority of the ``RenderThread``
+- ``ColorTools#closeMatch(int, int, int)`` uses the euclidean distance
+now to measure the difference of two colors (taken the alpha value not into account)
 
 ## Performance
 - Improved memory consumption reducing alloc count for ``Matrix``, ``PointF``, and ``RectF``:
