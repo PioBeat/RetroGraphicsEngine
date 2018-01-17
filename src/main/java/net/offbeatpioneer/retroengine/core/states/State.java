@@ -180,7 +180,7 @@ public abstract class State {
         return rootGroup.getChildrenSize();
     }
 
-    private ISpriteGroup getRootGroup() {
+    public ISpriteGroup getRootGroup() {
         return this.rootGroup;
     }
 
