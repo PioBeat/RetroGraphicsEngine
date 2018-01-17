@@ -188,12 +188,30 @@ public abstract class AbstractSprite implements ISprite {
         return this.position;
     }
 
+    /**
+     * Add an animation to the sprite
+     *
+     * @param animation the animation to add
+     */
     public void addAnimation(AnimationSuite animation) {
         if (animations == null)
             animations = new ArrayList<>();
         if (animation.getAnimatedSprite() == null)
             animation.setAnimatedSprite(this);
         animations.add(animation);
+    }
+
+
+    /**
+     * Add multiple animation at once. The order matters.
+     * {@link AbstractSprite#addAnimations(AnimationSuite...)}
+     *
+     * @param animation the animations to add
+     */
+    public void addAnimations(AnimationSuite... animation) {
+        for (AnimationSuite each : animation) {
+            addAnimation(each);
+        }
     }
 
     /**
