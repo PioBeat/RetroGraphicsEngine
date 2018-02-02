@@ -12,6 +12,7 @@ all sprite groups
 - Its possible now to set the priority of the ``RenderThread``
 - ``ColorTools#closeMatch(int, int, int)`` uses the euclidean distance
 now to measure the difference of two colors (taken the alpha value not into account)
+- ``ISpriteGroup`` is split in iterable sprite groups and spatially distributed groups
 
 ## Performance
 - Improved memory consumption reducing alloc count for ``Matrix``, ``PointF``, and ``RectF``:
