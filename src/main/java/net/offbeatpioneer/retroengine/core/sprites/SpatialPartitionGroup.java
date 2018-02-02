@@ -5,6 +5,15 @@ import android.graphics.RectF;
 import java.util.Collection;
 
 /**
+ * Base class for sprite groups that can be spatially distributed.
+ * <p>
+ * Sub classes implement the concrete data structure. <br>
+ * Currently the following kind of group exist:
+ * <ul>
+ * <li>Quadtree (development)</li>
+ * <li>Grid (development)</li>
+ * </ul>
+ *
  * @author Dominik Grzelak
  * @since 22.11.2017.
  */

@@ -22,7 +22,7 @@ import java.util.List;
  * @author Dominik Grzelak
  * @since 26.01.2015
  */
-public class SpriteListGroup extends SpatialPartitionGroup<AbstractSprite> {
+public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
     private final List<AbstractSprite> children = new ArrayList<>();
 
     public SpriteListGroup() {
@@ -146,15 +146,15 @@ public class SpriteListGroup extends SpatialPartitionGroup<AbstractSprite> {
         return children;
     }
 
-    @Override
-    public Collection<AbstractSprite> getChildren(float left, float top, float right, float bottom) {
-        return getChildren();
-    }
+//    @Override
+//    public Collection<AbstractSprite> getChildren(float left, float top, float right, float bottom) {
+//        return getChildren();
+//    }
 
-    @Override
-    public Collection<AbstractSprite> getChildren(RectF queryRange) {
-        return getChildren();
-    }
+//    @Override
+//    public Collection<AbstractSprite> getChildren(RectF queryRange) {
+//        return getChildren();
+//    }
 
     @Override
     public int getChildrenSize() {
@@ -174,19 +174,19 @@ public class SpriteListGroup extends SpatialPartitionGroup<AbstractSprite> {
         }
     }
 
-    @Override
-    public void setQueryRange(RectF queryRange) {
-        // ToDo
-    }
+//    @Override
+//    public void setQueryRange(RectF queryRange) {
+//        // ToDo
+//    }
 
-    /**
-     * Determine if the current sprite is the root sprite
-     *
-     * @return true if this Sprite is the root node, otherwise false
-     */
-    public boolean isRoot() {
-        return getParent() == null;
-    }
+//    /**
+//     * Determine if the current sprite is the root sprite
+//     *
+//     * @return true if this Sprite is the root node, otherwise false
+//     */
+//    public boolean isRoot() {
+//        return getParent() == null;
+//    }
 
     /**
      * Has this {@link SpriteListGroup} child sprites?

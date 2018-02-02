@@ -15,6 +15,7 @@ import net.offbeatpioneer.retroengine.core.StateManager;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.sprites.AbstractSprite;
 import net.offbeatpioneer.retroengine.core.sprites.ISpriteGroup;
+import net.offbeatpioneer.retroengine.core.sprites.SpatialPartitionGroup;
 import net.offbeatpioneer.retroengine.core.sprites.SpriteListGroup;
 import net.offbeatpioneer.retroengine.core.sprites.SpriteQuadtreeGroup;
 import net.offbeatpioneer.retroengine.view.DrawView;
@@ -111,14 +112,15 @@ public abstract class State {
 
     /**
      * Set the rectangle that defines the search area of the drawing surface. Only necessary when
-     * the {@link SpriteQuadtreeGroup} is used as root node of this {@link State}.
-     * The update and draw methods of {@link SpriteQuadtreeGroup} will find all points that appear
+     * the root node of this {@link State} is a {@link SpatialPartitionGroup}.
+     * The update and draw methods of {@link SpatialPartitionGroup} will find all points that appear
      * within this range and apply those methods only for the found sprites.
      *
      * @param rect the rectangle where to search for sprites on the drawing surface
      */
     public void setQueryRange(RectF rect) {
-        rootGroup.setQueryRange(rect);
+        if (rootGroup.getClass().equals(SpatialPartitionGroup.class))
+            ((SpatialPartitionGroup) rootGroup).setQueryRange(rect);
     }
 
     /**
@@ -256,7 +258,7 @@ public abstract class State {
      * Process key events
      *
      * @param v        view which sends an event
-     * @param keyCode the key code
+     * @param keyCode  the key code
      * @param keyEvent the key event
      * @return true or false
      */

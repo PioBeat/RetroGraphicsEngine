@@ -170,15 +170,15 @@ public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<Abstract
         }
     }
 
-    /**
-     * Determine if the current sprite is the root sprite
-     *
-     * @return true if this Sprite is the root node, otherwise false
-     */
-    @Override
-    public boolean isRoot() {
-        return getParent() == null;
-    }
+//    /**
+//     * Determine if the current sprite is the root sprite
+//     *
+//     * @return true if this Sprite is the root node, otherwise false
+//     */
+//    @Override
+//    public boolean isRoot() {
+//        return getParent() == null;
+//    }
 
 
     public boolean hasChildren() {
