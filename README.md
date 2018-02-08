@@ -4,6 +4,7 @@
 Easy to setup. Easy to use. Fun to play.
 
 **Current Stable Version: 0.9.4**
+
 **Beta Version: 0.9.5-beta1**
 
 ## Compatibility
