@@ -1,6 +1,7 @@
 package net.offbeatpioneer.retroengine.view;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -32,14 +33,10 @@ import net.offbeatpioneer.retroengine.core.RetroEngine;
  *
  * @author Dominik Grzelak
  */
-public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
-        SensorEventListener {
-
-    public static Paint myPaint;
+public class DrawView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
 
     private RenderThread renderThread;
     private TouchListener touchListener;
-    // public GestureDetector gestureDetector;
 
     private Handler handler;
 
@@ -50,6 +47,18 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
     private Activity myActivity;
 
     public Resources res = this.getResources();
+
+    private DrawViewInteraction viewInteraction;
+    private final DrawViewInteraction emptyInteraction = new DrawViewInteraction() {
+        @Override
+        public void onCreated(DrawView drawView) {
+
+        }
+    };
+
+    public interface DrawViewInteraction {
+        void onCreated(DrawView drawView);
+    }
 
     /**
      * The actual (concrete) drawing of sprites or a scene is done in the {@code render()} method
@@ -91,19 +100,26 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
         holder.addCallback(this);
 
         handler = new Handler();
-        myPaint = new Paint();
 
-
-        // Key-Events abfangen
+        // Intercept key events
         setFocusable(true);
-        // Touch-Events abfangen
+        // Intercept touch events
         setFocusableInTouchMode(true);
-
+        // allow long click events
         setLongClickable(true);
 
         touchListener = new TouchListener();
         setOnKeyListener(touchListener);
         setOnTouchListener(touchListener);
+        viewInteraction = emptyInteraction;
+    }
+
+    public void addListener(DrawViewInteraction listener) {
+        this.viewInteraction = listener;
+    }
+
+    public void removeListener() {
+        this.viewInteraction = emptyInteraction;
     }
 
     public Bundle saveState(Bundle saveState) {
@@ -115,6 +131,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
 
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
                                int height) {
+        initSurfaceSize(holder);
     }
 
     public RenderThread getRenderThread() {
@@ -123,8 +140,6 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
 
     public void setRenderThread(RenderThread renderThread) {
         this.renderThread = renderThread;
-//        this.renderThread.setHandler(handler);
-
     }
 
     public TouchListener getTouchListener() {
@@ -133,6 +148,13 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
 
     public void setTouchListener(TouchListener touchListener) {
         this.touchListener = touchListener;
+    }
+
+    public void initSurfaceSize(final SurfaceHolder holder) {
+        Canvas tmp = holder.lockCanvas();
+        RetroEngine.H = tmp.getHeight();
+        RetroEngine.W = tmp.getWidth();
+        holder.unlockCanvasAndPost(tmp);
     }
 
     /**
@@ -147,14 +169,14 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
      */
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Canvas tmp = holder.lockCanvas();
-        RetroEngine.H = tmp.getHeight();
-        RetroEngine.W = tmp.getWidth();
-        holder.unlockCanvasAndPost(tmp);
+        initSurfaceSize(holder);
 
         if (renderThread == null) {
             renderThread = new RenderThread(this);
         }
+
+        this.viewInteraction.onCreated(this);
+
         Class<?> currentStateTemp = renderThread.getCurrentState();
 
         //try to get the current state
@@ -165,16 +187,17 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
             currentStateTemp = StateManager.getInstance().getActiveGameState().getClass();
         }
 
-        if(currentStateTemp != null && StateManager.getInstance().getStateByClass(currentStateTemp) == null) {
+        if (currentStateTemp != null && StateManager.getInstance().getStateByClass(currentStateTemp) == null) {
             throw new IllegalStateException("State is not added to the StateManager");
         }
 
         if (currentStateTemp != null && StateManager.getInstance().getStateByClass(currentStateTemp).isInitAsync()) {
-            dialog = ProgressDialog.show(getParentActivity(), "Loading", "Loading game ...", true, false);
-            new LoadTask().execute(this);
+            dialog = ProgressDialog.show(getParentActivity(), "Loading", "Please wait ...", true, false);
+            new LoadTask(renderThread, handler, dialog).execute(this);
         } else {
             initializeState();
         }
+
     }
 
     /**
@@ -190,23 +213,22 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
         renderThread.setHandler(handler);
         renderThread.initState();
         // Thread starten
-        if (!renderThread.isAlive() && !RetroEngine.isRunning) {
+        if (!renderThread.isAlive() && !RetroEngine.isRunning()) {
             try {
-                RetroEngine.isRunning = true;
-                RetroEngine.shouldWait = false;
+                RetroEngine.changeRunningState(true);
+                RetroEngine.setShouldWait(false);
                 renderThread.start();
             } catch (Exception e) {
-                Log.v("RenderThread", "RenderThread already started.");
-                e.printStackTrace();
+                Log.v("RenderThread", "RenderThread already started." + e.toString());
                 try {
-
+                    RetroEngine.pauseRenderThread();
                     renderThread.interrupt();
                     renderThread.join();
                     renderThread.start();
                 } catch (Exception e2) {
                     e2.printStackTrace();
+                    Log.e("RenderThread", e.toString());
                 }
-
             }
         }
     }
@@ -214,14 +236,14 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
     public void surfaceDestroyed(SurfaceHolder holder) {
         boolean retry = true;
 
-        // Auf renderThread warten bis dieser beendet wird.
-        RetroEngine.isRunning = false;
+        // Pause RenderThread and wait until closed
+        RetroEngine.pauseRenderThread();
         while (retry) {
             try {
-
+                RetroEngine.changeRunningState(false);
                 renderThread.join();
                 retry = false;
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
 
@@ -231,23 +253,34 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback,
     /**
      * Ansynchroner Task führt das Laden des Spielzustandes durch.
      */
-    private class LoadTask extends AsyncTask<DrawView, Void, Object> {
+    private static class LoadTask extends AsyncTask<DrawView, Void, Object> {
+
+        RenderThread renderThread;
+        Handler handler;
+        Dialog dialog;
+
+        LoadTask(RenderThread renderThread, Handler handler) {
+            this(renderThread, handler, null);
+        }
+
+        LoadTask(RenderThread renderThread, Handler handler, Dialog dialog) {
+            this.renderThread = renderThread;
+            this.handler = handler;
+            this.dialog = dialog;
+        }
 
         protected Object doInBackground(final DrawView... v) {
             renderThread.setHandler(handler);
-//            renderThread.setCurrentState(currentStateTemp); //active one
             renderThread.initState();
-            // Thread starten
-            if (!renderThread.isAlive() && !RetroEngine.isRunning) {
+            // Start thread
+            if (!renderThread.isAlive() && !RetroEngine.isRunning()) {
                 try {
-                    RetroEngine.isRunning = true;
-                    RetroEngine.shouldWait = false;
+                    RetroEngine.changeRunningState(true);
+                    RetroEngine.setShouldWait(false);
                     renderThread.start();
                 } catch (Exception e) {
                     Log.v("RenderThread", "RenderThread already started.");
-                    e.printStackTrace();
                     try {
-
                         renderThread.interrupt();
                         renderThread.join();
                         renderThread.start();
