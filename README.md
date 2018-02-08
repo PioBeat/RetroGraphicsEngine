@@ -3,7 +3,8 @@
 **RetroGraphicsEngine** is a pure canvas‑based graphics engine for _Android_.
 Easy to setup. Easy to use. Fun to play.
 
-**Current Version: 0.9.4**
+**Current Stable Version: 0.9.4**
+**Beta Version: 0.9.5-beta1**
 
 ## Compatibility
 
@@ -30,6 +31,8 @@ repositories {
 
 dependencies {
     compile 'net.offbeat-pioneer.android:retroengine:0.9.4'
+    // for the beta
+    // compile 'net.offbeat-pioneer.android:retroengine:0.9.5-beta1'
 }
 ```
 
