@@ -5,6 +5,8 @@ import android.content.res.Resources;
 
 import net.offbeatpioneer.retroengine.view.RenderThread;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Core class to get access to common resources like canvas size or an application's resources at
  * any state or in every class.
@@ -26,9 +28,8 @@ public class RetroEngine {
     public static int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
     public static int MAX_FRAMESKIP = 15;
 
-    public static boolean isRunning = false;
-    public static boolean shouldWait = false;
-    public static boolean resetStateIfWait = false;
+    private static AtomicBoolean running = new AtomicBoolean(false);
+    private static AtomicBoolean shouldWait = new AtomicBoolean(false);
 
     public static int W;
     public static int H;
@@ -44,13 +45,23 @@ public class RetroEngine {
         Resources = context.getResources();
     }
 
-    public static void renderThreadWaitNoReset() {
-        shouldWait = true;
-        resetStateIfWait = false;
+    public static boolean isRunning() {
+        return running.get();
     }
 
-    public static void renderThreadWaitAndReset() {
-        shouldWait = true;
-        resetStateIfWait = true;
+    public static void changeRunningState(boolean value) {
+        running.set(value);
+    }
+
+    public static boolean isShouldWait() {
+        return shouldWait.get();
+    }
+
+    public static void resumeRenderThread() {
+        shouldWait.set(false);
+    }
+
+    public static void pauseRenderThread() {
+        shouldWait.set(true);
     }
 }

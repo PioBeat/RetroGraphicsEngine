@@ -3,6 +3,7 @@ package net.offbeatpioneer.retroengine.core;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 import android.app.Activity;
 import android.graphics.Canvas;
@@ -25,17 +26,17 @@ import net.offbeatpioneer.retroengine.core.states.State;
  */
 public class StateManager {
 
-    public static AtomicBoolean IS_CHANGING = new AtomicBoolean(false);
+    private final ReentrantLock lock = new ReentrantLock();
+    private AtomicBoolean changingState = new AtomicBoolean(false);
 
     private Activity mParentActivity = null;
 
     private final List<State> states = new ArrayList<>();
 
     private static StateManager instance = null;
+    private State currentActiveState = null;
 
     private Handler handler;
-
-    private final Object[] lock = new Object[]{};
 
     public static synchronized StateManager getInstance() {
         if (instance == null)
@@ -52,10 +53,12 @@ public class StateManager {
      * @return active state or null, if no state is active
      */
     public synchronized State getActiveGameState() {
+        if (currentActiveState != null) return currentActiveState;
         synchronized (states) {
             for (int i = 0, n = states.size(); i < n; i++) {
                 if (states.get(i).isActive())
-                    return states.get(i);
+                    currentActiveState = states.get(i);
+                return states.get(i);
             }
             return null;
         }
@@ -122,27 +125,50 @@ public class StateManager {
         synchronized (states) {
             for (int i = 0, n = states.size(); i < n; i++) {
                 states.get(i).setActive(false);
+                currentActiveState = null;
             }
         }
     }
 
+    /**
+     * Begin a state change
+     *
+     * @param c the class of the state to switch
+     */
     public void changeGameState(Class<?> c) {
         synchronized (states) {
-            IS_CHANGING.set(true);
+            changingState.set(true);
+            RetroEngine.pauseRenderThread(); // pause the render thread
             for (int i = 0, n = states.size(); i < n; i++) {
                 if (states.get(i).getClass().equals(c)) {
                     State oldState = getActiveGameState();
-                    if (oldState != null) {
+                    if (this.currentActiveState != null && oldState != null) {
                         oldState.setActive(false);
                         oldState.cleanUp();
                     }
                     states.get(i).setActive(true);
+                    currentActiveState = states.get(i);
                     states.get(i).init();
                     break;
                 }
             }
-            IS_CHANGING.set(false);
         }
+    }
+
+    /**
+     * Check if a state change event is occurring
+     *
+     * @return true, if a state change is currently active, otherwise false
+     */
+    public boolean isChangingState() {
+        return changingState.get();
+    }
+
+    /**
+     * Set the changing state flag to {@code false}
+     */
+    public void endStateChange() {
+        changingState.set(false);
     }
 
     public void clearStates() {

@@ -101,41 +101,27 @@ public class RenderThread extends Thread {
      */
     @Override
     public void run() {
-        //manager.getActiveGameState().initAsAnimation();
         net.offbeatpioneer.retroengine.core.states.State currentStateTmp = manager.getActiveGameState();
-        StateManager.IS_CHANGING.set(false);
-        RetroEngine.shouldWait = false;
         Paint paint = new Paint();
         long next_game_tick = RetroEngine.getTickCount();
         int loops;
-        while (RetroEngine.isRunning) {
+        while (RetroEngine.isRunning()) {
 
-            if (RetroEngine.shouldWait) {
-                if (RetroEngine.resetStateIfWait) {
-                    StateManager.IS_CHANGING.set(true);
-                    if (currentStateTmp != null) {
-                        currentStateTmp.setActive(false);
-                        currentStateTmp.cleanUp();
-                    }
-
-                    if ((currentStateTmp = manager.getActiveGameState()) == null) {
-                        sleepThread(100);
-                        break;
-                    } else {
-                        RetroEngine.shouldWait = false;
-                        StateManager.IS_CHANGING.set(false);
-                    }
-                } else {
-                    sleepThread(250);
-                    continue;
+            if (RetroEngine.isShouldWait()) {
+                // check for state change and get the new state - if null break the loop
+                if (manager.isChangingState() && (currentStateTmp = manager.getActiveGameState()) != null) {
+                    RetroEngine.resumeRenderThread();
+                    manager.endStateChange();
                 }
+                sleepThread(250);
+                continue;
             }
 
             loops = 0;
             Canvas canvas = null;
             try {
                 if (!mSurfaceHolder.getSurface().isValid()) continue;
-                if (StateManager.IS_CHANGING.get()) continue;
+//                if (StateManager.IS_CHANGING.get()) continue;
 
                 while (RetroEngine.getTickCount() > next_game_tick && loops < RetroEngine.MAX_FRAMESKIP) {
                     assert currentStateTmp != null;
@@ -161,10 +147,10 @@ public class RenderThread extends Thread {
 
         }
         cleanUp();
-        Log.v(TAG_LOG, "End of RenderThread");
     }
 
     private void sleepThread(long duration) {
+        Thread.yield();
         try {
             Thread.sleep(duration);
         } catch (InterruptedException e) {
@@ -178,6 +164,7 @@ public class RenderThread extends Thread {
     public void cleanUp() {
         if (manager.getActiveGameState() != null)
             manager.getActiveGameState().cleanUp();
+        manager.clearStates();
     }
 
     public Handler getHandler() {

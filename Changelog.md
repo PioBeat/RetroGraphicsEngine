@@ -1,4 +1,4 @@
-# [UNRELEASED]
+# [0.9.5-beta1]
 
 ## Added
 - ``AbstractSprite#addAnimations(AnimationSuite...)`` to add multiple sprite at once
@@ -13,6 +13,9 @@ all sprite groups
 - ``ColorTools#closeMatch(int, int, int)`` uses the euclidean distance
 now to measure the difference of two colors (taken the alpha value not into account)
 - ``ISpriteGroup`` is split in iterable sprite groups and spatially distributed groups
+- better and clarifying methods for ``RetroEngine``
+- Optimized Render loop in ``RenderThread`` regarding state changes and pausing
+the loop
 
 ## Performance
 - Improved memory consumption reducing alloc count for ``Matrix``, ``PointF``, and ``RectF``:

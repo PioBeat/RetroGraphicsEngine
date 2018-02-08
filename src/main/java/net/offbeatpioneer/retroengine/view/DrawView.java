@@ -216,7 +216,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Sen
         if (!renderThread.isAlive() && !RetroEngine.isRunning()) {
             try {
                 RetroEngine.changeRunningState(true);
-                RetroEngine.setShouldWait(false);
+                RetroEngine.resumeRenderThread();
                 renderThread.start();
             } catch (Exception e) {
                 Log.v("RenderThread", "RenderThread already started." + e.toString());
@@ -276,7 +276,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Sen
             if (!renderThread.isAlive() && !RetroEngine.isRunning()) {
                 try {
                     RetroEngine.changeRunningState(true);
-                    RetroEngine.setShouldWait(false);
+                    RetroEngine.resumeRenderThread();
                     renderThread.start();
                 } catch (Exception e) {
                     Log.v("RenderThread", "RenderThread already started.");
