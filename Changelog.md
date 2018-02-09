@@ -1,3 +1,11 @@
+# [UNRELEASED]
+
+## Added
+- Load scaled bitmaps with the same density as the screen:
+``BitmapHelper#decodeSampledBitmapFromResource(Resources, int, int, int, boolean)`` and
+convenient method ``BitmapHelper#decodeSampledBitmapFromResource(Resources, int, int, int)``
+where inScaled is set to true.
+
 # [0.9.5-beta1]
 
 ## Added

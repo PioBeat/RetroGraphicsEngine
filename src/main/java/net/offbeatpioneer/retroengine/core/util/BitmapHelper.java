@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 
+import net.offbeatpioneer.retroengine.core.RetroEngine;
+
 /**
  * Various helper methods for bitmap operations
  *
@@ -33,19 +35,50 @@ public class BitmapHelper {
     }
 
     /**
-     * Load a Scaled Down Version into Memory
-     *
+     * Load a Scaled Down Version into Memory. <br>
+     * The target density of the bitmap will have the same density as the display.
+     * <p>
+     * The property {@code inScaled} of the {@link BitmapFactory} options is set to true for a scaled
+     * version of the bitmap so that it matches the target density (the screen density).
+     * The {@code inTargetDensity} property is set to {@link android.util.DisplayMetrics#densityDpi}.
+     * <p>
      * Source: <a href="https://developer.android.com/topic/performance/graphics/load-bitmap.html#read-bitmap">
      * https://developer.android.com/topic/performance/graphics/load-bitmap.html#read-bitmap</a>
      *
-     * @param res resource object
-     * @param resId resource id of the drawable
-     * @param reqWidth new width
+     * @param res       resource object
+     * @param resId     resource id of the drawable
+     * @param reqWidth  new width
      * @param reqHeight new height
-     * @return the loaded bitmap with the specified size
+     * @return the scaled bitmap adjusted with the current screen density
      */
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
                                                          int reqWidth, int reqHeight) {
+
+        return decodeSampledBitmapFromResource(res, resId, reqWidth, reqHeight, true);
+    }
+
+    /**
+     * Load a Scaled Down Version into Memory. <br>
+     * The target density of the bitmap will have the same density as the display, when the parameter
+     * {@code inScaled} is set to {@code true}.
+     * <p>
+     * The property {@code inScaled} of the {@link BitmapFactory} options is set to true for a scaled
+     * version of the bitmap so that it matches the target density (the screen density).
+     * The {@code inTargetDensity} property is set to {@link android.util.DisplayMetrics#densityDpi}.
+     * <p>
+     * Source: <a href="https://developer.android.com/topic/performance/graphics/load-bitmap.html#read-bitmap">
+     * https://developer.android.com/topic/performance/graphics/load-bitmap.html#read-bitmap</a>
+     *
+     * @param res       resource object
+     * @param resId     resource id of the drawable
+     * @param reqWidth  new width
+     * @param reqHeight new height
+     * @param inScaled  option of the {@link BitmapFactory}, false for non-scaled version, and true for scaled version
+     *                  to match the target density
+     * @return the loaded bitmap with the specified size
+     */
+    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
+                                                         int reqWidth, int reqHeight, boolean inScaled) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -54,20 +87,34 @@ public class BitmapHelper {
 
         // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
+        options.inTargetDensity = res.getDisplayMetrics().densityDpi;
+        options.inScaled = inScaled;
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeResource(res, resId, options);
     }
 
     /**
-     * Load a Scaled Down Version into Memory
+     * Return the logical density of the display.
+     * This is a scaling factor for the Density Independent Pixel unit
+     * <p>
+     * {@link RetroEngine#Resources} is acquired to get the value.
      *
+     * @return the scaling factor for the DPI unit of the display
+     * @see android.util.DisplayMetrics#density
+     */
+    public static float getScreenDensityFactor() {
+        return RetroEngine.Resources.getDisplayMetrics().density;
+    }
+
+    /**
+     * Load a Scaled Down Version into Memory
+     * <p>
      * Source: <a href="https://developer.android.com/topic/performance/graphics/load-bitmap.html#read-bitmap">
      * https://developer.android.com/topic/performance/graphics/load-bitmap.html#read-bitmap</a>
      *
-     * @param options options for the bitmap
-     * @param reqWidth new width
+     * @param options   options for the bitmap
+     * @param reqWidth  new width
      * @param reqHeight new height
      * @return the new sampled size
      */
