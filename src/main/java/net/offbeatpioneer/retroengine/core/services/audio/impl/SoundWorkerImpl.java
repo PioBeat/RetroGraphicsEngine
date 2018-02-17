@@ -37,6 +37,7 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
     private AtomicInteger cnt = new AtomicInteger(0);
     private Context context;
     private final int maxSounds;
+    private boolean debug = false;
 
     /**
      * Is called by the client
@@ -100,7 +101,8 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
         try {
             return backgroundMusic != null && backgroundMusic.isPlaying();
         } catch (IllegalStateException e) {
-            Log.e(TAG, e.toString(), e);
+            if (debug)
+                Log.e(TAG, e.toString(), e);
             return false;
         }
     }
@@ -115,7 +117,8 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
             try {
                 mp.stop();
             } catch (IllegalStateException e) {
-                Log.e(TAG, e.toString(), e);
+                if (debug)
+                    Log.e(TAG, e.toString(), e);
             }
             mp.release();
             mp = null;
@@ -144,9 +147,15 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
         try {
             this.quit();
         } catch (Exception e) {
-            Log.e(TAG, e.toString(), e);
+            if (debug)
+                Log.e(TAG, e.toString(), e);
         }
         mWorkerHandler = null;
+    }
+
+    @Override
+    public void enableDebugOutput() {
+        debug = true;
     }
 
     @Override
@@ -155,7 +164,8 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
             return false;
         }
         if (cnt.get() >= MAX_SOUNDS) {
-            Log.d(TAG, "Maximum number of sounds playing reached. Maximum=" + MAX_SOUNDS);
+            if (debug)
+                Log.d(TAG, "Maximum number of sounds playing reached. Maximum=" + MAX_SOUNDS);
             return true;
         }
         switch (message.what) {
@@ -168,7 +178,8 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
                     mp.setOnPreparedListener(this);
                     mp.setOnCompletionListener(this);
                 } catch (IllegalStateException e) {
-                    Log.e(TAG, e.toString(), e);
+                    if (debug)
+                        Log.e(TAG, e.toString(), e);
                 }
                 break;
             case PLAY_BG_MUSIC:
@@ -180,7 +191,8 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
                 try {
                     backgroundMusic.setOnPreparedListener(this);
                 } catch (IllegalStateException e) {
-                    Log.e(TAG, e.toString(), e);
+                    if (debug)
+                        Log.e(TAG, e.toString(), e);
                 }
                 break;
         }
@@ -191,7 +203,8 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
     public void onPrepared(MediaPlayer mediaPlayer) {
         mediaPlayer.start();
         int c = cnt.incrementAndGet();
-        Log.d(TAG, "Current sound counter=" + c);
+        if (debug)
+            Log.d(TAG, "Current sound counter=" + c);
     }
 
     @Override
@@ -199,6 +212,7 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
         stopAndReleaseMediaPlayer(mediaPlayer, false);
         int c = cnt.getAndDecrement();
         if (c < 0) cnt.set(0);
-        Log.d(TAG, "Current sound counter=" + c);
+        if (debug)
+            Log.d(TAG, "Current sound counter=" + c);
     }
 }

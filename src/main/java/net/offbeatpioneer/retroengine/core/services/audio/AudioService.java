@@ -55,4 +55,6 @@ public interface AudioService {
      * Stops all currently playing sounds
      */
     void stopAll();
+
+    void enableDebugOutput();
 }

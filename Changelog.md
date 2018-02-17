@@ -5,6 +5,7 @@
 ``BitmapHelper#decodeSampledBitmapFromResource(Resources, int, int, int, boolean)`` and
 convenient method ``BitmapHelper#decodeSampledBitmapFromResource(Resources, int, int, int)``
 where inScaled is set to true.
+- enable debug output for ``AudioService`` classes. Default: disabled
 
 # [0.9.5-beta1]
 
