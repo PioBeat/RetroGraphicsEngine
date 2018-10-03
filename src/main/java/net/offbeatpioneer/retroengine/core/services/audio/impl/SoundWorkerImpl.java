@@ -26,7 +26,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Dominik Grzelak
  * @since 11.09.2017
  */
-public class SoundWorkerImpl extends HandlerThread implements AudioService, Handler.Callback, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
+public class SoundWorkerImpl extends HandlerThread implements AudioService, Handler.Callback,
+        MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
     private final static String TAG = "SoundWorkerImpl";
     private final int MAX_SOUNDS;
     private Handler mWorkerHandler;
@@ -150,6 +151,7 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
             if (debug)
                 Log.e(TAG, e.toString(), e);
         }
+        cnt.set(0);
         mWorkerHandler = null;
     }
 
@@ -177,6 +179,7 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
                     mp.seekTo(0);
                     mp.setOnPreparedListener(this);
                     mp.setOnCompletionListener(this);
+                    mp.setOnErrorListener(this);
                 } catch (IllegalStateException e) {
                     if (debug)
                         Log.e(TAG, e.toString(), e);
@@ -188,6 +191,8 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
                 backgroundMusic = MediaPlayer.create(this.context, playMessage1.getSoundId());
                 backgroundMusic.setLooping(true);
                 backgroundMusic.setVolume(playMessage1.getVolume(), playMessage1.getVolume());
+                backgroundMusic.setOnCompletionListener(this);
+                backgroundMusic.setOnErrorListener(this);
                 try {
                     backgroundMusic.setOnPreparedListener(this);
                 } catch (IllegalStateException e) {
@@ -214,5 +219,15 @@ public class SoundWorkerImpl extends HandlerThread implements AudioService, Hand
         if (c < 0) cnt.set(0);
         if (debug)
             Log.d(TAG, "Current sound counter=" + c);
+    }
+
+
+    @Override
+    public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+        int c = cnt.decrementAndGet();
+        if (c < 0) cnt.set(0);
+        if (debug)
+            Log.d(TAG, "onErrorListener in MP: Current sound counter=" + c);
+        return false;
     }
 }
