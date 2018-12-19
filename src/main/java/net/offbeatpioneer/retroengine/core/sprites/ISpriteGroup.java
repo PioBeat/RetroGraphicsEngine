@@ -14,7 +14,7 @@ import java.util.List;
  * @author Dominik Grzelak
  * @since 04.05.2017
  */
-public interface ISpriteGroup extends ISprite {
+public interface ISpriteGroup<T> extends ISprite {
 
     /**
      * Determine if the current sprite is the root sprite
@@ -22,6 +22,13 @@ public interface ISpriteGroup extends ISprite {
      * @return true if this Sprite is the root node, otherwise false
      */
     boolean isRoot();
+
+    /**
+     * Return all children of the group no matter of the position.
+     *
+     * @return collection of all children
+     */
+    Collection<T> getChildren();
 
     /**
      * Remove all inactive sprites.

@@ -20,12 +20,12 @@ import java.util.Collection;
 public abstract class SpatialPartitionGroup<T> extends AbstractSprite implements ISpriteGroup {
     private RectF queryRange = new RectF();
 
-    /**
-     * Return all children of the group no matter of the position.
-     *
-     * @return collection of all children
-     */
-    public abstract Collection<T> getChildren();
+//    /**
+//     * Return all children of the group no matter of the position.
+//     *
+//     * @return collection of all children
+//     */
+//    public abstract Collection<T> getChildren();
 
     /**
      * Return only children within a specific query range.

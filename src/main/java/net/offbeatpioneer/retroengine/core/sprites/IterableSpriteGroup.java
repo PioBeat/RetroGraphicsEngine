@@ -7,15 +7,17 @@ import java.util.Collection;
  */
 public abstract class IterableSpriteGroup<T> extends AbstractSprite implements ISpriteGroup {
 
-    /**
-     * Return all children of the group no matter of the position.
-     *
-     * @return collection of all children
-     */
-    public abstract Collection<T> getChildren();
+//    /**
+//     * Return all children of the group no matter of the position.
+//     *
+//     * @return collection of all children
+//     */
+//    public abstract Collection<T> getChildren();
 
     @Override
     public boolean isRoot() {
         return getParent() == null;
     }
+
+
 }
