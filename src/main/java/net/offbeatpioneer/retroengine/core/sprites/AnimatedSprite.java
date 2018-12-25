@@ -1,41 +1,34 @@
 package net.offbeatpioneer.retroengine.core.sprites;
 
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.PointF;
+import android.graphics.Rect;
+import android.graphics.RectF;
 
-import net.offbeatpioneer.retroengine.core.RetroEngine;
-import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 import net.offbeatpioneer.retroengine.core.eventhandling.EmptyAction;
 import net.offbeatpioneer.retroengine.core.eventhandling.IActionEventCallback;
 
 import java.util.ArrayList;
 
 /**
- * Sprite class which represents a animated sprite and implements some basic functionalities which
- * influences the visuals and properties of it.
- * Subclass from {@link AbstractSprite}.
+ * Sprite class which represents an animated sprite and implements some basic functionality which
+ * influences the visuals and properties of it. Subclass of {@link AbstractSprite}.
+ * <p>
  * A sprite can be animated or a static one.
- * The position, angle (Ausrichtung), size, alpha value can be changed.
+ * The position, angle (i.e., direction), size, alpha value can be modified.
  * This includes the bounding box for collision as well.
  *
  * @author Dominik Grzelak
  */
 public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable {
 
-    private IActionEventCallback actionEventCallback = new EmptyAction();
+    private IActionEventCallback actionEventCallback;
     protected RectF checkBoundsRect;
 
     public AnimatedSprite() {
-        disable = false;
-        parentSprite = null;
-        sRectangle = new Rect(0, 0, 0, 0);
-        loop = false;
-        animations = new ArrayList<>();
-        actionEventCallback = new EmptyAction();
-        viewportOrigin = new PointF(0, 0);
-//        frameUpdate = new AnimatedFrameUpdate(this);
-        scale = 1f;
-        position = new PointF(0, 0);
-        checkBoundsRect = new RectF();
+        super();
+        this.actionEventCallback = new EmptyAction();
+        this.checkBoundsRect = new RectF();
     }
 
 
@@ -48,37 +41,37 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         this.frameW = width;
         this.sRectangle.top = 0;
         this.sRectangle.bottom = frameH;
-        this.disable = false;
+        this.disabled = false;
         this.frameUpdate = new AnimatedFrameUpdate(this);
         this.framePeriod = 1000 / fps;
         this.sRectangle.left = 0;
         this.sRectangle.right = frameW;
         this.frameCnt = frameCount;
 
-        oldPosition = new PointF(pos.x, pos.y);
-        position.set(pos.x, pos.y);
+        this.oldPosition = new PointF(pos.x, pos.y);
+        this.position.set(pos.x, pos.y);
+        this.speed = new PointF(0, 0); // initial speed
         int speedScalar = 5;
-        speed = new PointF(0, 0);
-        speed.x = speedScalar;
-        speed.y = -speedScalar;
+        this.speed.x = speedScalar;
+        this.speed.y = -speedScalar;
 
         this.loop = loop;
         this.viewportOrigin = new PointF(0, 0);
-        cnt = 0;
-        frameNr = 0;
-        angle = 0;
-        active = true;
-        autoDestroy = true;
+        this.cnt = 0;
+        this.frameNr = 0;
+        this.angle = 0;
+        this.active = true;
+        this.autoDestroy = true;
 
-        rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
+        this.rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
 //        oldPosition = new PointF(p.x, p.y);
 
-        if (parentSprite != null) {
-            viewportOrigin = parentSprite.getViewportOrigin() != null ? parentSprite.getViewportOrigin() : new PointF(0, 0);
+        if (this.parentSprite != null) {
+            this.viewportOrigin = this.parentSprite.getViewportOrigin() != null ? this.parentSprite.getViewportOrigin() : new PointF(0, 0);
         }
-        if (frameUpdate == null)
-            frameUpdate = new AnimatedFrameUpdate(this);
-        frameNr = frameUpdate.updateFrame();
+        if (this.frameUpdate == null)
+            this.frameUpdate = new AnimatedFrameUpdate(this);
+        this.frameNr = this.frameUpdate.updateFrame();
         return this;
     }
 
@@ -139,17 +132,17 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
     }
 
     public void updateLogicTemplate() {
-        if (autoDestroy) {
-            PointF o = getViewportOrigin();
-            checkBoundsRect.set(o.x - (int) (RetroEngine.W * bufferZoneFactor),
-                    o.y - (int) (RetroEngine.H * bufferZoneFactor),
-                    o.x + (int) (RetroEngine.W * (1.0 + bufferZoneFactor)),
-                    o.y + (int) (RetroEngine.H * (1.0 + bufferZoneFactor))
-            );
-            if (!ContainsRect(checkBoundsRect)) {
-                active = false;
-            }
-        }
+//        if (autoDestroy) {
+//            PointF o = getViewportOrigin();
+//            checkBoundsRect.set(o.x - (int) (RetroEngine.W * bufferZoneFactor),
+//                    o.y - (int) (RetroEngine.H * bufferZoneFactor),
+//                    o.x + (int) (RetroEngine.W * (1.0 + bufferZoneFactor)),
+//                    o.y + (int) (RetroEngine.H * (1.0 + bufferZoneFactor))
+//            );
+//            if (!ContainsRect(checkBoundsRect)) {
+//                active = false;
+//            }
+//        }
     }
 
     /**

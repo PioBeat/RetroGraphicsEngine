@@ -105,6 +105,7 @@ public class RenderThread extends Thread {
         Paint paint = new Paint();
         long next_game_tick = RetroEngine.getTickCount();
         int loops;
+        Canvas canvas = null;
         while (RetroEngine.isRunning()) {
 
             if (RetroEngine.isShouldWait()) {
@@ -118,20 +119,20 @@ public class RenderThread extends Thread {
             }
 
             loops = 0;
-            Canvas canvas = null;
             try {
-                if (!mSurfaceHolder.getSurface().isValid()) continue;
-//                if (StateManager.IS_CHANGING.get()) continue;
-
-                while (RetroEngine.getTickCount() > next_game_tick && loops < RetroEngine.MAX_FRAMESKIP) {
-                    assert currentStateTmp != null;
-                    currentStateTmp.updateLogic();
-                    next_game_tick += RetroEngine.SKIP_TICKS;
-                    loops++;
-                }
-
                 synchronized (lock) {
                     canvas = mSurfaceHolder.lockCanvas(null);
+//                    if (!mSurfaceHolder.getSurface().isValid()) continue;
+//                if (StateManager.IS_CHANGING.get()) continue;
+
+                    while (RetroEngine.getTickCount() > next_game_tick && loops < RetroEngine.MAX_FRAMESKIP) {
+                        assert currentStateTmp != null;
+                        currentStateTmp.updateLogic();
+                        next_game_tick += RetroEngine.SKIP_TICKS;
+                        loops++;
+                    }
+
+
                     // Render the current state
                     if (currentStateTmp != null && canvas != null) {
                         canvas.clipRect(0, 0, RetroEngine.W, RetroEngine.H);

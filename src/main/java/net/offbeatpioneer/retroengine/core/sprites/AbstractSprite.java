@@ -11,6 +11,7 @@ import android.util.Log;
 
 import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
+import net.offbeatpioneer.retroengine.core.eventhandling.EmptyAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.List;
 public abstract class AbstractSprite implements ISprite {
     AbstractSprite parentSprite;
     final double bufferZoneFactor = 0.2;
-    List<AnimationSuite> animations = new ArrayList<>();
+    final List<AnimationSuite> animations = new ArrayList<>();
 
     protected Bitmap texture; // Textur-Filmstreifen
     //    protected Bitmap texture2;
@@ -51,21 +52,44 @@ public abstract class AbstractSprite implements ISprite {
     protected int frameH; // Höhes eines Frames
     protected float angle; // Winkel in Grad, um den das Sprite gedreht wird
 
-    private int type; // Sprite-Typ
+    /**
+     * Type of the current sprite.
+     */
+    private int type;
     //int tolBB; // Bounding Box - Toleranz
     private int cycleCnt; // Anzahl der Wiederholungen des Filmstreifens
     //boolean forceIdleness; // keine Animation, wenn Sprite stillsteht
-    protected boolean active; // inaktive Sprites werden vom GameManager gel�scht
-    protected boolean autoDestroy; // Außerhalb eines Toleranzbereiches wird active = false gesetzt
+    /**
+     * Flag to indicate the status of a sprite. If active is true, the sprite will be removed.
+     */
+    protected boolean active;
+    /**
+     * Flag to automatically set a sprite inactive when it's out of view
+     * Will be removed later. If autoDestroy is false, then the sprite will be just disabled when it
+     * outside the viewport
+     */
+    protected boolean autoDestroy;
+
     protected long starttime = 0;
     protected Paint paint = new Paint();
     float scale = 1.0f;
     private RectF aabbRect;
     //Nicht gleich löschen, sondern nur nicht zeichnen
     //Wird für Gruppen-Nodes verwendet
-    boolean disable;
+    boolean disabled = false;
 
     protected IFrameUpdate frameUpdate = new NoFrameUpdate();
+
+    public AbstractSprite() {
+        this.disabled = false;
+        this.parentSprite = null;
+        this.sRectangle = new Rect(0, 0, 0, 0);
+        this.loop = false;
+        this.viewportOrigin = new PointF(0, 0);
+//        frameUpdate = new AnimatedFrameUpdate(this);
+        this.scale = 1f;
+        this.position = new PointF(0, 0);
+    }
 
     @Override
     public void updateLogic() {
@@ -101,7 +125,7 @@ public abstract class AbstractSprite implements ISprite {
      * <p>
      * If the the sprites property disable is true then the it will not be drawn. It still exists in the
      * root node of a state. Also, if its not in the clipping area, that means the visible area
-     * of the canvas, it will not be drawn to reduce CPU usage.
+     * of the canvas, it will not be drawn to reduce CPU usage. Further, the sprite will be set disabled.
      * <p>
      * The texture of the sprite is drawn via transformation of matrices (Scale, Translate, Rotation) on the surface.
      * This is a generic drawing function which is working with bitmap textures.
@@ -113,9 +137,9 @@ public abstract class AbstractSprite implements ISprite {
      */
     public void draw(final Canvas canvas, final long currentTime) {
         //Don't draw the sprite if it's disabled
-        if (disable || canvas.quickReject(getViewportOrigin().x, getViewportOrigin().y, RetroEngine.W + getViewportOrigin().x, RetroEngine.H + getViewportOrigin().y, Canvas.EdgeType.BW)) {
-            return;
-        }
+//        if (disabled || canvas.quickReject(getViewportOrigin().x, getViewportOrigin().y, RetroEngine.W + getViewportOrigin().x, RetroEngine.H + getViewportOrigin().y, Canvas.EdgeType.BW)) {
+//            return;
+//        }
 
         pivotPoint.set(
                 getPosition().x + getFrameW() / 2,
@@ -194,8 +218,6 @@ public abstract class AbstractSprite implements ISprite {
      * @param animation the animation to add
      */
     public void addAnimation(AnimationSuite animation) {
-        if (animations == null)
-            animations = new ArrayList<>();
         if (animation.getAnimatedSprite() == null)
             animation.setAnimatedSprite(this);
         animations.add(animation);
@@ -215,20 +237,19 @@ public abstract class AbstractSprite implements ISprite {
     }
 
     /**
-     * Starts all animations
+     * Start all animations for the current sprite.
      */
     public void beginAnimation() {
-        if (animations != null) {
-            for (int i = 0, n = animations.size(); i < n; i++) {
-                AnimationSuite animationSuite = animations.get(i);
-                animationSuite.startAnimation();
-            }
+        for (int i = 0, n = animations.size(); i < n; i++) {
+            AnimationSuite animationSuite = animations.get(i);
+            animationSuite.startAnimation();
         }
     }
 
+    /**
+     * Stop all animations.
+     */
     public void stopAnimations() {
-        if (animations == null)
-            return;
         for (int i = 0, n = animations.size(); i < n; i++) {
             AnimationSuite animationSuite = animations.get(i);
             animationSuite.stop();
@@ -242,7 +263,7 @@ public abstract class AbstractSprite implements ISprite {
      * @param idx Index of the added animation to start
      */
     public void beginAnimation(int idx) {
-        if (animations != null) {
+        if (idx >= 0 && idx < animations.size()) {
             try {
                 animations.get(idx).startAnimation();
             } catch (Exception e) {
@@ -252,25 +273,28 @@ public abstract class AbstractSprite implements ISprite {
     }
 
     /**
-     * Starts a specific animation
+     * Starts a specific animation by providing the class type.
+     * The first occurrence is used, see {@link AbstractSprite#findAnimation(Class)}.
      *
      * @param suiteClass Class type of the animation to start
      */
     public void beginAnimation(Class<? extends AnimationSuite> suiteClass) {
-        if (animations != null) {
-            try {
-                findAnimation(suiteClass).startAnimation();
-            } catch (Exception e) {
-                Log.e("Animation Error", "Animation could not be started, it does not exist.", e);
+        try {
+            AnimationSuite animation;
+            if ((animation = findAnimation(suiteClass)) != null) {
+                animation.startAnimation();
             }
+        } catch (Exception e) {
+            Log.e("Animation Error", "Animation could not be started, it does not exist.", e);
         }
     }
 
     /**
-     * Search an animation of a sprite
+     * Search for an animation by the class of a sprite.
+     * The first occurrence is returned of the given class.
      *
      * @param suiteClass Class type of the animation to look for
-     * @return Animation of type {@link AnimationSuite} or {@code null} if animation is not present
+     * @return Animation of type {@link AnimationSuite} or {@code null} if animation is not present.
      */
     public AnimationSuite findAnimation(Class<? extends AnimationSuite> suiteClass) {
         for (int i = 0, n = animations.size(); i < n; i++) {
@@ -290,8 +314,14 @@ public abstract class AbstractSprite implements ISprite {
         return animations;
     }
 
+    /**
+     * Replaces all previous animations by the new one.
+     *
+     * @param animations Animations to replace the previous set ones.
+     */
     public void setAnimations(List<AnimationSuite> animations) {
-        this.animations = animations;
+        this.animations.clear();
+        this.animations.addAll(animations);
     }
 
     /**
@@ -599,18 +629,18 @@ public abstract class AbstractSprite implements ISprite {
         this.alphaValue = alphaValue;
     }
 
-    public boolean isDisable() {
-        return disable;
+    public boolean isDisabled() {
+        return disabled;
     }
 
     /**
      * Set the visibility of a sprite. If true then the draw method will do nothing. The sprite wont
      * be displayed.
      *
-     * @param disable true, if sprite should not be displayed
+     * @param disabled true, if sprite should not be displayed
      */
-    public void setDisable(boolean disable) {
-        this.disable = disable;
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
     public Bitmap getBackupTexture() {

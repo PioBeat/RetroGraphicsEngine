@@ -2,6 +2,8 @@ package net.offbeatpioneer.retroengine.core.sprites;
 
 import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 
+import java.util.List;
+
 /**
  * Sprite interface for animated sprites
  *
@@ -15,6 +17,8 @@ public interface ISpriteAnimateable {
     void beginAnimation();
 
     void stopAnimations();
+
+    List<AnimationSuite> getAnimations();
 
     void beginAnimation(int idx);
 

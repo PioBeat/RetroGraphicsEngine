@@ -81,14 +81,11 @@ public class CircleSprite extends AnimatedSprite implements Colorable {
                 Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas();
         c.setBitmap(tempBmp);
-//        c.drawColor(Color.BLUE);
         int ar = Color.argb(getAlphaValue(), Color.red(color), Color.green(color), Color.blue(color));
         paint.setColor(ar);
         paint.setStrokeWidth(1);
-//        paint.setAlpha(getAlphaValue());
         paint.setAntiAlias(true);
         c.drawCircle((int) radius * getScale(), (int) radius * getScale(), this.radius * getScale(), paint);
-//        position = new PointF(position.x, position.y);
         return this.init(tempBmp, position, new PointF(0, 0));
     }
 
