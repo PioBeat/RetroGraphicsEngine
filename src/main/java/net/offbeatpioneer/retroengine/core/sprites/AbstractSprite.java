@@ -17,18 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link AbstractSprite} is the base class for sprites
+ * {@link AbstractSprite} is the base class for sprites and comprises basic properties.
  *
  * @author Dominik Grzelak
  * @since 2017-01-14
  */
-public abstract class AbstractSprite implements ISprite {
+public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
     AbstractSprite parentSprite;
     final double bufferZoneFactor = 0.2;
-    final List<AnimationSuite> animations = new ArrayList<>();
 
     protected Bitmap texture; // Textur-Filmstreifen
-    //    protected Bitmap texture2;
     Bitmap backupTexture;
     protected PointF speed; // Pixelgeschwindigkeit pro Frame in x-, y-Richtung
     protected PointF position; // aktuelle Position
@@ -95,11 +93,13 @@ public abstract class AbstractSprite implements ISprite {
     public void updateLogic() {
         frameNr = frameUpdate.updateFrame();
         updateLogicTemplate();
-        for (int i = 0, n = animations.size(); i < n; i++) {
-            AnimationSuite animation = animations.get(i);
-            animation.animationLogic();
-        }
+//        for (int i = 0, n = animations.size(); i < n; i++) {
+//            AnimationSuite animation = animations.get(i);
+//            animation.animationLogic();
+//        }
     }
+
+    public abstract void updateLogicTemplate();
 
     public RectF getAABB() {
         if (aabbRect == null) {
@@ -116,8 +116,6 @@ public abstract class AbstractSprite implements ISprite {
     public void setFps(int fps) {
         this.fps = fps;
     }
-
-    public abstract void updateLogicTemplate();
 
     /**
      * Draw/Paint method of a sprite. This defines the logic in which way the sprite is drawn on the surface.
@@ -210,118 +208,6 @@ public abstract class AbstractSprite implements ISprite {
      */
     public PointF getPosition() {
         return this.position;
-    }
-
-    /**
-     * Add an animation to the sprite
-     *
-     * @param animation the animation to add
-     */
-    public void addAnimation(AnimationSuite animation) {
-        if (animation.getAnimatedSprite() == null)
-            animation.setAnimatedSprite(this);
-        animations.add(animation);
-    }
-
-
-    /**
-     * Add multiple animation at once. The order matters.
-     * {@link AbstractSprite#addAnimations(AnimationSuite...)}
-     *
-     * @param animation the animations to add
-     */
-    public void addAnimations(AnimationSuite... animation) {
-        for (AnimationSuite each : animation) {
-            addAnimation(each);
-        }
-    }
-
-    /**
-     * Start all animations for the current sprite.
-     */
-    public void beginAnimation() {
-        for (int i = 0, n = animations.size(); i < n; i++) {
-            AnimationSuite animationSuite = animations.get(i);
-            animationSuite.startAnimation();
-        }
-    }
-
-    /**
-     * Stop all animations.
-     */
-    public void stopAnimations() {
-        for (int i = 0, n = animations.size(); i < n; i++) {
-            AnimationSuite animationSuite = animations.get(i);
-            animationSuite.stop();
-        }
-    }
-
-
-    /**
-     * Starts a specific animation
-     *
-     * @param idx Index of the added animation to start
-     */
-    public void beginAnimation(int idx) {
-        if (idx >= 0 && idx < animations.size()) {
-            try {
-                animations.get(idx).startAnimation();
-            } catch (Exception e) {
-                Log.e("Animation Error", "Animation could not be started, index does not exist.", e);
-            }
-        }
-    }
-
-    /**
-     * Starts a specific animation by providing the class type.
-     * The first occurrence is used, see {@link AbstractSprite#findAnimation(Class)}.
-     *
-     * @param suiteClass Class type of the animation to start
-     */
-    public void beginAnimation(Class<? extends AnimationSuite> suiteClass) {
-        try {
-            AnimationSuite animation;
-            if ((animation = findAnimation(suiteClass)) != null) {
-                animation.startAnimation();
-            }
-        } catch (Exception e) {
-            Log.e("Animation Error", "Animation could not be started, it does not exist.", e);
-        }
-    }
-
-    /**
-     * Search for an animation by the class of a sprite.
-     * The first occurrence is returned of the given class.
-     *
-     * @param suiteClass Class type of the animation to look for
-     * @return Animation of type {@link AnimationSuite} or {@code null} if animation is not present.
-     */
-    public AnimationSuite findAnimation(Class<? extends AnimationSuite> suiteClass) {
-        for (int i = 0, n = animations.size(); i < n; i++) {
-            AnimationSuite animationSuite = animations.get(i);
-            if (animationSuite.getClass() == suiteClass)
-                return animationSuite;
-        }
-        return null;
-    }
-
-    /**
-     * Retrieve all animations
-     *
-     * @return List of animations of type {@link AnimationSuite}
-     */
-    public List<AnimationSuite> getAnimations() {
-        return animations;
-    }
-
-    /**
-     * Replaces all previous animations by the new one.
-     *
-     * @param animations Animations to replace the previous set ones.
-     */
-    public void setAnimations(List<AnimationSuite> animations) {
-        this.animations.clear();
-        this.animations.addAll(animations);
     }
 
     /**

@@ -13,6 +13,7 @@ import java.util.List;
 
 public interface ISpriteAnimateable {
     void addAnimation(AnimationSuite animation);
+    void addAnimations(AnimationSuite... animation);
 
     void beginAnimation();
 

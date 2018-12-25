@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 
 import java.util.ArrayList;
@@ -24,6 +25,17 @@ import java.util.List;
  */
 public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
     private final List<AbstractSprite> children = new ArrayList<>();
+    private final List<AbstractSprite> childrenInactive = new ArrayList<>();
+    private final List<AbstractSprite> childrenDisabled = new ArrayList<>(); //no groups, only sprites
+    private final Object[] lock = new Object[]{};
+
+    public List<AbstractSprite> getChildrenInactive() {
+        return childrenInactive;
+    }
+
+    public List<AbstractSprite> getChildrenDisabled() {
+        return childrenDisabled;
+    }
 
     public SpriteListGroup() {
         active = true;
@@ -31,11 +43,48 @@ public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
         speed = new PointF(0, 0);
     }
 
+    protected void moveSprite(List<AbstractSprite> from, List<AbstractSprite> to, int indexOfSprite) {
+        synchronized (lock) {
+            AbstractSprite spriteAt = getSpriteAt(from, indexOfSprite);
+            if (spriteAt != null) {
+                from.remove(indexOfSprite);
+                to.add(spriteAt);
+            }
+        }
+    }
+
+    protected void moveSprite(List<AbstractSprite> from, List<AbstractSprite> to, AbstractSprite sprite) {
+        synchronized (lock) {
+            int ix = from.indexOf(sprite);
+            if (ix != -1) {
+                from.remove(ix);
+                to.add(sprite);
+            }
+        }
+    }
+
+    /**
+     * Return an active sprite at the give index {@code indexOfSprite}.
+     *
+     * @param list          the collection to search
+     * @param indexOfSprite index of the sprite in the collection {@code list}
+     * @return the sprite at the specified index, otherwise {@code null}.
+     */
+    private AbstractSprite getSpriteAt(List<AbstractSprite> list, int indexOfSprite) {
+        synchronized (lock) {
+            if (indexOfSprite < 0 || indexOfSprite > list.size()) {
+                return null;
+            }
+            return list.get(indexOfSprite);
+        }
+    }
+
+
     @Override
     public void draw(Canvas canvas, long currentTime) {
-        final List<AbstractSprite> childs = getChildren();
-        synchronized (this.children) {
-            draw(childs, canvas, currentTime);
+        synchronized (lock) {
+//            System.out.println("Active: " + children.size() + " // Disabled: " + childrenDisabled.size());
+            draw(children, canvas, currentTime);
         }
     }
 
@@ -51,37 +100,29 @@ public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
     }
 
     public void removeInActive() {
-        final List<AbstractSprite> childs = getChildren();
-        synchronized (this.children) {
-            removeInActive(childs);
+        synchronized (lock) {
+            childrenInactive.clear();
+//            removeInActive(children);
         }
     }
 
 
-    private void removeInActive(final List<AbstractSprite> children) {
-        for (int i = children.size() - 1; i >= 0; i--) {
-            AbstractSprite eachSprite = children.get(i);
-            if (eachSprite.hasChildren()) {
-                if (!eachSprite.isActive()) {
-                    children.remove(i);
-                } else {
-                    removeInActive(((SpriteListGroup) eachSprite).getChildren()); //safe case because only groups have children
-                }
-            } else {
-                if (!eachSprite.isActive()) {
-                    children.remove(i);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void updateLogic() {
-        final List<AbstractSprite> childs = getChildren();
-        synchronized (this.children) {
-            update(childs);
-        }
-    }
+//    private void removeInActive(final List<AbstractSprite> children) {
+//        for (int i = children.size() - 1; i >= 0; i--) {
+//            AbstractSprite eachSprite = children.get(i);
+//            if (eachSprite.hasChildren()) {
+//                if (!eachSprite.isActive()) {
+//                    children.remove(i);
+//                } else {
+//                    removeInActive(((SpriteListGroup) eachSprite).getChildren()); //safe case because only groups have children
+//                }
+//            } else {
+//                if (!eachSprite.isActive()) {
+//                    children.remove(i);
+//                }
+//            }
+//        }
+//    }
 
     /**
      * A group calls the base method {@code updateLogic} to update the animation logic if any.
@@ -108,18 +149,72 @@ public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
         }
     }
 
-    protected void update(final List<AbstractSprite> childs) {
-        for (int i = childs.size() - 1; i >= 0; i--) {
-            AbstractSprite each = childs.get(i);
-            if (each.hasChildren() && each.isActive()) {
-                each.updateLogicTemplate();
-                update(((SpriteListGroup) each).getChildren()); //safe case because only groups have children
-            } else {
-                if (each.isActive()) {
-                    each.updateLogic();
-                } else {
-//                    childs.remove(i); //each.remove(i);
+    private RectF checkBoundsRect = new RectF();
+
+    @Override
+    public void updateLogic() {
+        synchronized (lock) {
+            update(children, childrenDisabled, childrenInactive);
+        }
+    }
+
+    protected void update(final List<AbstractSprite> childsActive, final List<AbstractSprite> childsDisabled, final List<AbstractSprite> childsInactive) {
+        //check if sprites can be actived again
+        PointF o = getViewportOrigin();
+        checkBoundsRect.set(o.x - (int) (RetroEngine.W * bufferZoneFactor),
+                o.y - (int) (RetroEngine.H * bufferZoneFactor),
+                o.x + (int) (RetroEngine.W * (1.0 + bufferZoneFactor)),
+                o.y + (int) (RetroEngine.H * (1.0 + bufferZoneFactor))
+        );
+//        System.out.println("Check within " + checkBoundsRect);
+
+        for (int n = childsDisabled.size() - 1, i = n; i >= 0; i--) {
+            AbstractSprite each2 = childsDisabled.get(i);
+            // only for sprites (no groups) with auto hide enabled (i.e.,, auto destroy is set to false)
+            if (!(each2 instanceof IterableSpriteGroup) && !each2.isAutoDestroy()) {
+                try {
+                    if (checkBoundsRect.contains(each2.getPosition().x, each2.getPosition().y)) {
+                        each2.setDisabled(false);
+                        moveSprite(childsDisabled, childsActive, each2);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+            }
+        }
+        //TODO doppel check verhindern, wenn gerade wieder in active liste aufgenommen
+        //check if sprites must be disabled or destroyed
+        //this doesn't affect groups at all, only the children
+        for (int n = childsActive.size() - 1, i = n; i >= 0; i--) {
+            AbstractSprite each = childsActive.get(i);
+
+            if (each instanceof IterableSpriteGroup) { //each.hasChildren() &&
+                each.updateLogicTemplate();
+                update(((SpriteListGroup) each).getChildren(), ((SpriteListGroup) each).getChildrenDisabled(), ((SpriteListGroup) each).getChildrenInactive()); //safe case because only groups have children
+            } else {
+
+//                else {
+                //checky
+//                if (true) { //!(each instanceof SpriteListGroup) && !each.hasChildren()
+//                System.out.println("Checking " + each.getClass() + " with Parent " + each.getParent());
+                if (!checkBoundsRect.contains(each.getPosition().x, each.getPosition().y)) {
+//                    System.out.println("Setting sprite " + each.toString() + " disable/inactive");
+                    if (each.isAutoDestroy()) {
+                        each.setActive(false);
+                        moveSprite(childsActive, childsInactive, each);
+//                        moveActiveToInactive(i);
+                        continue;
+                    } else { //otherwise autoHide
+                        each.setDisabled(true);
+//                        moveActiveToDisabled(i);
+                        moveSprite(childsActive, childsDisabled, each);
+                        continue;
+                    }
+                }
+//                }
+                //checky end
+                each.updateLogic();
+//                }
             }
         }
     }
@@ -128,10 +223,10 @@ public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
         add(child, -1);
     }
 
+    // Add the child to the list of children
     public void add(AbstractSprite child, int index) {
-        int n = children.size();
-        // Add the child to the list of children
         if (child == null) return;
+        int n = children.size();
         if (index < 0 || index == n) { // then append
             children.add(child);
         } else if (index > n) {
@@ -146,47 +241,27 @@ public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
         return children;
     }
 
-//    @Override
-//    public Collection<AbstractSprite> getChildren(float left, float top, float right, float bottom) {
-//        return getChildren();
-//    }
-
-//    @Override
-//    public Collection<AbstractSprite> getChildren(RectF queryRange) {
-//        return getChildren();
-//    }
-
     @Override
     public int getChildrenSize() {
-        return getChildren().size();
+        synchronized (lock) {
+            return getChildren().size();
+        }
     }
 
     public void setChildren(List<AbstractSprite> children) {
-        synchronized (this.children) {
+        synchronized (lock) {
             this.children.clear();
             this.children.addAll(children);
         }
     }
 
     public void clearSprites() {
-        synchronized (children) {
+        synchronized (lock) {
             children.clear();
+            childrenDisabled.clear();
+            childrenInactive.clear();
         }
     }
-
-//    @Override
-//    public void setQueryRange(RectF queryRange) {
-//        // ToDo
-//    }
-
-//    /**
-//     * Determine if the current sprite is the root sprite
-//     *
-//     * @return true if this Sprite is the root node, otherwise false
-//     */
-//    public boolean isRoot() {
-//        return getParent() == null;
-//    }
 
     /**
      * Has this {@link SpriteListGroup} child sprites?

@@ -4,11 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 
+import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 import net.offbeatpioneer.retroengine.core.eventhandling.EmptyAction;
 import net.offbeatpioneer.retroengine.core.eventhandling.IActionEventCallback;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Sprite class which represents an animated sprite and implements some basic functionality which
@@ -20,10 +23,11 @@ import java.util.ArrayList;
  *
  * @author Dominik Grzelak
  */
-public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable {
+public class AnimatedSprite extends AbstractSprite {
 
     private IActionEventCallback actionEventCallback;
     protected RectF checkBoundsRect;
+    final List<AnimationSuite> animations = new ArrayList<>();
 
     public AnimatedSprite() {
         super();
@@ -131,18 +135,139 @@ public class AnimatedSprite extends AbstractSprite implements ISpriteAnimateable
         return this.init(texture, position, new PointF(0, 0));
     }
 
+    @Override
+    public void updateLogic() {
+        super.updateLogic();
+        for (int i = 0, n = animations.size(); i < n; i++) {
+            AnimationSuite animation = animations.get(i);
+            animation.animationLogic();
+        }
+    }
+
     public void updateLogicTemplate() {
-//        if (autoDestroy) {
-//            PointF o = getViewportOrigin();
-//            checkBoundsRect.set(o.x - (int) (RetroEngine.W * bufferZoneFactor),
-//                    o.y - (int) (RetroEngine.H * bufferZoneFactor),
-//                    o.x + (int) (RetroEngine.W * (1.0 + bufferZoneFactor)),
-//                    o.y + (int) (RetroEngine.H * (1.0 + bufferZoneFactor))
-//            );
-//            if (!ContainsRect(checkBoundsRect)) {
-//                active = false;
-//            }
-//        }
+////        if (autoDestroy) {
+////            PointF o = getViewportOrigin();
+////            checkBoundsRect.set(o.x - (int) (RetroEngine.W * bufferZoneFactor),
+////                    o.y - (int) (RetroEngine.H * bufferZoneFactor),
+////                    o.x + (int) (RetroEngine.W * (1.0 + bufferZoneFactor)),
+////                    o.y + (int) (RetroEngine.H * (1.0 + bufferZoneFactor))
+////            );
+////            if (!ContainsRect(checkBoundsRect)) {
+////                active = false;
+////            }
+////        }
+    }
+
+    /**
+     * Add an animation to the sprite
+     *
+     * @param animation the animation to add
+     */
+    public void addAnimation(AnimationSuite animation) {
+        if (animation.getAnimatedSprite() == null)
+            animation.setAnimatedSprite(this);
+        animations.add(animation);
+    }
+
+
+    /**
+     * Add multiple animation at once. The order matters.
+     * {@link AbstractSprite#addAnimations(AnimationSuite...)}
+     *
+     * @param animation the animations to add
+     */
+    public void addAnimations(AnimationSuite... animation) {
+        for (AnimationSuite each : animation) {
+            addAnimation(each);
+        }
+    }
+
+    /**
+     * Start all animations for the current sprite.
+     */
+    public void beginAnimation() {
+        for (int i = 0, n = animations.size(); i < n; i++) {
+            AnimationSuite animationSuite = animations.get(i);
+            animationSuite.startAnimation();
+        }
+    }
+
+    /**
+     * Stop all animations.
+     */
+    public void stopAnimations() {
+        for (int i = 0, n = animations.size(); i < n; i++) {
+            AnimationSuite animationSuite = animations.get(i);
+            animationSuite.stop();
+        }
+    }
+
+
+    /**
+     * Starts a specific animation
+     *
+     * @param idx Index of the added animation to start
+     */
+    public void beginAnimation(int idx) {
+        if (idx >= 0 && idx < animations.size()) {
+            try {
+                animations.get(idx).startAnimation();
+            } catch (Exception e) {
+                Log.e("Animation Error", "Animation could not be started, index does not exist.", e);
+            }
+        }
+    }
+
+    /**
+     * Starts a specific animation by providing the class type.
+     * The first occurrence is used, see {@link AbstractSprite#findAnimation(Class)}.
+     *
+     * @param suiteClass Class type of the animation to start
+     */
+    public void beginAnimation(Class<? extends AnimationSuite> suiteClass) {
+        try {
+            AnimationSuite animation;
+            if ((animation = findAnimation(suiteClass)) != null) {
+                animation.startAnimation();
+            }
+        } catch (Exception e) {
+            Log.e("Animation Error", "Animation could not be started, it does not exist.", e);
+        }
+    }
+
+    /**
+     * Search for an animation by the class of a sprite.
+     * The first occurrence is returned of the given class.
+     *
+     * @param suiteClass Class type of the animation to look for
+     * @return Animation of type {@link AnimationSuite} or {@code null} if animation is not present.
+     */
+    public AnimationSuite findAnimation(Class<? extends AnimationSuite> suiteClass) {
+        for (int i = 0, n = animations.size(); i < n; i++) {
+            AnimationSuite animationSuite = animations.get(i);
+            if (animationSuite.getClass() == suiteClass)
+                return animationSuite;
+        }
+        return null;
+    }
+
+    /**
+     * Retrieve all animations
+     *
+     * @return List of animations of type {@link AnimationSuite}
+     */
+    public List<AnimationSuite> getAnimations() {
+        return animations;
+    }
+
+    /**
+     * Replaces all previous animations by the new one.
+     *
+     * @param animations Animations to replace the previous set ones.
+     */
+    public void setAnimations(List<AnimationSuite> animations) {
+        this.animations.clear();
+        this.animations.addAll(animations);
     }
 
     /**

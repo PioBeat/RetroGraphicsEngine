@@ -112,33 +112,33 @@ public class ParallaxLayer implements BackgroundLayer {
 
     }
 
-    @Override
-    public void addAnimation(AnimationSuite animation) {
-
-    }
-
-    @Override
-    public void beginAnimation() {
-
-    }
-
-    @Override
-    public void stopAnimations() {
-
-    }
-
-    @Override
-    public void beginAnimation(int idx) {
-
-    }
-
-    @Override
-    public void beginAnimation(Class<? extends AnimationSuite> suiteClass) {
-
-    }
-
-    @Override
-    public AnimationSuite findAnimation(Class<? extends AnimationSuite> suiteClass) {
-        return null;
-    }
+//    @Override
+//    public void addAnimation(AnimationSuite animation) {
+//
+//    }
+//
+//    @Override
+//    public void beginAnimation() {
+//
+//    }
+//
+//    @Override
+//    public void stopAnimations() {
+//
+//    }
+//
+//    @Override
+//    public void beginAnimation(int idx) {
+//
+//    }
+//
+//    @Override
+//    public void beginAnimation(Class<? extends AnimationSuite> suiteClass) {
+//
+//    }
+//
+//    @Override
+//    public AnimationSuite findAnimation(Class<? extends AnimationSuite> suiteClass) {
+//        return null;
+//    }
 }

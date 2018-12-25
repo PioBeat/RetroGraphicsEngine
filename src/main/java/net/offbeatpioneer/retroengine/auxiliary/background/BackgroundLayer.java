@@ -10,7 +10,7 @@ import net.offbeatpioneer.retroengine.core.sprites.ISpriteAnimateable;
  *
  * @author Dominik Grzelak
  */
-public interface BackgroundLayer extends ISprite, ISpriteAnimateable {
+public interface BackgroundLayer extends ISprite {
     PointF getViewportOrigin();
 
     void setViewportOrigin(PointF viewportOrigin);

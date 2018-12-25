@@ -5,19 +5,23 @@ import android.graphics.RectF;
 import java.util.Collection;
 
 /**
- * Base class for sprite groups that can be spatially distributed.
+ * Base class for sprite groups that can be kept in a spatial data structure.
  * <p>
  * Sub classes implement the concrete data structure. <br>
- * Currently the following kind of group exist:
+ * Currently the following kinds exist:
  * <ul>
  * <li>Quadtree (development)</li>
  * <li>Grid (development)</li>
  * </ul>
+ * <p>
+ * Spatial data structures for sprites have some advantages over simple collections as they encode
+ * geometric information about their position. Using this information in this way, only a subset
+ * in a specific rectangle can be queried and drawn, for example. This actually speeds up the render phase.
  *
  * @author Dominik Grzelak
  * @since 22.11.2017.
  */
-public abstract class SpatialPartitionGroup<T> extends AbstractSprite implements ISpriteGroup {
+public abstract class SpatialPartitionGroup<T> extends AnimatedSprite implements ISpriteGroup {
     private RectF queryRange = new RectF();
 
 //    /**
