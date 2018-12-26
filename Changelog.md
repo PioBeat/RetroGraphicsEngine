@@ -18,7 +18,7 @@ be foreseen in a new release
     * separation of bounding box checking of child elements
     * auto hide and auto destroy
     * no necessity to manually check disabled/"auto destroy" in update method of a sprite
-
+- removed argument `factor` from scrollable background layer
 
 # [0.9.5-beta1]
 
