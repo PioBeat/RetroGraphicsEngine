@@ -144,7 +144,7 @@ public class AnimatedSprite extends AbstractSprite {
         }
     }
 
-    public void updateLogicTemplate() {
+    public void updateLogicHook() {
 ////        if (autoDestroy) {
 ////            PointF o = getViewportOrigin();
 ////            checkBoundsRect.set(o.x - (int) (RetroEngine.W * bufferZoneFactor),
@@ -152,7 +152,7 @@ public class AnimatedSprite extends AbstractSprite {
 ////                    o.x + (int) (RetroEngine.W * (1.0 + bufferZoneFactor)),
 ////                    o.y + (int) (RetroEngine.H * (1.0 + bufferZoneFactor))
 ////            );
-////            if (!ContainsRect(checkBoundsRect)) {
+////            if (!containsRect(checkBoundsRect)) {
 ////                active = false;
 ////            }
 ////        }

@@ -7,14 +7,6 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
-
-import net.offbeatpioneer.retroengine.core.RetroEngine;
-import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
-import net.offbeatpioneer.retroengine.core.eventhandling.EmptyAction;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * {@link AbstractSprite} is the base class for sprites and comprises basic properties.
@@ -92,14 +84,14 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
     @Override
     public void updateLogic() {
         frameNr = frameUpdate.updateFrame();
-        updateLogicTemplate();
+        updateLogicHook();
 //        for (int i = 0, n = animations.size(); i < n; i++) {
 //            AnimationSuite animation = animations.get(i);
 //            animation.animationLogic();
 //        }
     }
 
-    public abstract void updateLogicTemplate();
+    public abstract void updateLogicHook();
 
     public RectF getAABB() {
         if (aabbRect == null) {
@@ -216,11 +208,7 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
      * @return Extent of the sprite
      */
     public RectF getRect() {
-//        if (rect == null)
-//            rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
-//        else {
         rect.set(position.x, position.y, position.x + frameW, position.y + frameH);
-//        }
         return rect;
     }
 
@@ -266,8 +254,7 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
      * @return true if point is inside the sprite, otherwise false
      */
     public boolean checkColWithPoint(PointF p) {
-        RectF rect = this.getRect();
-        return rect.contains(p.x, p.y);
+        return this.getRect().contains(p.x, p.y);
     }
 
     /**
@@ -279,8 +266,7 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
      * @return true if this sprites intersects with a rectangle, otherwise false
      */
     public boolean intersectWithRect(RectF r) {
-        RectF rect = this.getRect();
-        return rect.intersect(r);
+        return this.getRect().intersect(r);
     }
 
     /**
@@ -291,9 +277,8 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
      * @param r Extent of another sprite as {@link RectF}
      * @return true if rectangle is contained in the sprites extent, otherwise false
      */
-    public boolean ContainsRect(RectF r) {
-        RectF rect = this.getRect();
-        return r.contains(rect);
+    public boolean containsRect(RectF r) {
+        return this.getRect().contains(r);
     }
 
     /**

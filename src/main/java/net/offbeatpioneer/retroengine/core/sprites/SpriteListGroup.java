@@ -8,7 +8,6 @@ import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 //extra bitmap for canvas https://stackoverflow.com/questions/11838022/how-to-paint-with-alpha#11838354
@@ -128,7 +127,7 @@ public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
      * A group calls the base method {@code updateLogic} to update the animation logic if any.
      */
     @Override
-    public void updateLogicTemplate() {
+    public void updateLogicHook() {
         for (int i = 0, n = animations.size(); i < n; i++) {
             AnimationSuite animation = animations.get(i);
             animation.animationLogic();
@@ -189,10 +188,13 @@ public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
             AbstractSprite each = childsActive.get(i);
 
             if (each instanceof IterableSpriteGroup) { //each.hasChildren() &&
-                each.updateLogicTemplate();
+                each.updateLogicHook();
                 update(((SpriteListGroup) each).getChildren(), ((SpriteListGroup) each).getChildrenDisabled(), ((SpriteListGroup) each).getChildrenInactive()); //safe case because only groups have children
             } else {
-
+                if(!each.isActive()) {
+                    moveSprite(childsActive, childsDisabled, each);
+                    continue;
+                }
 //                else {
                 //checky
 //                if (true) { //!(each instanceof SpriteListGroup) && !each.hasChildren()

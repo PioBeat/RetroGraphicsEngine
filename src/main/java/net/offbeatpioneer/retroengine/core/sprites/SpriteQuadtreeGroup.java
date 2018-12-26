@@ -98,7 +98,7 @@ public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<Abstract
         for (QuadTree<AbstractSprite>.CoordHolder each : list) {
             AbstractSprite eachSprite = each.o;
             if (eachSprite.hasChildren() && eachSprite.isActive()) {
-                eachSprite.updateLogicTemplate();
+                eachSprite.updateLogicHook();
                 List<QuadTree<AbstractSprite>.CoordHolder> list2 = ((SpriteQuadtreeGroup) eachSprite).getChildren();
                 update(list2);
             } else {
@@ -112,7 +112,7 @@ public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<Abstract
     }
 
     @Override
-    public void updateLogicTemplate() {
+    public void updateLogicHook() {
         for (AnimationSuite animation : getAnimations()) {
             animation.animationLogic();
         }
