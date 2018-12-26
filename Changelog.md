@@ -7,16 +7,18 @@ convenient method ``BitmapHelper#decodeSampledBitmapFromResource(Resources, int,
 where inScaled is set to true.
 - enable debug output for ``AudioService`` classes. Default: disabled
 
+## Changes
+- Renamed method `updateLogicTemplate()` to `updateLogicHook()`
 - class ``AbstractSprite`` implements interface ``ISpriteAnimateable`` and
 subclass ``AnimatedSprites`` implements the methods of it now
 - Iterable and spatial sprite groups extending from ``AnimatedSprite`` and not anymore from ``AbstractSprite``
 - background layers cannot be animated for now (removed interface ``ISpriteAnimateable``) but will
 be foreseen in a new release
-
 - ``SpriteListGroup`` maintains now 3 separate lists for active, inactive and disabled sprites to speed up the drawing process (less iterations):
     * separation of bounding box checking of child elements
     * auto hide and auto destroy
     * no necessity to manually check disabled/"auto destroy" in update method of a sprite
+
 
 # [0.9.5-beta1]
 

@@ -40,7 +40,7 @@ public class FixedScrollableLayer implements BackgroundLayer {
     float oldPy;
 
     private PointF referencePoint;
-    private float factor;
+//    private float factor;
 
     private PointF viewportOrigin;
     int sectionWidth;
@@ -50,7 +50,7 @@ public class FixedScrollableLayer implements BackgroundLayer {
     float diffX = 0;
     IFrameUpdate frameUpdate;
 
-    public FixedScrollableLayer(Bitmap br, int sectionWidth, float factor) {
+    public FixedScrollableLayer(Bitmap br, int sectionWidth) {
         background = br;
         backgroundBackUp = br;
         frameCnt = 2;
@@ -65,7 +65,7 @@ public class FixedScrollableLayer implements BackgroundLayer {
         this.sRectangle.left = 0;
         this.sRectangle.right = layerW;
 
-        this.factor = factor;
+//        this.factor = factor;
         viewportOrigin = new PointF(0, 0);
         float scaleWidth = ((float) RetroEngine.W) / layerW;
         float scaleHeight = (float) Math.ceil((float) RetroEngine.H / (float) layerH);
