@@ -17,14 +17,14 @@ public interface ListProvider<T> {
     
     
     
-    public static final ListProvider LP_LINKEDLIST = new ListProvider() {
+    ListProvider LP_LINKEDLIST = new ListProvider() {
         public List getList(int expectedListSize, int treeCurrentSize)
         {
             return new LinkedList();
         }
     };
     
-    public static final ListProvider LP_ARRAYLIST = new ListProvider() {
+    ListProvider LP_ARRAYLIST = new ListProvider() {
         public List getList(int expectedListSize, int treeCurrentSize)
         {
             return new ArrayList(expectedListSize);
