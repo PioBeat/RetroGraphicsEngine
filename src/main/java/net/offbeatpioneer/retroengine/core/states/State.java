@@ -119,7 +119,7 @@ public abstract class State {
      * @param rect the rectangle where to search for sprites on the drawing surface
      */
     public void setQueryRange(RectF rect) {
-        if (rootGroup.getClass().equals(SpatialPartitionGroup.class))
+        if (rootGroup instanceof SpatialPartitionGroup)
             ((SpatialPartitionGroup) rootGroup).setQueryRange(rect);
     }
 
@@ -278,6 +278,15 @@ public abstract class State {
      * @return true or false
      */
     public abstract boolean onTouchEvent(View v, MotionEvent event);
+
+    /**
+     * Return the background node of the state that manages all the background layers.
+     *
+     * @return the background node of the state.
+     */
+    public BackgroundNode getBackgroundNode() {
+        return backgroundNode;
+    }
 
     public String getStateName() {
         return StateName;
