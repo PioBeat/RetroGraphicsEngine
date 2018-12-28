@@ -22,10 +22,10 @@ android {
         targetSdkVersion 28
         versionCode libraryVersionCode
         versionName libraryVersion
-//        compileOptions {
-//            sourceCompatibility JavaVersion.VERSION_1_8
-//            targetCompatibility JavaVersion.VERSION_1_8
-//        }
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
     }
     buildTypes {
         release {
