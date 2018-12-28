@@ -19,11 +19,11 @@ import java.util.List;
 public class BackgroundNode {
 
     private PointF referencePoint;
-    private RectF referenceRect;
+    private final RectF referenceRect;
     private int width;
     private int height;
     private float xt = 0, yt = 0;
-    private PointF viewportOrigin;
+    private final PointF viewportOrigin;
     public int offsetX = 0;
     public int offsetY = 0;
 
@@ -104,7 +104,7 @@ public class BackgroundNode {
     }
 
     public void setViewportOrigin(PointF viewportOrigin) {
-        this.viewportOrigin = viewportOrigin;
+        this.viewportOrigin.set(viewportOrigin);
     }
 
     public void updateViewportOrigin(float x, float y) {
@@ -147,7 +147,7 @@ public class BackgroundNode {
      * @param referencePoint Reference point e.g. of a sprite
      */
     public void setReferencePoint(PointF referencePoint) {
-        this.referencePoint = referencePoint;
+        this.referencePoint.set(referencePoint);
     }
 
     public void updateReferencePoint(PointF referencePoint) {
@@ -159,7 +159,7 @@ public class BackgroundNode {
     }
 
     public void setReferenceRect(RectF referenceRect) {
-        this.referenceRect = referenceRect;
+        this.referenceRect.set(referenceRect);
     }
 
     public void updateReferenceRect(RectF referenceRect) {

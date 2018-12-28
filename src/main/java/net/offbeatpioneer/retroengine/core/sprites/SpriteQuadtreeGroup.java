@@ -25,9 +25,9 @@ import java.util.List;
  * @author Dominik Grzelak
  * @since 2017-05-04
  */
-public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<AbstractSprite>.CoordHolder> { // AbstractSprite implements ISpriteGroup<QuadTree<AbstractSprite>.CoordHolder> {
+public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<AbstractSprite>.CoordHolder> {
     private final QuadTree<AbstractSprite> children = new QuadTree<>();
-    private RectF queryRange = new RectF();
+    private final RectF queryRange = new RectF();
 
     public SpriteQuadtreeGroup() {
         active = true;
@@ -43,26 +43,39 @@ public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<Abstract
      */
     @Override
     public void draw(Canvas canvas, long currentTime) {
-        final List<QuadTree<AbstractSprite>.CoordHolder> childs = getChildren();
         synchronized (children) {
+            final List<QuadTree<AbstractSprite>.CoordHolder> childs = getChildren();
             this.draw(childs, canvas, currentTime);
         }
     }
 
+    /**
+     * Get children in the specified search rectangle which can be passed as arguments.
+     *
+     * @param left   left position of the search rectangle
+     * @param top    top position of the search rectangle
+     * @param right  right position of the search rectangle
+     * @param bottom bottom position of the search rectangle
+     * @return children in the specified search rectangle
+     */
     public List<QuadTree<AbstractSprite>.CoordHolder> getChildren(float left, float top, float right, float bottom) {
-        return children.findAll(left, top, right, bottom);
-    }
-
-    public List<QuadTree<AbstractSprite>.CoordHolder> getChildren() {
-        return getChildren(queryRange.left, queryRange.top, queryRange.right, queryRange.bottom);
+        synchronized (children) {
+            return children.findAll(left, top, right, bottom);
+        }
     }
 
     public List<QuadTree<AbstractSprite>.CoordHolder> getChildren(RectF queryRange) {
         this.queryRange.set(queryRange);
-        if (getChildren() == null) {
-            return Collections.emptyList();
+        synchronized (children) {
+            if (getChildren() == null) {
+                return Collections.emptyList();
+            }
+            return getChildren();
         }
-        return getChildren();
+    }
+
+    public List<QuadTree<AbstractSprite>.CoordHolder> getChildren() {
+        return getChildren(queryRange.left, queryRange.top, queryRange.right, queryRange.bottom);
     }
 
     private void draw(List<QuadTree<AbstractSprite>.CoordHolder> childs, Canvas canvas, long currentTime) {
@@ -79,8 +92,9 @@ public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<Abstract
 
     @Override
     public void updateLogic() {
-        final List<QuadTree<AbstractSprite>.CoordHolder> childs = getChildren();
         synchronized (children) {
+            final List<QuadTree<AbstractSprite>.CoordHolder> childs = getChildren();
+            this.updateLogicHook();
             update(childs);
         }
     }
@@ -113,8 +127,8 @@ public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<Abstract
 
     @Override
     public void updateLogicHook() {
-        for (AnimationSuite animation : getAnimations()) {
-            animation.animationLogic();
+        for (int i = 0, n = animations.size(); i < n; i++) {
+            animations.get(i).animationLogic();
         }
     }
 
@@ -125,26 +139,28 @@ public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<Abstract
     }
 
     public void removeInActive() {
-        List<QuadTree<AbstractSprite>.CoordHolder> childs = getChildren();
         synchronized (children) {
+            List<QuadTree<AbstractSprite>.CoordHolder> childs = getChildren();
             removeInActive(childs);
         }
     }
 
     private void removeInActive(List<QuadTree<AbstractSprite>.CoordHolder> list) {
-        for (int i = list.size() - 1; i >= 0; i--) {
-            QuadTree.CoordHolder each = list.get(i);
-            AbstractSprite eachSprite = (AbstractSprite) each.o;
-            if (eachSprite.hasChildren()) {
-                if (!eachSprite.isActive()) {
-                    each.remove();
+        synchronized (children) {
+            for (int i = list.size() - 1; i >= 0; i--) {
+                QuadTree.CoordHolder each = list.get(i);
+                AbstractSprite eachSprite = (AbstractSprite) each.o;
+                if (eachSprite.hasChildren()) {
+                    if (!eachSprite.isActive()) {
+                        each.remove();
+                    } else {
+                        List<QuadTree<AbstractSprite>.CoordHolder> list2 = ((SpriteQuadtreeGroup) eachSprite).getChildren();
+                        removeInActive(list2);
+                    }
                 } else {
-                    List<QuadTree<AbstractSprite>.CoordHolder> list2 = ((SpriteQuadtreeGroup) eachSprite).getChildren();
-                    removeInActive(list2);
-                }
-            } else {
-                if (!eachSprite.isActive()) {
-                    each.remove();
+                    if (!eachSprite.isActive()) {
+                        each.remove();
+                    }
                 }
             }
         }
@@ -157,10 +173,11 @@ public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<Abstract
      */
     @Override
     public void onAction(Object parameter) {
-        List<QuadTree<AbstractSprite>.CoordHolder> childs = getChildren();
-
-        for (QuadTree.CoordHolder each : childs) {
-            ((AbstractSprite) each.o).onAction(parameter);
+        synchronized (children) {
+            List<QuadTree<AbstractSprite>.CoordHolder> childs = getChildren();
+            for (QuadTree.CoordHolder each : childs) {
+                ((AbstractSprite) each.o).onAction(parameter);
+            }
         }
     }
 

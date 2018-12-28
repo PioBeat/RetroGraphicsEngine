@@ -85,12 +85,11 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
     public void updateLogic() {
         frameNr = frameUpdate.updateFrame();
         updateLogicHook();
-//        for (int i = 0, n = animations.size(); i < n; i++) {
-//            AnimationSuite animation = animations.get(i);
-//            animation.animationLogic();
-//        }
     }
 
+    /**
+     * Hook that shoudl be called at the beginning of each update
+     */
     public abstract void updateLogicHook();
 
     public RectF getAABB() {

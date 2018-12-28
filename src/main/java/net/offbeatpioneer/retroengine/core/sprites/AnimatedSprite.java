@@ -142,21 +142,10 @@ public class AnimatedSprite extends AbstractSprite {
             AnimationSuite animation = animations.get(i);
             animation.animationLogic();
         }
-        updateLogicHook();
     }
 
     public void updateLogicHook() {
-////        if (autoDestroy) {
-////            PointF o = getViewportOrigin();
-////            checkBoundsRect.set(o.x - (int) (RetroEngine.W * bufferZoneFactor),
-////                    o.y - (int) (RetroEngine.H * bufferZoneFactor),
-////                    o.x + (int) (RetroEngine.W * (1.0 + bufferZoneFactor)),
-////                    o.y + (int) (RetroEngine.H * (1.0 + bufferZoneFactor))
-////            );
-////            if (!containsRect(checkBoundsRect)) {
-////                active = false;
-////            }
-////        }
+        // do nothing here
     }
 
     /**
