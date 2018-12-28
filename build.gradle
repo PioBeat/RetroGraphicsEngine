@@ -46,15 +46,21 @@ dependencies {
 //    compile fileTree(include: ['*.jar'], dir: 'libs')
 }
 
-task copyToLib(type: Copy) {
+def getLocalReleaseDir() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty("release.dir")
+}
+
+task localRelease(type: Copy) {
     from('build/outputs/aar')
-    into('D:/AndroidProjects/offbeat-library/release/')
+    into(getLocalReleaseDir())
     include('*.aar')
 }
 
-build.dependsOn copyToLib
+build.dependsOn localRelease
 
-apply from: './installv1.gradle'
-apply from: './bintrayv1.gradle'
 //apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
 //apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'
+apply from: './installv1.gradle'
+apply from: './bintrayv1.gradle'
