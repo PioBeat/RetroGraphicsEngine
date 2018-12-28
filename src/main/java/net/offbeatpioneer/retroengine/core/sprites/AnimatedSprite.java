@@ -142,6 +142,7 @@ public class AnimatedSprite extends AbstractSprite {
             AnimationSuite animation = animations.get(i);
             animation.animationLogic();
         }
+        updateLogicHook();
     }
 
     public void updateLogicHook() {
