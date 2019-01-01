@@ -27,9 +27,10 @@ import net.offbeatpioneer.retroengine.core.RetroEngine;
 public class RenderThread extends Thread {
 
     private static final String TAG_LOG = "RenderThread";
+    private final String ERROR_NO_STATE = "RenderThread cannot initialize the state. State is not defined in the StateManager.";
 
     private StateManager manager = StateManager.getInstance();
-    private Class<?> currentState = null;
+    private Class<? extends net.offbeatpioneer.retroengine.core.states.State> currentState = null;
 
     private Handler handler;
     final private SurfaceHolder mSurfaceHolder;
@@ -64,7 +65,7 @@ public class RenderThread extends Thread {
     }
 
     public void addState(net.offbeatpioneer.retroengine.core.states.State state) {
-        this.manager.getGamestates().add(state);
+        this.manager.addGamestate(state);
     }
 
     public void addStates(net.offbeatpioneer.retroengine.core.states.State... states) {
@@ -82,15 +83,9 @@ public class RenderThread extends Thread {
      * If {@code currentState} is not {@code null} then the {@link StateManager} will switch to this
      * state and activate it.
      */
-    public void initState() {
+    public void initState(Class<? extends net.offbeatpioneer.retroengine.core.states.State> currentState) {
         if (currentState == null) {
-            if (this.manager.getGamestates().size() > 0) {
-                net.offbeatpioneer.retroengine.core.states.State state = this.manager.getGamestates().get(0);
-                manager.changeGameState(state.getClass());
-            } else {
-                throw new IllegalStateException("No state defined");
-            }
-
+            throw new IllegalStateException(ERROR_NO_STATE);
         } else {
             manager.changeGameState(currentState);
         }
@@ -177,11 +172,12 @@ public class RenderThread extends Thread {
         manager.setHandler(this.handler);
     }
 
-    public void setCurrentState(Class<?> tmp) {
-        this.currentState = tmp;
+    public void setCurrentState(Class<? extends net.offbeatpioneer.retroengine.core.states.State> state) {
+        this.currentState = state;
+        manager.activateState(this.currentState);
     }
 
-    public Class<?> getCurrentState() {
+    public Class<? extends net.offbeatpioneer.retroengine.core.states.State> getCurrentState() {
         return currentState;
     }
 }

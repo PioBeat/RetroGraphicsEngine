@@ -21,6 +21,7 @@ import android.view.SurfaceView;
 
 import net.offbeatpioneer.retroengine.core.StateManager;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
+import net.offbeatpioneer.retroengine.core.states.State;
 
 /**
  * {@link DrawView} is a {@link android.view.View} component and is derived from {@link SurfaceView}.
@@ -37,6 +38,8 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     private RenderThread renderThread;
     private TouchListener touchListener;
+
+    private final String ERROR_NO_STATE = "RenderThread cannot initialize the state. State is not defined in the StateManager.";
 
     private Handler handler;
 
@@ -129,8 +132,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Sen
     public void restoreState(Bundle savedState) {
     }
 
-    public void surfaceChanged(SurfaceHolder holder, int format, int width,
-                               int height) {
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         initSurfaceSize(holder);
     }
 
@@ -177,25 +179,34 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
         this.viewInteraction.onCreated(this);
 
-        Class<?> currentStateTemp = renderThread.getCurrentState();
+        Class<? extends net.offbeatpioneer.retroengine.core.states.State> currentStateTemp = renderThread.getCurrentState();
+        State activeGameState = StateManager.getInstance().getActiveGameState();
+
+        if (currentStateTemp == null) {
+            throw new IllegalStateException(ERROR_NO_STATE);
+        }
+
+        if (activeGameState != null && !currentStateTemp.equals(activeGameState.getClass())) {
+            throw new RuntimeException("Current state in render thread does not equal active state in the StateManager");
+        }
 
         //try to get the current state
-        if (StateManager.getInstance().getGamestates().size() == 1) {
-            net.offbeatpioneer.retroengine.core.states.State state = StateManager.getInstance().getGamestates().get(0);
-            currentStateTemp = state.getClass();
-        } else if (currentStateTemp == null && StateManager.getInstance().getGamestates().size() > 1 && StateManager.getInstance().getActiveGameState() != null) {
-            currentStateTemp = StateManager.getInstance().getActiveGameState().getClass();
-        }
+//        if (StateManager.getInstance().getStateCount() == 1) {
+//            net.offbeatpioneer.retroengine.core.states.State state = StateManager.getInstance().getStateByIndex(0);
+//            currentStateTemp = state.getClass();
+//        } else if (currentStateTemp == null && StateManager.getInstance().getStateCount() > 1 && StateManager.getInstance().getActiveGameState() != null) {
+//            currentStateTemp = StateManager.getInstance().getActiveGameState().getClass();
+//        }
 
-        if (currentStateTemp != null && StateManager.getInstance().getStateByClass(currentStateTemp) == null) {
-            throw new IllegalStateException("State is not added to the StateManager");
-        }
+//        if (currentStateTemp != null && StateManager.getInstance().getStateByClass(currentStateTemp) == null) {
+//            throw new IllegalStateException("State is not added to the StateManager");
+//        }
 
-        if (currentStateTemp != null && StateManager.getInstance().getStateByClass(currentStateTemp).isInitAsync()) {
+        if (activeGameState.isInitAsync()) {
             dialog = ProgressDialog.show(getParentActivity(), "Loading", "Please wait ...", true, false);
-            new LoadTask(renderThread, handler, dialog).execute(this);
+            new LoadTask(renderThread, handler, currentStateTemp, dialog).execute(this);
         } else {
-            initializeState();
+            initializeState(renderThread, handler, currentStateTemp);
         }
 
     }
@@ -208,16 +219,17 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Sen
      * This method is called within the {@code surfaceCreated} method after the surface from this
      * View is created.
      */
-    private void initializeState() {
+    private int initializeState(RenderThread renderThread, Handler handler, Class<? extends net.offbeatpioneer.retroengine.core.states.State> currentState) {
 
         renderThread.setHandler(handler);
-        renderThread.initState();
+        renderThread.initState(currentState);
         // Thread starten
         if (!renderThread.isAlive() && !RetroEngine.isRunning()) {
             try {
                 RetroEngine.changeRunningState(true);
                 RetroEngine.resumeRenderThread();
                 renderThread.start();
+                return 0;
             } catch (Exception e) {
                 Log.v("RenderThread", "RenderThread already started." + e.toString());
                 try {
@@ -225,12 +237,15 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Sen
                     renderThread.interrupt();
                     renderThread.join();
                     renderThread.start();
+                    return 0;
                 } catch (Exception e2) {
                     e2.printStackTrace();
                     Log.e("RenderThread", e.toString());
                 }
             }
+            return -1;
         }
+        return 1;
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
@@ -253,49 +268,31 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Sen
     /**
      * Ansynchroner Task führt das Laden des Spielzustandes durch.
      */
-    private static class LoadTask extends AsyncTask<DrawView, Void, Object> {
+    private class LoadTask extends AsyncTask<DrawView, Void, Integer> {
 
         RenderThread renderThread;
         Handler handler;
         Dialog dialog;
+        Class<? extends net.offbeatpioneer.retroengine.core.states.State> currentState;
 
-        LoadTask(RenderThread renderThread, Handler handler) {
-            this(renderThread, handler, null);
+        LoadTask(RenderThread renderThread, Handler handler, Class<net.offbeatpioneer.retroengine.core.states.State> currentState) {
+            this(renderThread, handler, currentState, null);
         }
 
-        LoadTask(RenderThread renderThread, Handler handler, Dialog dialog) {
+        LoadTask(RenderThread renderThread, Handler handler, Class<? extends net.offbeatpioneer.retroengine.core.states.State> currentState, Dialog dialog) {
             this.renderThread = renderThread;
             this.handler = handler;
             this.dialog = dialog;
+            this.currentState = currentState;
         }
 
-        protected Object doInBackground(final DrawView... v) {
-            renderThread.setHandler(handler);
-            renderThread.initState();
-            // Start thread
-            if (!renderThread.isAlive() && !RetroEngine.isRunning()) {
-                try {
-                    RetroEngine.changeRunningState(true);
-                    RetroEngine.resumeRenderThread();
-                    renderThread.start();
-                } catch (Exception e) {
-                    Log.v("RenderThread", "RenderThread already started.");
-                    try {
-                        renderThread.interrupt();
-                        renderThread.join();
-                        renderThread.start();
-                        return "OK";
-                    } catch (Exception e2) {
-                        e2.printStackTrace();
-                        return "ERROR";
-                    }
-
-                }
-            }
-            return "";
+        protected Integer doInBackground(final DrawView... v) {
+            if (v.length == 0) throw new RuntimeException("No DrawView component was provided");
+            v[0].setRenderThread(renderThread);
+            return initializeState(renderThread, handler, currentState);
         }
 
-        protected void onPostExecute(Object result) {
+        protected void onPostExecute(Integer result) {
             if (dialog != null) {
                 dialog.dismiss();
             }
