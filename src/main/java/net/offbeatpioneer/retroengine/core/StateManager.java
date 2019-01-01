@@ -56,9 +56,10 @@ public class StateManager {
         if (currentActiveState != null) return currentActiveState;
         synchronized (states) {
             for (int i = 0, n = states.size(); i < n; i++) {
-                if (states.get(i).isActive())
+                if (states.get(i).isActive()) {
                     currentActiveState = states.get(i);
-                return states.get(i);
+                    return currentActiveState;
+                }
             }
             return null;
         }
@@ -118,6 +119,14 @@ public class StateManager {
         }
     }
 
+    public void activateState(Class<? extends State> state) {
+        deactivateAllStates();
+        State stateByClass = getStateByClass(state);
+        if (stateByClass != null) {
+            stateByClass.setActive(true);
+        }
+    }
+
     /**
      * Sets the active status to false for all added states in {@code states}.
      */
@@ -135,7 +144,7 @@ public class StateManager {
      *
      * @param c the class of the state to switch
      */
-    public void changeGameState(Class<?> c) {
+    public void changeGameState(Class<? extends net.offbeatpioneer.retroengine.core.states.State> c) {
         synchronized (states) {
             changingState.set(true);
             RetroEngine.pauseRenderThread(); // pause the render thread
@@ -187,6 +196,13 @@ public class StateManager {
         }
     }
 
+    public State getStateByIndex(int ix) {
+        synchronized (states) {
+            if (ix < 0 || ix >= states.size()) return null;
+            return states.get(ix);
+        }
+    }
+
     public State getStateByClass(Class name) {
         synchronized (states) {
             if (name != null) {
@@ -215,7 +231,15 @@ public class StateManager {
         this.mParentActivity = mParentActivity;
     }
 
-    public List<State> getGamestates() {
-        return states;
+    public int getStateCount() {
+        synchronized (states) {
+            return states.size();
+        }
+    }
+
+    List<State> getGamestates() {
+        synchronized (states) {
+            return states;
+        }
     }
 }
