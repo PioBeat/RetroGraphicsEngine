@@ -2,13 +2,12 @@ package net.offbeatpioneer.retroengine.core.sprites;
 
 import android.graphics.Bitmap;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 
 import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
-import net.offbeatpioneer.retroengine.core.eventhandling.EmptyAction;
-import net.offbeatpioneer.retroengine.core.eventhandling.IActionEventCallback;
+import net.offbeatpioneer.retroengine.core.sprites.eventhandling.EmptyAction;
+import net.offbeatpioneer.retroengine.core.sprites.eventhandling.IActionEventCallback;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package net.offbeatpioneer.retroengine.core.eventhandling;
+package net.offbeatpioneer.retroengine.core.sprites.eventhandling;
 
 /**
  * Default action for a sprite for its onAction method. A noop action.

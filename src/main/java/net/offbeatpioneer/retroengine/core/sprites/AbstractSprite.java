@@ -88,7 +88,7 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
     }
 
     /**
-     * Hook that shoudl be called at the beginning of each update
+     * Hook that should be called at the beginning of each update
      */
     public abstract void updateLogicHook();
 

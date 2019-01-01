@@ -1,4 +1,4 @@
-package net.offbeatpioneer.retroengine.core.eventhandling;
+package net.offbeatpioneer.retroengine.core.sprites.eventhandling;
 
 /**
  * Interface for the action event of a sprite in the onAction-method
