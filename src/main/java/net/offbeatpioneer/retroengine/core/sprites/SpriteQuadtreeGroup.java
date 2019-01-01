@@ -183,7 +183,8 @@ public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<Abstract
 
     public void clearSprites() {
         synchronized (children) {
-            children.root.items.clear();
+            if (children.size() != 0)
+                children.root.items.clear();
         }
     }
 
