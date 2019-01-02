@@ -316,7 +316,8 @@ public abstract class State {
         return initAsync;
     }
 
-    public void setInitAsync(boolean initAsync) {
+    public State setInitAsync(boolean initAsync) {
         this.initAsync = initAsync;
+        return this;
     }
 }

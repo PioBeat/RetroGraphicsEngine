@@ -52,9 +52,9 @@ public class StateManager {
      *
      * @return active state or null, if no state is active
      */
-    public synchronized State getActiveGameState() {
-        if (currentActiveState != null) return currentActiveState;
-        synchronized (states) {
+    public State getActiveGameState() {
+        synchronized (lock) {
+            if (currentActiveState != null) return currentActiveState;
             for (int i = 0, n = states.size(); i < n; i++) {
                 if (states.get(i).isActive()) {
                     currentActiveState = states.get(i);
@@ -87,7 +87,7 @@ public class StateManager {
      * @param state the state to add
      */
     public void addGamestate(State state) {
-        synchronized (states) {
+        synchronized (lock) {
             State tmp = getStateByClass(state.getClass());
             if (tmp == null)
                 states.add(state);
@@ -109,7 +109,7 @@ public class StateManager {
      * @param active active status for the state, preferably true
      */
     public void addGameState(State state, boolean active) {
-        synchronized (states) {
+        synchronized (lock) {
             this.addGamestate(state);
             if (active) {
                 deactivateAllStates();
@@ -120,10 +120,12 @@ public class StateManager {
     }
 
     public void activateState(Class<? extends State> state) {
-        deactivateAllStates();
-        State stateByClass = getStateByClass(state);
-        if (stateByClass != null) {
-            stateByClass.setActive(true);
+        synchronized (lock) {
+            deactivateAllStates();
+            State stateByClass = getStateByClass(state);
+            if (stateByClass != null) {
+                stateByClass.setActive(true);
+            }
         }
     }
 
@@ -131,7 +133,7 @@ public class StateManager {
      * Sets the active status to false for all added states in {@code states}.
      */
     private void deactivateAllStates() {
-        synchronized (states) {
+        synchronized (lock) {
             for (int i = 0, n = states.size(); i < n; i++) {
                 states.get(i).setActive(false);
                 currentActiveState = null;
@@ -145,7 +147,7 @@ public class StateManager {
      * @param c the class of the state to switch
      */
     public void changeGameState(Class<? extends net.offbeatpioneer.retroengine.core.states.State> c) {
-        synchronized (states) {
+        synchronized (lock) {
             changingState.set(true);
             RetroEngine.pauseRenderThread(); // pause the render thread
             for (int i = 0, n = states.size(); i < n; i++) {
@@ -181,13 +183,13 @@ public class StateManager {
     }
 
     public void clearStates() {
-        synchronized (states) {
+        synchronized (lock) {
             states.clear();
         }
     }
 
     public State getStateByName(String name) {
-        synchronized (states) {
+        synchronized (lock) {
             for (int i = 0, n = states.size(); i < n; i++) {
                 if (states.get(i).getStateName().equalsIgnoreCase(name))
                     return states.get(i);
@@ -197,14 +199,14 @@ public class StateManager {
     }
 
     public State getStateByIndex(int ix) {
-        synchronized (states) {
+        synchronized (lock) {
             if (ix < 0 || ix >= states.size()) return null;
             return states.get(ix);
         }
     }
 
     public State getStateByClass(Class name) {
-        synchronized (states) {
+        synchronized (lock) {
             if (name != null) {
                 for (int i = 0, n = states.size(); i < n; i++) {
                     if (states.get(i).getClass() == name)
@@ -232,14 +234,12 @@ public class StateManager {
     }
 
     public int getStateCount() {
-        synchronized (states) {
+        synchronized (lock) {
             return states.size();
         }
     }
 
     List<State> getGamestates() {
-        synchronized (states) {
-            return states;
-        }
+        return states;
     }
 }
