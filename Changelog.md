@@ -8,7 +8,7 @@ where inScaled is set to true.
 - enable debug output for ``AudioService`` classes. Default: disabled
 
 ## Changes
-- Renamed method `updateLogicTemplate()` to `updateLogicHook()`
+- Renamed method `updateLogicTemplate()` to `preUpdateHook()`
 - class ``AbstractSprite`` implements interface ``ISpriteAnimateable`` and
 subclass ``AnimatedSprites`` implements the methods of it now
 - Iterable and spatial sprite groups extending from ``AnimatedSprite`` and not anymore from ``AbstractSprite``

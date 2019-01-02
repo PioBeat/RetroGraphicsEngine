@@ -5,7 +5,6 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 
 import net.offbeatpioneer.retroengine.auxiliary.struct.quadtree.QuadTree;
-import net.offbeatpioneer.retroengine.core.animation.AnimationSuite;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,7 +93,7 @@ public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<Abstract
     public void updateLogic() {
         synchronized (children) {
             final List<QuadTree<AbstractSprite>.CoordHolder> childs = getChildren();
-            this.updateLogicHook();
+            this.preUpdateHook();
             update(childs);
         }
     }
@@ -112,7 +111,7 @@ public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<Abstract
         for (QuadTree<AbstractSprite>.CoordHolder each : list) {
             AbstractSprite eachSprite = each.o;
             if (eachSprite.hasChildren() && eachSprite.isActive()) {
-                eachSprite.updateLogicHook();
+                eachSprite.preUpdateHook();
                 List<QuadTree<AbstractSprite>.CoordHolder> list2 = ((SpriteQuadtreeGroup) eachSprite).getChildren();
                 update(list2);
             } else {
@@ -125,8 +124,11 @@ public class SpriteQuadtreeGroup extends SpatialPartitionGroup<QuadTree<Abstract
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void updateLogicHook() {
+    public void preUpdateHook() {
         for (int i = 0, n = animations.size(); i < n; i++) {
             animations.get(i).animationLogic();
         }

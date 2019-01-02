@@ -84,13 +84,13 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
     @Override
     public void updateLogic() {
         frameNr = frameUpdate.updateFrame();
-        updateLogicHook();
+        preUpdateHook();
     }
 
     /**
-     * Hook that should be called at the beginning of each update
+     * A pre-update hook that should be called at the beginning of the update method {@link AbstractSprite#updateLogic()}.
      */
-    public abstract void updateLogicHook();
+    public abstract void preUpdateHook();
 
     public RectF getAABB() {
         if (aabbRect == null) {

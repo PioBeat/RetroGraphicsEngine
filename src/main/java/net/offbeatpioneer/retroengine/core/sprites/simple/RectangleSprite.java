@@ -60,7 +60,7 @@ public class RectangleSprite extends AnimatedSprite implements Colorable {
     }
 
     @Override
-    public void updateLogicHook() {
+    public void preUpdateHook() {
 
     }
 

@@ -104,10 +104,12 @@ public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
     }
 
     /**
-     * A group calls the base method {@code updateLogic} to update the animation logic if any.
+     * {@inheritDoc}
+     * <p>
+     * A group updates the animation logic.
      */
     @Override
-    public void updateLogicHook() {
+    public void preUpdateHook() {
         for (int i = 0, n = animations.size(); i < n; i++) {
             animations.get(i).animationLogic();
         }
@@ -132,7 +134,7 @@ public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
     public void updateLogic() {
         synchronized (lock) {
             update(children, childrenDisabled, childrenInactive);
-            updateLogicHook();
+            preUpdateHook();
         }
     }
 
@@ -166,7 +168,7 @@ public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
             AbstractSprite each = childsActive.get(i);
 
             if (each instanceof IterableSpriteGroup) { //each.hasChildren() &&
-                each.updateLogicHook();
+                each.preUpdateHook();
                 update(((SpriteListGroup) each).getChildren(), ((SpriteListGroup) each).getChildrenDisabled(), ((SpriteListGroup) each).getChildrenInactive()); //safe case because only groups have children
             } else {
                 if (!each.isActive()) {

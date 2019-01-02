@@ -143,7 +143,10 @@ public class AnimatedSprite extends AbstractSprite {
         }
     }
 
-    public void updateLogicHook() {
+    /**
+     * {@inheritDoc}
+     */
+    public void preUpdateHook() {
         // do nothing here
     }
 
