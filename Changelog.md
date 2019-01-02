@@ -20,6 +20,10 @@ be foreseen in a new release
     * no necessity to manually check disabled/"auto destroy" in update method of a sprite
 - removed argument `factor` from scrollable background layer
 
+- `StateManager` class:
+    * new methods: `activateState`, `getStateByIndex`, `getStateCount`
+    * method `getGamestates` is now private
+
 # [0.9.5-beta1]
 
 ## Added
