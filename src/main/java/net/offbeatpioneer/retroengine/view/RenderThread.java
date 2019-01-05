@@ -82,6 +82,8 @@ public class RenderThread extends Thread {
      * <p>
      * If {@code currentState} is not {@code null} then the {@link StateManager} will switch to this
      * state and activate it.
+     *
+     * @param currentState the state to initialize
      */
     public void initState(Class<? extends net.offbeatpioneer.retroengine.core.states.State> currentState) {
         if (currentState == null) {

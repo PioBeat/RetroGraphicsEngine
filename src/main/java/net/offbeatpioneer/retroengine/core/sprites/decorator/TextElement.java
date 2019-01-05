@@ -113,6 +113,7 @@ public class TextElement extends Decorator {
      *
      * @param text the text
      * @param pos  position of the text. Will be assigned to the underlying sprite
+     * @return an initialized text sprite
      */
     @SuppressWarnings("all")
     public TextElement initWithText(String text, PointF pos) {

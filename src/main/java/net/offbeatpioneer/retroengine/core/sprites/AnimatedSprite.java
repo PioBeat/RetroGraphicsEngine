@@ -26,7 +26,7 @@ public class AnimatedSprite extends AbstractSprite {
 
     private IActionEventCallback actionEventCallback;
     protected RectF checkBoundsRect;
-    final List<AnimationSuite> animations = new ArrayList<>();
+    protected final List<AnimationSuite> animations = new ArrayList<>();
 
     public AnimatedSprite() {
         super();
@@ -34,7 +34,19 @@ public class AnimatedSprite extends AbstractSprite {
         this.checkBoundsRect = new RectF();
     }
 
-
+    /**
+     * Initialization method when using a sprite-stripe. Meaning, that the texture of sprite itself is
+     * animated.
+     *
+     * @param bitmap     the texture stripe containing the animation
+     * @param height     the height of the texture
+     * @param width      the width of the texture
+     * @param fps        number of frames per seconds for the animation
+     * @param frameCount how many frames are visible in the texture?
+     * @param pos        the position of the sprite
+     * @param loop       should the animation be repeated when it's finished?
+     * @return an initialized sprite
+     */
     public AnimatedSprite initAsAnimation(Bitmap bitmap, int height, int width, int fps, int frameCount, PointF pos, boolean loop) {
         if (bitmap != null) {
             this.texture = bitmap;
@@ -44,7 +56,6 @@ public class AnimatedSprite extends AbstractSprite {
         this.frameW = width;
         this.sRectangle.top = 0;
         this.sRectangle.bottom = frameH;
-        this.disabled = false;
         this.frameUpdate = new AnimatedFrameUpdate(this);
         this.framePeriod = 1000 / fps;
         this.sRectangle.left = 0;
@@ -54,17 +65,20 @@ public class AnimatedSprite extends AbstractSprite {
         this.oldPosition = new PointF(pos.x, pos.y);
         this.position.set(pos.x, pos.y);
         this.speed = new PointF(0, 0); // initial speed
-        int speedScalar = 5;
         this.speed.x = speedScalar;
         this.speed.y = -speedScalar;
 
-        this.loop = loop;
-        this.viewportOrigin = new PointF(0, 0);
         this.cnt = 0;
         this.frameNr = 0;
         this.angle = 0;
-        this.active = true;
-        this.autoDestroy = true;
+
+        this.loop = loop;
+
+//        this.hidden = false;
+//        this.active = true;
+//        this.autoDestroy = true;
+
+        this.viewportOrigin = new PointF(0, 0);
 
         this.rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
 //        oldPosition = new PointF(p.x, p.y);
@@ -103,10 +117,12 @@ public class AnimatedSprite extends AbstractSprite {
             this.frameH = 0;
         }
 
-        this.viewportOrigin = new PointF(0, 0);
-        this.frameCnt = 1;
         this.frameStep = 1;
+
+        this.frameCnt = 1; // no animation
+
         this.speed = spd;
+        this.viewportOrigin = new PointF(0, 0);
         this.oldPosition = new PointF(pos.x, pos.y);
         this.position = new PointF(pos.x, pos.y);
         this.alphaValue = 255;
@@ -115,9 +131,7 @@ public class AnimatedSprite extends AbstractSprite {
         this.framePeriod = 1000 / 25;
         this.rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
         this.angle = 0;
-        //forceIdleness = false;
-        this.active = true;
-        this.autoDestroy = true;
+
         this.frameUpdate = new NoFrameUpdate();
         return this;
     }

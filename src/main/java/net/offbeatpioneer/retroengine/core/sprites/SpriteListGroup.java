@@ -153,7 +153,7 @@ public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
             if (!(each2 instanceof IterableSpriteGroup) && !each2.isAutoDestroy()) {
                 try {
                     if (checkBoundsRect.contains(each2.getPosition().x, each2.getPosition().y)) {
-                        each2.setDisabled(false);
+                        each2.setHidden(false);
                         moveSprite(childsDisabled, childsActive, each2);
                     }
                 } catch (Exception e) {
@@ -162,7 +162,7 @@ public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
             }
         }
         //TODO doppel check verhindern, wenn gerade wieder in active liste aufgenommen
-        //check if sprites must be disabled or destroyed
+        //check if sprites must be hidden or destroyed
         //this doesn't affect groups at all, only the children
         for (int n = childsActive.size() - 1, i = n; i >= 0; i--) {
             AbstractSprite each = childsActive.get(i);
@@ -181,7 +181,7 @@ public class SpriteListGroup extends IterableSpriteGroup<AbstractSprite> {
                         moveSprite(childsActive, childsInactive, each);
                         continue;
                     } else { //otherwise autoHide
-                        each.setDisabled(true);
+                        each.setHidden(true);
                         moveSprite(childsActive, childsDisabled, each);
                         continue;
                     }

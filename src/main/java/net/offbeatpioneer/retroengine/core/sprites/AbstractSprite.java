@@ -15,27 +15,28 @@ import android.graphics.RectF;
  * @since 2017-01-14
  */
 public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
-    AbstractSprite parentSprite;
-    final double bufferZoneFactor = 0.2;
+    protected AbstractSprite parentSprite;
+    protected final double bufferZoneFactor = 0.2;
 
     protected Bitmap texture; // Textur-Filmstreifen
-    Bitmap backupTexture;
+    protected Bitmap backupTexture;
+    protected int speedScalar = 4;
     protected PointF speed; // Pixelgeschwindigkeit pro Frame in x-, y-Richtung
     protected PointF position; // aktuelle Position
     protected final PointF pivotPoint = new PointF(0, 0);
     protected final Matrix transformationMatrix = new Matrix();
-    PointF oldPosition; //Backup, wenn transliert wurde, die ursprüngliche Version beibehalten zum zurücksetzen
-    PointF viewportOrigin;
-    Rect sRectangle;
-    private int bufferZone = 0;
-    private int fps;
-    int alphaValue = 255;
-    boolean loop;
+    protected PointF oldPosition; //Backup, wenn transliert wurde, die ursprüngliche Version beibehalten zum zurücksetzen
+    protected PointF viewportOrigin;
+    protected Rect sRectangle;
+    protected int bufferZone = 0;
+    protected int fps;
+    protected int alphaValue = 255;
+    protected boolean loop;
     protected RectF rect;
-    int cnt; // interner Zaehler
-    int frameNr = 0; // aktuelles Frame
-    int frameCnt; // Anzahl Frames im Filmstreifen
-    int framePeriod;    // milliseconds between each frame (1000/fps)
+    protected int cnt; // interner Zaehler
+    protected int frameNr = 0; // aktuelles Frame
+    protected int frameCnt; // Anzahl Frames im Filmstreifen
+    protected int framePeriod;    // milliseconds between each frame (1000/fps)
     @Deprecated
     int frameStep; // Anzahl Frames pro Durchlauf
     protected int frameW; // Breite eines Frames
@@ -45,33 +46,33 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
     /**
      * Type of the current sprite.
      */
-    private int type;
+    protected int type;
     //int tolBB; // Bounding Box - Toleranz
-    private int cycleCnt; // Anzahl der Wiederholungen des Filmstreifens
+    protected int cycleCnt; // Anzahl der Wiederholungen des Filmstreifens
     //boolean forceIdleness; // keine Animation, wenn Sprite stillsteht
     /**
      * Flag to indicate the status of a sprite. If active is true, the sprite will be removed.
      */
-    protected boolean active;
+    protected boolean active = true;
     /**
      * Flag to automatically set a sprite inactive when it's out of view
-     * Will be removed later. If autoDestroy is false, then the sprite will be just disabled when it
+     * Will be removed later. If autoDestroy is false, then the sprite will be just hidden when it
      * outside the viewport
      */
-    protected boolean autoDestroy;
+    protected boolean autoDestroy = true;
 
     protected long starttime = 0;
     protected Paint paint = new Paint();
-    float scale = 1.0f;
+    protected float scale = 1.0f;
     private RectF aabbRect;
     //Nicht gleich löschen, sondern nur nicht zeichnen
     //Wird für Gruppen-Nodes verwendet
-    boolean disabled = false;
+    protected boolean hidden = false;
 
     protected IFrameUpdate frameUpdate = new NoFrameUpdate();
 
     public AbstractSprite() {
-        this.disabled = false;
+        this.hidden = false;
         this.parentSprite = null;
         this.sRectangle = new Rect(0, 0, 0, 0);
         this.loop = false;
@@ -114,7 +115,7 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
      * <p>
      * If the the sprites property disable is true then the it will not be drawn. It still exists in the
      * root node of a state. Also, if its not in the clipping area, that means the visible area
-     * of the canvas, it will not be drawn to reduce CPU usage. Further, the sprite will be set disabled.
+     * of the canvas, it will not be drawn to reduce CPU usage. Further, the sprite will be set hidden.
      * <p>
      * The texture of the sprite is drawn via transformation of matrices (Scale, Translate, Rotation) on the surface.
      * This is a generic drawing function which is working with bitmap textures.
@@ -125,8 +126,8 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
      * @param currentTime current time in milliseconds
      */
     public void draw(final Canvas canvas, final long currentTime) {
-        //Don't draw the sprite if it's disabled
-//        if (disabled || canvas.quickReject(getViewportOrigin().x, getViewportOrigin().y, RetroEngine.W + getViewportOrigin().x, RetroEngine.H + getViewportOrigin().y, Canvas.EdgeType.BW)) {
+        //Don't draw the sprite if it's hidden
+//        if (hidden || canvas.quickReject(getViewportOrigin().x, getViewportOrigin().y, RetroEngine.W + getViewportOrigin().x, RetroEngine.H + getViewportOrigin().y, Canvas.EdgeType.BW)) {
 //            return;
 //        }
 
@@ -321,6 +322,18 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
         return speed;
     }
 
+    public double getBufferZoneFactor() {
+        return bufferZoneFactor;
+    }
+
+    public int getSpeedScalar() {
+        return speedScalar;
+    }
+
+    public void setSpeedScalar(int speedScalar) {
+        this.speedScalar = speedScalar;
+    }
+
     public IFrameUpdate getFrameUpdate() {
         return frameUpdate;
     }
@@ -357,7 +370,8 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
 
 
     /**
-     * Like margin for a sprite
+     * Like an additional margin for a sprite.
+     * Can be used for collision checking, for example.
      *
      * @return the buffer zone
      */
@@ -366,9 +380,9 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
     }
 
     /**
-     * set the "margin" of a sprite. Can be used for collision detection or other things
+     * Set the "margin" of a sprite. Can be used for collision detection or other things
      *
-     * @param bufferZone additional bufferzone, e.g. for collision checking
+     * @param bufferZone additional buffer zone, e.g. for collision checking
      */
     public void setBufferZone(int bufferZone) {
         this.bufferZone = bufferZone;
@@ -403,10 +417,20 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
         this.texture = texture;
     }
 
+    /**
+     * Flag that indicated if the animation of a sprite-stripe (if any is set) should be repeated.
+     *
+     * @return true, if the animation should be repeated, otherwise false
+     */
     public boolean isLoop() {
         return loop;
     }
 
+    /**
+     * Specify if the sprite-stripe animation should be repeated if finished
+     *
+     * @param loop true, if the animation should be repeated, otherwise false
+     */
     public void setLoop(boolean loop) {
         this.loop = loop;
     }
@@ -499,18 +523,18 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
         this.alphaValue = alphaValue;
     }
 
-    public boolean isDisabled() {
-        return disabled;
+    public boolean isHidden() {
+        return hidden;
     }
 
     /**
      * Set the visibility of a sprite. If true then the draw method will do nothing. The sprite wont
      * be displayed.
      *
-     * @param disabled true, if sprite should not be displayed
+     * @param hidden true, if sprite should not be displayed
      */
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
     public Bitmap getBackupTexture() {
