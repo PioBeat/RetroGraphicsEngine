@@ -41,7 +41,7 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
     int frameStep; // Anzahl Frames pro Durchlauf
     protected int frameW; // Breite eines Frames
     protected int frameH; // Höhes eines Frames
-    protected float angle; // Winkel in Grad, um den das Sprite gedreht wird
+    protected float angle = 0; // Winkel in Grad, um den das Sprite gedreht wird
 
     /**
      * Type of the current sprite.
@@ -178,6 +178,10 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
         this.position.set(position.x + p.x, position.y + p.y);
     }
 
+    public void translate(float deltaX, float deltaY) {
+        this.position.set(position.x + deltaX, position.y + deltaY);
+    }
+
     /**
      * Set the position of the sprite. You have to add the viewport origin by yourself
      * if the canvas is translated to set the correct position.
@@ -187,6 +191,10 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
     public void setPosition(PointF p) {
 //        this.oldPosition.set(p.x, p.y);
         this.position.set(p.x, p.y);
+    }
+
+    public void setPosition(float x, float y) {
+        this.position.set(x, y);
     }
 
     public void setOldPosition(PointF oldPosition) {

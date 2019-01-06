@@ -70,7 +70,7 @@ public class AnimatedSprite extends AbstractSprite {
 
         this.cnt = 0;
         this.frameNr = 0;
-        this.angle = 0;
+//        this.angle = 0;
 
         this.loop = loop;
 
@@ -125,12 +125,12 @@ public class AnimatedSprite extends AbstractSprite {
         this.viewportOrigin = new PointF(0, 0);
         this.oldPosition = new PointF(pos.x, pos.y);
         this.position = new PointF(pos.x, pos.y);
-        this.alphaValue = 255;
+//        this.alphaValue = 255;
         this.cnt = 0;
         this.frameNr = 0;
         this.framePeriod = 1000 / 25;
         this.rect = new RectF(position.x, position.y, position.x + frameW, position.y + frameH);
-        this.angle = 0;
+//        this.angle = 0;
 
         this.frameUpdate = new NoFrameUpdate();
         return this;
