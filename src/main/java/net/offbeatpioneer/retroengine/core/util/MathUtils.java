@@ -68,6 +68,13 @@ public class MathUtils {
     }
 
     /**
+     * Conversion of radian to degrees
+     */
+    public static double getDegree(double rad) {
+        return Math.toDegrees(rad);
+    }
+
+    /**
      * Conversion of pixels to density independent pixels.
      * <p>
      * Uses the density value in {@link RetroEngine} for the conversion. If not initialised (density equals zero)
