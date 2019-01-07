@@ -16,7 +16,7 @@ import android.graphics.RectF;
  */
 public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
     protected AbstractSprite parentSprite;
-    protected final double bufferZoneFactor = 0.2;
+    protected float bufferZoneFactor = 0.2f;
 
     protected Bitmap texture; // Textur-Filmstreifen
     protected Bitmap backupTexture;
@@ -28,7 +28,6 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
     protected PointF oldPosition; //Backup, wenn transliert wurde, die ursprüngliche Version beibehalten zum zurücksetzen
     protected PointF viewportOrigin;
     protected Rect sRectangle;
-    protected int bufferZone = 0;
     protected int fps;
     protected int alphaValue = 255;
     protected boolean loop;
@@ -330,10 +329,6 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
         return speed;
     }
 
-    public double getBufferZoneFactor() {
-        return bufferZoneFactor;
-    }
-
     public int getSpeedScalar() {
         return speedScalar;
     }
@@ -378,23 +373,24 @@ public abstract class AbstractSprite implements ISprite, ISpriteAnimateable {
 
 
     /**
-     * Like an additional margin for a sprite.
+     * A factor that is used as an additional margin for a sprite.
      * Can be used for collision checking, for example.
      *
-     * @return the buffer zone
+     * @return the buffer zone factor
      */
-    public int getBufferZone() {
-        return bufferZone;
+    public double getBufferZoneFactor() {
+        return bufferZoneFactor;
     }
 
     /**
-     * Set the "margin" of a sprite. Can be used for collision detection or other things
+     * Set the "margin factor" of a sprite. Can be used for collision detection or other things
      *
-     * @param bufferZone additional buffer zone, e.g. for collision checking
+     * @param bufferZoneFactor for an additional buffer zone, e.g. for collision checking
      */
-    public void setBufferZone(int bufferZone) {
-        this.bufferZone = bufferZone;
+    public void setBufferZoneFactor(float bufferZoneFactor) {
+        this.bufferZoneFactor = bufferZoneFactor;
     }
+
 
     public Rect getsRectangle() {
         return sRectangle;
