@@ -27,9 +27,16 @@ public class RotationAnimation extends AnimationSuite {
         setTime(time);
         this.startAngle = angleStart;
         int N = (time / (RetroEngine.TICKS_PER_SECOND - RetroEngine.SKIP_TICKS));
+        N = N == 0 ? 1 : N;
         anglePoints = InterpolationHelper.linear(this.startAngle, this.startAngle + angleDegree, N);
         cnt = 0;
-        currentAngle = anglePoints[cnt];
+        if (anglePoints.length > 1)
+            currentAngle = anglePoints[0];
+        else {
+            currentAngle = 0;
+            anglePoints = new float[1];
+            anglePoints[0] = this.startAngle + angleDegree;
+        }
     }
 
     /**

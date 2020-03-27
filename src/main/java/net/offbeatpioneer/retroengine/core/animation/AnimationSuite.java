@@ -87,13 +87,17 @@ public abstract class AnimationSuite {
      * The member variables {@code finished} and {@code started} will be set to {@code false}.
      */
     public void reset() {
-        this.finished = false;
-        this.started = false;
+        finished = false;
+        started = false;
+        timer.cancel();
+        timer.purge();
         timer = null;
     }
 
     public void stop() {
         finished = true;
+        timer.cancel();
+        timer.purge();
         timer = null;
     }
 

@@ -170,7 +170,7 @@ public class AnimatedSprite extends AbstractSprite {
      * @param animation the animation to add
      */
     public void addAnimation(AnimationSuite animation) {
-        if (animation.getAnimatedSprite() == null)
+        if (animation.getAnimatedSprite() == null || animation.getAnimatedSprite() != this)
             animation.setAnimatedSprite(this);
         animations.add(animation);
     }
