@@ -31,9 +31,9 @@ repositories {
 }
 
 dependencies {
-    compile 'net.offbeat-pioneer.android:retroengine:0.9.4'
+    implementation 'net.offbeat-pioneer.android:retroengine:0.9.4'
     // for the beta
-    // compile 'net.offbeat-pioneer.android:retroengine:0.9.5-beta1'
+    // implementation 'net.offbeat-pioneer.android:retroengine:0.9.5-beta1'
 }
 ```
 

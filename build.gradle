@@ -57,6 +57,32 @@ task localRelease(type: Copy) {
     from('build/outputs/aar')
     into(getLocalReleaseDir())
     include('*.aar')
+
+    from('build/libs')
+    into(getLocalReleaseDir())
+    include('*.jar')
+}
+
+task androidJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+}
+
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    archiveBaseName.set(artifact)
+    from android.sourceSets.main.java.srcDirs
+}
+
+task androidJavadocsJar(type: Jar) {
+    archiveClassifier.set('javadoc')
+    archiveBaseName.set(artifact)
+    from androidJavadocs.destinationDir
+}
+
+artifacts {
+//    archives packageReleaseJar
+    archives androidSourcesJar
+    archives androidJavadocsJar
 }
 
 build.dependsOn localRelease
