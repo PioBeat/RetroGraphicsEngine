@@ -19,10 +19,8 @@ import android.view.GestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import androidx.core.view.GestureDetectorCompat;
-
-import net.offbeatpioneer.retroengine.core.StateManager;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
+import net.offbeatpioneer.retroengine.core.StateManager;
 import net.offbeatpioneer.retroengine.core.states.State;
 
 /**

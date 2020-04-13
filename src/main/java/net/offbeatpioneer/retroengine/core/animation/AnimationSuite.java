@@ -3,11 +3,9 @@ package net.offbeatpioneer.retroengine.core.animation;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import net.offbeatpioneer.retroengine.core.RetroEngine;
 import net.offbeatpioneer.retroengine.core.sprites.AbstractSprite;
-import net.offbeatpioneer.retroengine.core.sprites.ISpriteGroup;
 
-import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -89,16 +87,20 @@ public abstract class AnimationSuite {
     public void reset() {
         finished = false;
         started = false;
-        timer.cancel();
-        timer.purge();
-        timer = null;
+        if (Objects.nonNull(timer)) {
+            timer.cancel();
+            timer.purge();
+            timer = null;
+        }
     }
 
     public void stop() {
         finished = true;
-        timer.cancel();
-        timer.purge();
-        timer = null;
+        if (Objects.nonNull(timer)) {
+            timer.cancel();
+            timer.purge();
+            timer = null;
+        }
     }
 
     public boolean hasStarted() {
