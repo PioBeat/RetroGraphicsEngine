@@ -87,7 +87,7 @@ public abstract class AnimationSuite {
     public void reset() {
         finished = false;
         started = false;
-        if (Objects.nonNull(timer)) {
+        if (timer != null) {
             timer.cancel();
             timer.purge();
             timer = null;
@@ -96,7 +96,7 @@ public abstract class AnimationSuite {
 
     public void stop() {
         finished = true;
-        if (Objects.nonNull(timer)) {
+        if (timer != null) {
             timer.cancel();
             timer.purge();
             timer = null;
