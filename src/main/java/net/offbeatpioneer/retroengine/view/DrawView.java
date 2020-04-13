@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,8 +15,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import androidx.core.view.GestureDetectorCompat;
 
 import net.offbeatpioneer.retroengine.core.StateManager;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
@@ -37,7 +39,8 @@ import net.offbeatpioneer.retroengine.core.states.State;
 public class DrawView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
 
     private RenderThread renderThread;
-    private TouchListener touchListener;
+    private SimpleStateRedirectedTouchListener touchListener;
+    private DefaultSwipeListener swipeListener;
 
     private final String ERROR_NO_STATE = "RenderThread cannot initialize the state. State is not defined in the StateManager.";
 
@@ -51,8 +54,10 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Sen
 
     public Resources res = this.getResources();
 
+    GestureDetector gestureDetector;
+
     private DrawViewInteraction viewInteraction;
-    private final DrawViewInteraction emptyInteraction = new DrawViewInteraction() {
+    private final static DrawViewInteraction DEFAULT_EMPTY_INTERACTION_LISTENER = new DrawViewInteraction() {
         @Override
         public void onCreated(DrawView drawView) {
 
@@ -98,11 +103,12 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Sen
         setParentActivity(findActivity());
         StateManager.getInstance().setParentActivity(getParentActivity());
 
+        handler = new Handler();
+        viewInteraction = DEFAULT_EMPTY_INTERACTION_LISTENER;
+
         // register our interest in hearing about changes to our surface
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
-
-        handler = new Handler();
 
         // Intercept key events
         setFocusable(true);
@@ -111,10 +117,11 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Sen
         // allow long click events
         setLongClickable(true);
 
-        touchListener = new TouchListener();
+        swipeListener =  new DefaultSwipeListener();
+        gestureDetector = new GestureDetector(context, swipeListener);
+        touchListener = new SimpleStateRedirectedTouchListener(gestureDetector);
         setOnKeyListener(touchListener);
         setOnTouchListener(touchListener);
-        viewInteraction = emptyInteraction;
     }
 
     public void addListener(DrawViewInteraction listener) {
@@ -122,7 +129,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Sen
     }
 
     public void removeListener() {
-        this.viewInteraction = emptyInteraction;
+        this.viewInteraction = DEFAULT_EMPTY_INTERACTION_LISTENER;
     }
 
     public Bundle saveState(Bundle saveState) {
@@ -144,11 +151,11 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Sen
         this.renderThread = renderThread;
     }
 
-    public TouchListener getTouchListener() {
+    public SimpleStateRedirectedTouchListener getTouchListener() {
         return touchListener;
     }
 
-    public void setTouchListener(TouchListener touchListener) {
+    public void setTouchListener(SimpleStateRedirectedTouchListener touchListener) {
         this.touchListener = touchListener;
     }
 

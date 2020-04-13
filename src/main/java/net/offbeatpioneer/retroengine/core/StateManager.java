@@ -163,6 +163,7 @@ public class StateManager {
                     break;
                 }
             }
+            changingState.set(false);
         }
     }
 

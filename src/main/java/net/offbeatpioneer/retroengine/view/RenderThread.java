@@ -107,11 +107,13 @@ public class RenderThread extends Thread {
 
             if (RetroEngine.isShouldWait()) {
                 // check for state change and get the new state - if null break the loop
-                if (manager.isChangingState() && (currentStateTmp = manager.getActiveGameState()) != null) {
+                if (manager.isChangingState()) { // && (currentStateTmp = manager.getActiveGameState()) != null) {
+                    sleepThread(120);
+                } else {
                     RetroEngine.resumeRenderThread();
-                    manager.endStateChange();
+//                    manager.endStateChange();
+                    currentStateTmp = manager.getActiveGameState();
                 }
-                sleepThread(250);
                 continue;
             }
 

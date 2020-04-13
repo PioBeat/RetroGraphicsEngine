@@ -11,13 +11,13 @@ import android.view.View;
 
 import net.offbeatpioneer.retroengine.auxiliary.background.BackgroundLayer;
 import net.offbeatpioneer.retroengine.auxiliary.background.BackgroundNode;
-import net.offbeatpioneer.retroengine.core.StateManager;
 import net.offbeatpioneer.retroengine.core.RetroEngine;
+import net.offbeatpioneer.retroengine.core.StateManager;
 import net.offbeatpioneer.retroengine.core.sprites.AbstractSprite;
 import net.offbeatpioneer.retroengine.core.sprites.ISpriteGroup;
 import net.offbeatpioneer.retroengine.core.sprites.SpatialPartitionGroup;
 import net.offbeatpioneer.retroengine.core.sprites.SpriteListGroup;
-import net.offbeatpioneer.retroengine.core.sprites.SpriteQuadtreeGroup;
+import net.offbeatpioneer.retroengine.view.DefaultSwipeListener;
 import net.offbeatpioneer.retroengine.view.DrawView;
 
 import java.util.List;
@@ -278,6 +278,14 @@ public abstract class State {
      * @return true or false
      */
     public abstract boolean onTouchEvent(View v, MotionEvent event);
+
+    /**
+     * A method to listen for swipe events within the context of the current state.
+     *
+     * @param direction the direction of the swipe (left, right, up, down)
+     * @return you can either return {@code true} or {@code false}, depending whether the swipe was processed or not.
+     */
+    public abstract boolean onSwipeEvent(DefaultSwipeListener.Direction direction);
 
     /**
      * Return the background node of the state that manages all the background layers.
